@@ -35,4 +35,6 @@ c c c		  ! boundary CLOSED/OPEN (c/o)
 Contact me if somebody face problem in understanding the input files.
 Mukesh Kumar Sharma
 email ID:: msharma1@ph.iitr.ac.in
-If you find this code helpful in your research work please cite this code.
+If you find this code helpful in your research work please cite this code. New collaborations will be welcomed.
+
+# userguide will be soon uploaded here.
