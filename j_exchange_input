@@ -1,0 +1,7 @@
+4			! no. of distinct bond
+4.16970 7.22213 4.08267	7.57543	!bond length for ith distinct nbd (d_nbd1, d_nbd2 ...)
+4			!no. of line in file from this line
+1 1 1 1.0 1 1 1	! i = ith nbd; k, j is species comb.; corresponding j_value (Jxx, Jyy, Jzz); it's anisotropy
+2 1 1 1.0 1 1 1
+3 1 1 1.0 1 1 1
+4 1 1 1.0 1 1 1 
