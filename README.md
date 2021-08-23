@@ -1,6 +1,13 @@
 # Ether
 Based on the classical lattice model (Heisenberg, XYZ, etc.), code Ether has been developed to study the thermodynamics of ANY CRYSTAL SYSTEM by performing the basic Monte Carlo methods. Metropolis algorithm has been used to equate all the observables
 
+Compile this **ether.f90** by any FORTRAN compiler
+for our case we have choosen gfortran
+
+gfortran ether.f90 -o ether
+
+executable 'ether' will be created for running the program
+
 # 1. About 'input' file
 
 In input file there are basic information which you need to provide before running the program as given below,
@@ -36,5 +43,35 @@ Contact me if somebody face problem in understanding the input files.
 Mukesh Kumar Sharma
 email ID:: msharma1@ph.iitr.ac.in
 If you find this code helpful in your research work please cite this code. New collaborations will be welcomed.
+
+# 4. Output section
+Along with all data files, there will be two directories (_data, _spin) will be generated. 
+
+# 4.1 About _spin directory
+It contains the final spin configuration files for each temperature. File is named as "sp_***K.dat", K is referred as Kelvin.
+
+To visualize these files please installed the xcrysden (http://www.xcrysden.org/Download.html). Please follw the given step to visualize the spin configuration as well as lattice distribution.
+Step 1.
+open xcrysden software
+Step 2.
+go to the file --> Open structure --> Open XSF (Xcrysdgen structure file)
+Step 3. Select the desired sp_***K.dat file
+
+Step 4.
+
+At this point, you can see the lattice arrangement
+press 'f' button then the 'Shift+f' button combination.
+After pressing the 'Shift + f' button combination you will have another dialogue box, in that there is an option to change the 'Length factor' .
+change it by 4 or 5 or any no. you want.
+You will have the spin configuration for the selected temperature.
+
+# 4.2 About _data directory
+
+In this directory data files related to energy, magnetization, nbd (neighborhood), and initial spin configuration.
+
+for the basic plot where information of specific heat, susceptibility, magnetization, energy/site is present. Just type gnuplot graph.sh in the terminal, the output file named as fig1.png will be generated.
+
+please always check the nbd.dat file to make sure that code is taking the right nbd's for the selected lattice point. To do this open the initial_spin_conf.dat file into the Xcrysden and this nbd.dat file in gedit/Notepad editor and check and compare the nbd information present in the nbd.dat file. 
+(by clicking the Atom info. in Xcrysden you will have the lattice point ID on the screen, by this you can check the ID's of nbd and compare it from the nbd.dat file)
 
 # userguide will be soon uploaded here.
