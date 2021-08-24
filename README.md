@@ -2,15 +2,15 @@
 Based on the classical lattice model (Heisenberg, XY, XYZ, etc.), code Ether has been developed to study the thermodynamics of ANY CRYSTAL SYSTEM by performing the basic Monte Carlo methods. Metropolis algorithm has been used to equate all the observables.
 
 Code Ether solves the given Hamiltonian
-H = JSiSj -hSi
+H = JSiSj -MSi
 
 or,
-H = Jxx SxiSxj + Jyy SyiSyj + Jzz SziSzj - (hxSx + hySy + hzSz)
+H = Jxx SxiSxj + Jyy SyiSyj + Jzz SziSzj - (MxSx + MySy + MzSz)
 
 where, 
 J is defined as exchang energy (unit meV) splited into Jxx, Jyy, Jzz components.
 S is spin vector and has Sx, Sy, Sz components.
-h is magnetic field vector (unit Tesla) and has hx, hy, hz components as well.
+M is magnetic field vector (unit Tesla) and has Mx, My, Mz components as well.
 
 **Note::** Always provide J in unit of meV (milli electron volts). For example for 0.001 eV provide this value in Ether code as 1, code automatically convert into the eV.
 
