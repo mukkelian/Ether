@@ -2,27 +2,31 @@
 Based on the classical lattice model (Heisenberg, XY, XYZ, etc.), code Ether has been developed to study the thermodynamics of ANY CRYSTAL SYSTEM by performing the basic Monte Carlo methods. Metropolis algorithm has been used to equate all the observables.
 
 Code Ether solves the given Hamiltonian
-H = JSiSj -MSi
+H = JSiSj - g*mb*MSi
 
 or,
-H = Jxx SxiSxj + Jyy SyiSyj + Jzz SziSzj - (MxSx + MySy + MzSz)
+H = Jxx SxiSxj + Jyy SyiSyj + Jzz SziSzj - g*mb*(MxSx + MySy + MzSz)
 
 where, 
 J is defined as exchang energy (unit meV) splited into Jxx, Jyy, Jzz components.
 S is spin vector and has Sx, Sy, Sz components.
 M is magnetic field vector (unit Tesla) and has Mx, My, Mz components as well.
+g is g-factor
+mb is Bhor magneton (ev/T)
 
-**Note::** Always provide J in unit of meV (milli electron volts). For example for 0.001 eV provide this value in Ether code as 1, code automatically convert into the eV.
+**Note::** Always provide J in unit of meV (milli electron volts). For example for 0.001 eV provide this value in Ether code as 1, code will automatically convert it into the meV.
 
-Compile this **ether.f90** by any FORTRAN compiler, for our case we have choosen gfortran
+Compile this **ether.f90** by any FORTRAN compiler, for our case we have choosen **gfortran**
+
+For the compilatin, type the command same like given below into the terminal
 
  gfortran ether.f90 -o ether
 
-executable 'ether' will be created for running the program.
+executable 'ether' will be created for running this program.
 
 # 1. About 'input' file
 
-In input file there are basic information which you need to provide before running the program as given below,
+In input file there are basic informations which you need to provide before running the program which are given below,
 
 20000		  ---> MC steps
 
@@ -66,8 +70,8 @@ c c c		  ---> boundary CLOSED/OPEN (c/o)
 
 # 3. About structure.vasp file
 
-'structure.vasp' is a structure file used in performing the Density Functional Theory (DFT) by VASP ( https://www.vasp.at/ ). For the making structure file use VESTA tool (https://jp-minerals.org/vesta/en/download.html) and export it into the file name 'structure.vasp'.
-  # Don't forget to export the file into cartesian coordinates only
+'structure.vasp' is an input structure file used to perform the Density Functional Theory (DFT) calculation using VASP program ( https://www.vasp.at/ ). For the making structure file use VESTA tool (https://jp-minerals.org/vesta/en/download.html) and export it into the file name 'structure.vasp'.
+  # Please always export the file into cartesian coordinates.
   
 Contact me if somebody face problem in understanding the input files.
 
@@ -77,32 +81,28 @@ email ID:: msharma1@ph.iitr.ac.in
 If you find this code helpful in your research work please cite this code. New collaborations will be welcomed.
 
 # 4. Output section
-Along with all data files, there will be two directories (_data, _spin) will be generated. 
+Along with all data files, there are two directories (_data, _spin) which will be generated during execution. 
 
 # 4.1 About _spin directory
 It contains the final spin configuration files for each temperature. File is named as "sp***K.dat", K is referred as Kelvin.
 
-To visualize these files please installed the xcrysden (http://www.xcrysden.org/Download.html). Please follw the given step to visualize the spin configuration as well as lattice distribution.
+To visualize these files, please install xcrysden software (http://www.xcrysden.org/Download.html). Please follow the given step to visualize the spin configuration as well as lattice distribution.
 
 Step 1.
-open xcrysden software
+open xcrysden software by typing **./xcrysden** in terminal.
 
 Step 2.
 go to the file --> Open structure --> Open XSF (Xcrysdgen structure file)
 Step 3. Select the desired sp***K.dat file
 
 Step 4.
-At this point, you can see the lattice arrangement
-press 'f' button then the 'Shift+f' button combination.
-After pressing the 'Shift + f' button combination you will have another dialogue box, in that there is an option to change the 'Length factor' .
-change it by 4 or 5 or any no. you want.
-You will have the spin configuration for the selected temperature.
+At this point, you can see the lattice arrangement. Now, press 'f' button then the 'Shift + f' button combination. After pressing the 'Shift + f' you will have another dialogue box, in that there is an option to change the 'Length factor'. Change it by 4 or 5 or any number you want. You will have the spin configuration for the selected temperature.
 
 # 4.2 About _data directory
 
 In this directory data files related to energy, magnetization, nbd (neighborhood), and initial spin configuration are present.
 
-For the basic plot where information of specific heat, susceptibility, magnetization, energy/site is present. Just type 'gnuplot graph.sh' in the terminal, the output file named as fig1.png will be generated.
+For the basic plot where information of specific heat, susceptibility, magnetization, energy/site, just type 'gnuplot graph.sh' in the terminal, the output file named as fig1.png will be generated.
 
 please always check the nbd.dat file to make sure that code is taking the right nbd's for the selected lattice point. To do this open the initial_spin_conf.dat file into the Xcrysden and this 'nbd.dat' file in gedit/Notepad editor and check and compare the nbd information present in the nbd.dat file. 
 (by clicking the Atom info. in Xcrysden you will have the lattice point ID on the screen, by this you can check the ID's of nbd and compare it from the 'nbd.dat' file)
