@@ -2,10 +2,10 @@
 Based on the classical lattice model (Heisenberg, XY, XYZ, etc.), code Ether has been developed to study the thermodynamics of ANY CRYSTAL SYSTEM by performing the basic Monte Carlo methods. Metropolis algorithm has been used to equate all the observables.
 
 Code Ether solves the given Hamiltonian
-H = JSiSj - g*mb*MSi
+H = J*a*SiSj - g*mb*MSi	-----(1)
 
 or,
-H = Jxx SxiSxj + Jyy SyiSyj + Jzz SziSzj - g*mb*(MxSx + MySy + MzSz)
+H = Jxx*a1 (SxiSxj) + Jyy*a2 (SyiSyj) + Jzz*a3 (SziSzj) - g*mb*(MxSx + MySy + MzSz)	-----(2)
 
 where, 
 J is defined as exchang energy (unit meV) splited into Jxx, Jyy, Jzz components.
@@ -28,45 +28,33 @@ executable 'ether' will be created for running this program.
 
 In input file there are basic informations which you need to provide before running the program which are given below,
 
-20000		  ---> MC steps
-
-10000		  ---> equilibration steps
-
+I		---> Ising/Heisenberg (I/M) model
+20000		---> MC steps
+10000		---> equilibration steps
 100 2 2		---> Temp(K) ==> final, initial, interval
-
-3		      ---> no. of species present in structure.vasp file 
-
-0.5 0 0   ---> Magnetic moment for species1,species2, species3.. and so on..
-
-1		      ---> no. of species to include
-
-Ce		    ---> species symbols (repeat in same line for many species)
-
-4 4 4		  ---> Supercell size
-
-.F.		    ---> for staggered  magn. (optional)
-
-c c c		  ---> boundary CLOSED/OPEN (c/o)
-
-2		      ---> for sampling (used to calculate the statistical error); NOTE :: you can increase it for correct result
-
-50		    ---> least phi angle (used to achieve the equilibrium spin state, phi angle will vary within this range) 
-
-50		    ---> MC step interval to calculate observables
-
+3		---> no. of species present in the structure.vasp file 
+0.5 0 0		---> Magnetic moment for species1, species2, species3.. and so on..
+1		---> no. of species to include
+Ce		---> species symbols (repeat in same line for many species)
+4 4 4		---> Supercell size
+.F.		---> for staggered  magn. (optional)
+c c c		---> boundary CLOSED/OPEN (c/o)
+2		---> for sampling (used to calculate the statistical error); NOTE :: you can increase it for correct result
+50		---> least phi angle (used to achieve the equilibrium spin state, phi angle will vary within this range) 
+50		---> MC step interval to calculate observables
 .F. 5 5 0	---> Magnetic field (logic, Mx, My, Mz)
+2		---> g_factor 
 
-2		      ---> g_factor 
+# 2. About 'j_exchange' file
 
-# 2. About 'j_exchange_input' file
+4		---> no. of distinct nbd(N) 
+Ce ce 1.0 1 1 1 4.16970	(for N=1)	! ith ion, jth ion, j_value (Jxx, Jyy, Jzz), anisotropy(a1, a2, a3), bond length.
+ce Ce 1.0 1 1 1 7.22213	(for N=2)
+Ce Ce 1.0 1 1 1 4.08267	(for N=3)
+ce ce 1.0 1 1 1 7.57543	(for N=4)
 
-1			          ---> no. of distinct nbd
-
-4.16970         ---> bond length for ith distinct nbd (d_nbd1, d_nbd2 ...)
-
-1			          ---> no. of lines present below
-
-1 1 1 1.0 1 1 1	---> (ith nbd, j-th species, k-th species, J_(k, j), Jxx, Jyy, Jzz); note:: provide Jxx/Jyy/Jzz wth in rage of 0-1 which will be considered as 0% - 100%.
+#note:	small/large caps are automatically considered into the program.
+	for anisotropy see (a1, a2, a3) in equation no. 2
 
 # 3. About structure.vasp file
 
@@ -106,5 +94,3 @@ For the basic plot where information of specific heat, susceptibility, magnetiza
 
 please always check the nbd.dat file to make sure that code is taking the right nbd's for the selected lattice point. To do this open the initial_spin_conf.dat file into the Xcrysden and this 'nbd.dat' file in gedit/Notepad editor and check and compare the nbd information present in the nbd.dat file. 
 (by clicking the Atom info. in Xcrysden you will have the lattice point ID on the screen, by this you can check the ID's of nbd and compare it from the 'nbd.dat' file)
-
-# userguide will be soon uploaded here.
