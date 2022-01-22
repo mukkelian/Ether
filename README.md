@@ -2,19 +2,27 @@
 Based on the classical lattice model (Heisenberg, XY, XYZ, etc.), code Ether has been developed to study the thermodynamics of ANY CRYSTAL SYSTEM by performing the basic Monte Carlo methods. Metropolis algorithm has been used to equate all the observables.
 
 Code Ether solves the given Hamiltonian
-H = J*a*SiSj - g*mb*MSi	-----(1)
+H = J.SiSj - g*mb*MSi	-----(1)
 
 or,
-H = Jxx*a1 (SxiSxj) + Jyy*a2 (SyiSyj) + Jzz*a3 (SziSzj) - g*mb*(MxSx + MySy + MzSz)	-----(2)
+H = Jxx.(SxiSxj) + Jyy.(SyiSyj) + Jzz.(SziSzj) - g.mb.(MxSx + MySy + MzSz)	-----(2)
 
 where, 
+
+a is anisotrpy factor, a--> (a1, a2, a3) :: (on Jxx, on Jyy, on Jzz)
+
 J is defined as exchang energy (unit meV) splited into Jxx, Jyy, Jzz components.
+Jxx = a1.J_value, Jyy = a2.J_value, Jzz = a3.J_value. **J_value** is a input variable, can be supplied in '**j_exchange**' input file
+
 S is spin vector and has Sx, Sy, Sz components.
+
 M is magnetic field vector (unit Tesla) and has Mx, My, Mz components as well.
+
 g is g-factor
+
 mb is Bhor magneton (ev/T)
 
-**Note::** Always provide J in unit of meV (milli electron volts). For example for 0.001 eV provide this value in Ether code as 1, code will automatically convert it into the meV.
+**Note::** Always supplied 'J_value' values in unit of meV (milli electron volts). For example for 0.001 eV provide this value in Ether code as 1, code will automatically convert it into the meV. For classical Heisenberg hamiltonian, kindly put all a1, a2, a3 equal to 1 which represent Jxx=Jyy=Jzz.
 
 Compile this **ether.f90** by any FORTRAN compiler, for our case we have choosen **gfortran**
 
@@ -64,7 +72,7 @@ c c c		---> boundary CLOSED/OPEN (c/o)
 
 4		---> no. of distinct nbd(N) 
 
-Ce ce 1.0 1 1 1 4.16970	(for N=1)	! ith ion, jth ion, j_value (Jxx, Jyy, Jzz), anisotropy(a1, a2, a3), bond length.
+Ce ce 1.0 1 1 1 4.16970	(for N=1)	! ith ion, jth ion, J_value, anisotropy(a1, a2, a3), bond length.
 
 ce Ce 1.0 1 1 1 7.22213	(for N=2)
 
@@ -72,7 +80,7 @@ Ce Ce 1.0 1 1 1 4.08267	(for N=3)
 
 ce ce 1.0 1 1 1 7.57543	(for N=4)
 
-#note:	small/large caps are automatically considered into the program. For anisotropy see (a1, a2, a3) in equation no. 2
+#note:	small/large caps are automatically considered into the program. For anisotropy see (a1, a2, a3) in equation no.2. a can be set from 0 <--> 1 and will considered as like 0 <--> 100 % 
 
 # 3. About structure.vasp file
 
