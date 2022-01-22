@@ -1,10 +1,11 @@
-20000		! MC steps
-10000		! equilibration steps
-100 2 2		! Temp(K) ==> final, initial, interval
+I		! (I/H) Ising/Heisenberg model
+2000		! MC steps
+1000		! equilibration steps
+2 2 2		! Temp(K) ==> final, initial, interval
 3		! no. of species
 0.5 0 0		! Moment
 1		! no. of species to include
-Ce		! inclded species symbols
+Ce		! included species symbols
 4 4 4		! cell size
 .F.		! for staggered  magn.
 c c c		! boundary CLOSED/OPEN (c/o)
