@@ -23,19 +23,19 @@
 ! along with this program; if not, write to the Free Software
 ! Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-        program ether	!UPDATED Aug 22 2021 @ 02:54 PM
+        program ether	!UPDATED Jan 21 2022 @ 10:40 PM
         implicit none
         integer, parameter :: dp = selected_real_kind(15,300)
         real(dp), allocatable :: a(:,:), ar(:,:)				!Atom
         integer, allocatable ::  nn(:,:,:,:), ionn(:)
-        real(dp) :: ion_ref(5)							!trial ion
+        real(dp) :: ion_ref(5)						!trial ion
         real(dp), allocatable :: x(:), y(:), z(:)				!x,y,z co-ordinates of ions
         real(dp), allocatable :: s(:), sp(:,:), nbd_dis(:)
-        real(dp), allocatable :: x_r(:), y_r(:), z_r(:)				!x,y,z co-ordinates of refrence ions
+        real(dp), allocatable :: x_r(:), y_r(:), z_r(:)			!x,y,z co-ordinates of refrence ions
         real(dp), allocatable :: j_exc(:,:,:,:)
         integer, allocatable :: probe(:),t_probe(:), sc(:)			!to probe the special ions which will be used for only calculations
         real(dp), allocatable :: ion(:, :, :, :, :), ion_dummy(:, :, :, :, :)
-	integer :: n_atoms, n_speci_incl,n_spc_excl, t_nbd_count, t_count
+	integer :: n_atoms, n_speci_incl, n_spc_excl, t_nbd_count, t_count
 	integer :: atom_count, o_c, nbd_count, sc_i, s_count, total_ions
 	real(dp) :: wt, abc(3,3), Si_dot_Sj(3), phi, s_trial_present(3)
 	integer :: i, j, k, bulk_c, bond_c, sp_dim, n_species, no_of_nbd
@@ -47,14 +47,18 @@
 	integer :: m, n, l, l_ion, sample
 	real(dp) :: temp, beta, eta, sample_1, volume, h(3), g_factor
         real(dp) :: mag(3), rn, d_angle,  convert_to_rad, d_phi, la, lb, lc
-	real(dp) :: kb = 8.6173303e-5_dp, pi = 3.141592653589793238462643383279_dp, mb
-	character :: bc_x, bc_y, bc_z
+	real(dp) :: kb = 8.6173303e-5_dp, pi = 4.0*atan(1.), mb
+	character :: model
         integer :: nscan, num, iscan, to_cal
 	character*30 :: title, coordinate, filename
 	character(len=2), allocatable :: species(:), speci_symb(:)
 	logical :: opt_stg, field_b
 	integer :: line
+	
 	real(dp) :: j_value(3), j_value_, anisotropy(3)
+	character (len=3) :: atom1, atom2, ab, bc_x, bc_y, bc_z, out
+	character (len=2), dimension (2) :: atom
+	integer :: j_ID(2)
 
 	character(len=20), dimension(50) :: m_head, e_head
         character*7 :: cc(7)
@@ -92,8 +96,8 @@
 
 	call system ('rm -rf _spin _data *.dat')
 	call system ('mkdir _spin _data')
-
-	m_head(1) = '# 1 Temp.'
+        
+	m_head(1) ='# 1 Temp.'
 	m_head(2) =' 2 avg_mag'; m_head(3)='3 Chi'
 	m_head(4) ='4 err_mag'; m_head(5) ='5 err_chi.'
 	m_head(6) ='6 U_mag.'; m_head(7) ='7 err_U'
@@ -104,17 +108,9 @@
 	e_head(6) ='6 U_eng'; e_head(7) ='7 err_U'
 
 	cc(1) = ' # Atom '
-	cc(2) = '    x';cc(3) = '  y';cc(4) = '  z'
-	cc(5) = '  S_x';cc(6) = '  S_y';cc(7) = '  S_z'
-		
+	cc(2) = '    x'; cc(3) = '  y'; cc(4) = '  z'
+	cc(5) = '  S_x'; cc(6) = '  S_y'; cc(7) = '  S_z'
 	
-	print*, "________________ Mukelian ________________"
-        print*, ""
-        print '(" PROGRAM STARTED on date ",i2,"-",i2,"-",i4)', values(3),values(2), values(1)
-        print "(' at time ',i2,' hrs. ',i2,' min. ',i2,' sec. ')", values(5:7)
-	print*,""
-	print*,"Based on classical Heisenberg model; H = JSi*Sj"
-	print*,""
 	open(10001, file='structure.vasp', status='unknown')
 	open(10003, file='initial_spin_conf.dat', status='unknown')	! initial structure file with intial spin
 	open(unit=10004, file='magnetization.dat', status='replace'&
@@ -123,60 +119,57 @@
         ,action='write')
 	open(10006, file='nbd.dat', status='unknown')
         open(unit=0, file='input', status='old', action='read')
-
+        
 	write(10004,10300) (m_head(i), i = 1, 7) 
 	write(10005, 10300) (e_head(i), i = 1, 7)
 	
 	!______________ READING INPUT  _________________!
+	read(0,*) model						! Ising/Heisenberg model
 	read(0, *) n_p							! no. of pass
-        read(0, *) n_eq							! equilibration steps
+        read(0, *) n_eq						! equilibration steps
         read(0, *) h_t, l_t, t_int					! higher temp, lower temp., temp. interval
-	read(0, *) n_species						! no. of species
+	read(0, *) n_species					! no. of species
 	!# SPIN
 	allocate(s(n_species))
-	read(0, *) (s(i), i = 1, n_species)				! spin
-	read(0, *) n_speci_incl						! no. of species to include
+	read(0, *) (s(i), i = 1, n_species)			! spin
+	read(0, *) n_speci_incl					! no. of species to include
 	allocate(speci_symb(n_speci_incl))
-	read(0, *) (speci_symb(i), i = 1, n_speci_incl) 		! species lable to include in calculation
+	read(0, *) (speci_symb(i), i = 1, n_speci_incl) 	! species lable to include in calculation
 	read(0, *) sc_a, sc_b, sc_c					! supercell dimension
 	read(0, *) opt_stg						! for staggered
 	stg = 1								! default staggered value is 1
-	read(0, *) bc_x, bc_y, bc_z					! boundary condition along x, y, z
+	read(0, *) bc_x, bc_y, bc_z				! boundary condition along x, y, z
 	read(0, *) sample 						! sample per unit MC calculations)
 	read(0, *) d_angle 						! least angle window, help in convergence
 	read(0, *) to_cal 						! at this step interval all observables will be calculated
 	read(0, *) field_b, h(1:3)					! Magnetic field logic, Mx, My, Mz (in T)
 	read(0, *) g_factor						! g-factor
-	close(0)							! closing of input file			@input
+	close(0)								! closing of input file			@input
 
-	!# EXCHANGE ENERGY
-	open(10002, file='j_exchange_input', status='old', action='read')
-	read(10002, *) no_of_nbd					! no. of diff. bond length w.r.t. any central ion
-	allocate(nbd_dis(no_of_nbd))
-	read(10002, *) nbd_dis(1:no_of_nbd)				! values of diff. bond lengths e.g., d1, d2, d3...
-        allocate(j_exc(no_of_nbd, n_species, n_species,1:3))    	!j(:,:,xx-yy-zz)
-	read(10002, *) line
-	j_exc = 0.0_dp
-	do ll = 1, line
-		read(10002, *) i, j, k, j_value_, anisotropy(1:3)	! i = ith nbd; k, j is species comb.; corresponding j_value; it's anisotropy
-			j_value = j_value_
-			j_exc(i, j, k, 1:3) = j_value*anisotropy
-			j_exc(i, k, j, 1:3) = j_exc(i, j, k, 1:3)	! making  sure for J(nbd1, nbd2), J(nbd2, nbd1) combination.
-	end do
+	!# PROJECTING STRING VARIBLES INTO LOWER CASE
+	call lu(model, out, 'L' )
+	model = out
+	call lu(bc_x, out, 'L' )
+	bc_x = out
+	call lu(bc_y, out, 'L' )
+	bc_y = out
+	call lu(bc_z, out, 'L' )
+	bc_z = out
 
-        	print*, "ALL values for 'J' should be provided in"
-        	print*, "the terms of milli orders (meV), "
-        	print*, "eg., for 1meV put only 1 not 0.001"
-        	print*, ''
-        	print*, '****************************************'
-        	print*, "KINDLY CHECK THE 'j_exchange_input' FILE"
-        	print*, '(IGNOR, if it is already DONE!)'
-        	print*, '****************************************'
-        	print*, ''
-
-	j_exc = j_exc*(0.001_dp)/kb					! converting 'j_exc' into temp.
-
-	close(10002) !closing of j_exchange file
+	print*, "________________ Mukelian ________________"
+        print*, ""
+        print '(" PROGRAM STARTED on date ",i2,"-",i2,"-",i4)', values(3),values(2), values(1)
+        print "(' at time ',i2,' hrs. ',i2,' min. ',i2,' sec. ')", values(5:7)
+	print*,""
+	if(model.eq.'i') then
+		print*,"Based on Ising model; H = JSi*Sj"
+	elseif(model.eq.'h') then
+		print*,"Based on classical Heisenberg model; H = JSi*Sj"
+	else
+	print*, "WARNING: unable to get right model ID"
+	print*, "setting model to default 'Heisenberg model (ID = H)'"
+	end if
+	print*,""
 
         mb = 5.7883818060e-5_dp/kb					! converting bhor magneton in K/T
 
@@ -194,8 +187,8 @@
 	la = sqrt(dot_product(abc(1, 1:3), abc(1, 1:3)))	! lattice parameter a
 	lb = sqrt(dot_product(abc(2, 1:3), abc(2, 1:3)))	! lattice parameter b
 	lc = sqrt(dot_product(abc(3, 1:3), abc(3, 1:3)))	! lattice parameter c
-	allocate(ionn(0:n_species), species(n_species))
-	read(10001,*) (species(i), i =1,n_species)
+	allocate(ionn(0:n_species), species(0:n_species))
+	read(10001,*) (species(i), i =1,n_species); species(0) = 'X'
 	ionn = 0
 	read(10001,*) (ionn(i), i =1 ,n_species)
 	n_atoms = sum(ionn)
@@ -216,6 +209,57 @@
 	close(10001)
 	print*, 'Reading structure is completed!'
 	!#########################################################################
+	
+	!# EXCHANGE ENERGY
+	!#########################################################################
+	
+	open(10002, file='j_exchange', status='old', action='read')
+	read(10002, *) no_of_nbd							! no. of diff. bond length w.r.t. any central ion
+	allocate(nbd_dis(no_of_nbd))
+        allocate(j_exc(no_of_nbd, n_species, n_species,1:3))    	! j(:,:,xx-yy-zz)
+	j_exc = 0.0_dp
+	j_ID = 0
+	do i = 1, no_of_nbd
+		read(10002, *) atom1, atom2, j_value_, anisotropy(1:3), nbd_dis(i)
+
+		ab = atom1
+		call lu(ab(1:1), out, 'U' )
+		atom1(1:1) = out
+		call lu(ab(2:2), out, 'L' )
+		atom1(2:2) = out
+		
+		ab = atom2	
+		call lu(ab(1:1), out, 'U' )
+		atom2(1:1) = out
+		call lu(ab(2:2), out, 'L' )
+		atom2(2:2) = out
+		atom = (/ atom1, atom2 /)
+
+		do j = 1, 2
+			do k = 1, n_species
+				if (atom(j).eq.species(k)) then
+						j_ID(j) = k
+				end if
+			end do
+		end do
+		j_value = j_value_
+		j_exc(i, j_ID(1), j_ID(2), 1:3) = j_value*anisotropy
+		j_exc(i, j_ID(2), j_ID(1), 1:3) = j_exc(i, j_ID(1), j_ID(2), 1:3)
+	end do
+
+        	print*, "ALL values for 'J' should be provided in"
+        	print*, "the terms of milli orders (meV), "
+        	print*, "eg., for 1meV put only 1 not 0.001"
+        	print*, ''
+        	print*, '****************************************'
+        	print*, "KINDLY CHECK THE 'j_exchange_input' FILE"
+        	print*, '(IGNOR, if it is already DONE!)'
+        	print*, '****************************************'
+        	print*, ''
+
+	j_exc = j_exc*(0.001_dp)/kb						! converting 'j_exc' into temp.
+
+	close(10002) 									!closing of j_exchange file
 
 	!SAVING DETAILS OF ATOMS  ################################################
 	!#########################################################################
@@ -225,17 +269,21 @@
 					do i = int(sum(ionn(0:k-1)))+1, int(sum(ionn(0:k)))
 
 						a(i,0) = i								! atom no.
-						call random_uniform(-1.0_dp, +1.0_dp, rn)
-						a(i, 3) = rn								! S(z)
-						call random_uniform(0.0_dp, 2.0_dp*pi, rn)
-        					a(i, 1) = sqrt(1.0_dp-(a(i, 3)**2.0_dp))*cos(rn)	! S(x)
-						a(i, 2) = sqrt(1.0_dp-(a(i, 3)**2.0_dp))*sin(rn)	! S(y)
-						a(i, 4) = k								! tag for element
-						a(i, 5) = rn								! phi value
-						a(i, 6) = x(i)							! x
-						a(i, 7) = y(i)							! y
-						a(i, 8) = z(i)							! z
-						a(i, 1:3) = (a(i, 1:3)/&						! normalization
+						if(model.eq.'i') then
+							a(i, 3) = (-1)**(i)
+						else
+							call random_uniform(-1.0_dp, +1.0_dp, rn)
+							a(i, 3) = rn								! S(z)
+							call random_uniform(0.0_dp, 2.0_dp*pi, rn)
+        						a(i, 1) = sqrt(1.0_dp-(a(i, 3)**2.0_dp))*cos(rn)	! S(x)
+							a(i, 2) = sqrt(1.0_dp-(a(i, 3)**2.0_dp))*sin(rn)		! S(y)
+							a(i, 5) = rn								! phi value
+						endif
+							a(i, 4) = k								! tag for element
+							a(i, 6) = x(i)								! x
+							a(i, 7) = y(i)								! y
+							a(i, 8) = z(i)								! z
+							a(i, 1:3) = (a(i, 1:3)/&						! normalization
 						sqrt(dot_product(a(i, 1:3),a(i, 1:3))))*s(k)      
 					enddo
 				enddo atomic_details
@@ -257,6 +305,7 @@
 	end if
 	print*,'~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
 	print*, ''
+	
 	!#########################################################################
 	!INCLUSION OF SPECIES FOR CALC.  #########################################
 	!#########################################################################
@@ -503,16 +552,21 @@
 						do i = 2, sc_a +1
 							do l = 1, atom_count
 								ion_ref(4) = ion(i, j, k, l, 4)						! storing species no.
-								ion_ref(5) = ion(i, j, k, l, 5)						! old phi
-								call random_uniform(-1.0_dp, +1.0_dp, rn)
-								ion_ref(3) = rn							! cos(theta) : S(z)
-								call random_uniform(-1.0_dp, +1.0_dp, rn)
-								phi = ion_ref(5) + (d_phi*rn)						!older_phi+ delta*rn
-        							ion_ref(1) = sqrt(1.0_dp-(ion_ref(3)**2.0_dp))*cos(phi)	! S(x)
-								ion_ref(2) = sqrt(1.0_dp-(ion_ref(3)**2.0_dp))*sin(phi)	! S(y)
-
+								
+								if(model.eq.'i') then
+									ion_ref(3) = -ion(i, j, k, l, 3)
+								else
+									ion_ref(5) = ion(i, j, k, l, 5)						! old phi
+									call random_uniform(-1.0_dp, +1.0_dp, rn)
+									ion_ref(3) = rn							! cos(theta) : S(z)
+									call random_uniform(-1.0_dp, +1.0_dp, rn)
+									phi = ion_ref(5) + (d_phi*rn)						!older_phi+ delta*rn
+        								ion_ref(1) = sqrt(1.0_dp-(ion_ref(3)**2.0_dp))*cos(phi)	! S(x)
+									ion_ref(2) = sqrt(1.0_dp-(ion_ref(3)**2.0_dp))*sin(phi)	! S(y)
+									ion_ref (5) = phi							! storing phi value
+								end if
+								
 								ion_ref(1:3) = (ion_ref(1:3)/sqrt(dot_product(ion_ref(1:3),ion_ref(1:3))))*s(int(ion_ref(4)))
-								ion_ref (5) = phi							! storing phi value
 								eng_tp = 0.0_dp								! energy trial present
 								
 								s_trial_present = ion_ref(1:3) - ion(i, j, k, l, 1:3)			! S_trial - S_present
@@ -797,11 +851,29 @@
         subroutine random_uniform(a,b,rn)
            implicit none
            integer, parameter :: dp = selected_real_kind(15,300)
-           real(dp),intent(in) :: a,b
+           real(dp),intent(in) :: a, b
            real(dp),intent(out) :: rn
            real(dp) :: u
            call random_number(u)
            rn = (b-a)*u + a
         end subroutine random_uniform
+
+	subroutine lu(txtR, txtL, case_LU)
+		character (len=*), intent(in) :: txtR
+		character (len(txtR)), intent(out) :: txtL
+        	character(len=53):: s
+		character :: case_LU
+		integer :: i, j
+        	s = ' abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+		txtL = txtR
+        	do i = 1, len(txtR)
+        	        do j = 1, len(s)
+        	                if( txtR(i:i).eq.s(j:j) )then
+        	                        if( (j.le.27) .and. (case_LU.eq.'U') ) txtL(i:i) = s(j+27:j+27) ! into upper case
+        	                        if( (j.gt.27) .and. (case_LU.eq.'L') ) txtL(i:i) = s(j-27:j-27) ! into lower case
+        	                end if
+        	        end do
+        	end do
+        end subroutine lu
         
-        end program ether
+	end program ether
