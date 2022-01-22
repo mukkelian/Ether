@@ -81,10 +81,10 @@ ce ce 1.0 1 1 1 7.57543	(for N=4)
   
 Contact me if somebody face problem in understanding the input files.
 
-#Mukesh Kumar Sharma
-#email ID:: msharma1@ph.iitr.ac.in
+Mukesh Kumar Sharma
+email ID:: msharma1@ph.iitr.ac.in
 
-#If you find this code helpful in your research work kindly cite this code. New collaborations will be welcomed.
+If you find this code helpful in your research work kindly cite this code. New collaborations will be welcomed.
 
 # 4. Output section
 Along with all data files, there are two directories (_data, _spin) which will be generated during execution. 
