@@ -18,7 +18,7 @@ mb is Bhor magneton (ev/T)
 
 Compile this **ether.f90** by any FORTRAN compiler, for our case we have choosen **gfortran**
 
-For the compilatin, type the command same like given below into the terminal
+For the compilation, type the command same like given below into the terminal
 
  gfortran ether.f90 -o ether
 
@@ -29,32 +29,50 @@ executable 'ether' will be created for running this program.
 In input file there are basic informations which you need to provide before running the program which are given below,
 
 I		---> Ising/Heisenberg (I/M) model
+
 20000		---> MC steps
+
 10000		---> equilibration steps
+
 100 2 2		---> Temp(K) ==> final, initial, interval
+
 3		---> no. of species present in the structure.vasp file 
+
 0.5 0 0		---> Magnetic moment for species1, species2, species3.. and so on..
+
 1		---> no. of species to include
+
 Ce		---> species symbols (repeat in same line for many species)
+
 4 4 4		---> Supercell size
+
 .F.		---> for staggered  magn. (optional)
+
 c c c		---> boundary CLOSED/OPEN (c/o)
+
 2		---> for sampling (used to calculate the statistical error); NOTE :: you can increase it for correct result
+
 50		---> least phi angle (used to achieve the equilibrium spin state, phi angle will vary within this range) 
+
 50		---> MC step interval to calculate observables
+
 .F. 5 5 0	---> Magnetic field (logic, Mx, My, Mz)
+
 2		---> g_factor 
 
 # 2. About 'j_exchange' file
 
 4		---> no. of distinct nbd(N) 
+
 Ce ce 1.0 1 1 1 4.16970	(for N=1)	! ith ion, jth ion, j_value (Jxx, Jyy, Jzz), anisotropy(a1, a2, a3), bond length.
+
 ce Ce 1.0 1 1 1 7.22213	(for N=2)
+
 Ce Ce 1.0 1 1 1 4.08267	(for N=3)
+
 ce ce 1.0 1 1 1 7.57543	(for N=4)
 
-#note:	small/large caps are automatically considered into the program.
-	for anisotropy see (a1, a2, a3) in equation no. 2
+#note:	small/large caps are automatically considered into the program. For anisotropy see (a1, a2, a3) in equation no. 2
 
 # 3. About structure.vasp file
 
@@ -63,10 +81,10 @@ ce ce 1.0 1 1 1 7.57543	(for N=4)
   
 Contact me if somebody face problem in understanding the input files.
 
-Mukesh Kumar Sharma
-email ID:: msharma1@ph.iitr.ac.in
+#Mukesh Kumar Sharma
+#email ID:: msharma1@ph.iitr.ac.in
 
-If you find this code helpful in your research work please cite this code. New collaborations will be welcomed.
+#If you find this code helpful in your research work kindly cite this code. New collaborations will be welcomed.
 
 # 4. Output section
 Along with all data files, there are two directories (_data, _spin) which will be generated during execution. 
