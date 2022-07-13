@@ -2,11 +2,12 @@
 !				#	  ETHER			#
 !				#	~ by Mukelian		#
 !				#################################
-																
-!    Code Ether, based on Monte Carlo technique, can be used to study the 
-!    thermodynamics of magnetic system for any crystal system.
-!    Copyright (C) 2021 - 2022  Mukesh Kumar Sharma, Department of Physics,
-!    Indian Institute of Technology Roorkee, Uttrakhand, India, PIN code 247667
+
+
+! Code Ether, based on Monte Carlo technique, can be used to study the 
+! thermodynamics of magnetic system for any crystal system.
+! Copyright (C) 2021-2022  Mukesh Kumar Sharma, Department of Physics,
+! Indian Institute of Technology Roorkee, Uttrakhand, India, PIN code 247667
 
 
 ! This program is free software; you can redistribute it and/or
@@ -23,7 +24,7 @@
 ! along with this program; if not, write to the Free Software
 ! Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-        program ether	!UPDATED Jan 21 2022 @ 10:40 PM
+        program ether	!UPDATED Jan 27 2022 @ 12:23 PM
         implicit none
         integer, parameter :: dp = selected_real_kind(15,300)
         real(dp), allocatable :: a(:,:), ar(:,:)				!Atom
@@ -50,7 +51,7 @@
 	real(dp) :: kb = 8.6173303e-5_dp, pi = 4.0*atan(1.), mb
 	character :: model
         integer :: nscan, num, iscan, to_cal
-	character*30 :: title, coordinate, filename
+	character*30 :: title, coordinate, filename, lbl
 	character(len=2), allocatable :: species(:), speci_symb(:)
 	logical :: opt_stg, field_b
 	integer :: line
@@ -61,10 +62,10 @@
 	integer :: j_ID(2)
 
 	character(len=20), dimension(50) :: m_head, e_head
-        character*7 :: cc(7)
+	character*7 :: cc(7)
         
 	real(dp) :: s_mag_avg, s_mag2_avg, err_mag_avg, err_mag2_avg
-        real(dp) :: e_mag_avg,e_mag2_avg, mag_eng, trial_mag_eng
+	real(dp) :: e_mag_avg,e_mag2_avg, mag_eng, trial_mag_eng
 	real(dp) :: s_eng_avg, e_eng_avg, s_eng2_avg, eng
 	real(dp) :: e_eng2_avg, err_eng_avg, err_eng2_avg
 	real(dp) :: cv, s_cv, err_cv, e_cv
@@ -74,6 +75,10 @@
 	real(dp) :: b_eng4_avg, mag4_avg
 	real(dp) :: eng4_avg, eng_avg, eng2_avg, eng_tp
 	real(dp) :: mag2_avg, mag_avg, mag_value
+
+	real(dp) :: sia_eng, trial_sia_eng, para_value, sia(1:3)
+        real(dp) :: sia_(1:3), si_dot_si(1:3)
+	logical :: field_sia, para
 	
         real(dp) :: start, finish
         character(8)  :: date
@@ -125,9 +130,9 @@
 	
 	!______________ READING INPUT  _________________!
 	read(0,*) model						! Ising/Heisenberg model
-	read(0, *) n_p							! no. of pass
+	read(0, *) n_p						! no. of pass
         read(0, *) n_eq						! equilibration steps
-        read(0, *) h_t, l_t, t_int					! higher temp, lower temp., temp. interval
+        read(0, *) h_t, l_t, t_int				! higher temp, lower temp., temp. interval
 	read(0, *) n_species					! no. of species
 	!# SPIN
 	allocate(s(n_species))
@@ -135,16 +140,24 @@
 	read(0, *) n_speci_incl					! no. of species to include
 	allocate(speci_symb(n_speci_incl))
 	read(0, *) (speci_symb(i), i = 1, n_speci_incl) 	! species lable to include in calculation
-	read(0, *) sc_a, sc_b, sc_c					! supercell dimension
-	read(0, *) opt_stg						! for staggered
-	stg = 1								! default staggered value is 1
+	read(0, *) sc_a, sc_b, sc_c				! supercell dimension
+	read(0, *) opt_stg					! for staggered
+	stg = 1							! default staggered value is 1
 	read(0, *) bc_x, bc_y, bc_z				! boundary condition along x, y, z
-	read(0, *) sample 						! sample per unit MC calculations)
-	read(0, *) d_angle 						! least angle window, help in convergence
-	read(0, *) to_cal 						! at this step interval all observables will be calculated
-	read(0, *) field_b, h(1:3)					! Magnetic field logic, Mx, My, Mz (in T)
-	read(0, *) g_factor						! g-factor
-	close(0)								! closing of input file			@input
+	read(0, *) sample 					! sample per unit MC calculations)
+	read(0, *) d_angle 					! least angle window, help in convergence
+	read(0, *) to_cal 					! at this step interval all observables will be calculated
+	read(0, *) field_b, h(1:3)				! Magnetic field logic, Mx, My, Mz (in T)
+	read(0, *) g_factor					! g-factor
+	read(0, *) field_sia, sia(1:3)				! Logic(.T./.F.), Single Ion Anisotropy (SIA) vector in meV
+	read(0, *) para, para_value				! Logic, parameter value --> calculation in terms of parameter
+
+	if((para_value.eq.0).and.(para.eqv..TRUE.)) then
+	print*, 'ERROR:: parameter value is set ON and value cannot be zero. Have a look into the input file'
+	STOP
+	end if
+
+	close(0)						! closing of input file			@input
 
 	!# PROJECTING STRING VARIBLES INTO LOWER CASE
 	call lu(model, out, 'L' )
@@ -170,8 +183,6 @@
 	print*, "setting model to default 'Heisenberg model (ID = H)'"
 	end if
 	print*,""
-
-        mb = 5.7883818060e-5_dp/kb					! converting bhor magneton in K/T
 
 	!LEAST ANGLE FOR VARYING THE PHI ANGLE FOR CONVERGENCE
 	convert_to_rad = pi/180.0_dp
@@ -214,7 +225,7 @@
 	!#########################################################################
 	
 	open(10002, file='j_exchange', status='old', action='read')
-	read(10002, *) no_of_nbd							! no. of diff. bond length w.r.t. any central ion
+	read(10002, *) no_of_nbd					! no. of diff. bond length w.r.t. any central ion
 	allocate(nbd_dis(no_of_nbd))
         allocate(j_exc(no_of_nbd, n_species, n_species,1:3))    	! j(:,:,xx-yy-zz)
 	j_exc = 0.0_dp
@@ -257,7 +268,16 @@
         	print*, '****************************************'
         	print*, ''
 
-	j_exc = j_exc*(0.001_dp)/kb						! converting 'j_exc' into temp.
+	!PARAMETER  ##############################################################
+	!#########################################################################
+	if(para)then
+		j_exc = j_exc/para_value; sia = sia/para_value; kb = 1.0_dp
+		mb = 1; g_factor = 1; h = h/para_value
+	else
+		j_exc = j_exc*(0.001_dp)/kb; sia = sia*(0.001_dp)/kb			! converting 'j_exc', 'sia' into the temp.(K)
+		mb = 5.7883818060e-5_dp/kb						! converting bhor magneton in K/T
+	end if
+	!#########################################################################
 
 	close(10002) 									!closing of j_exchange file
 
@@ -298,14 +318,32 @@
 	print*,'==> spins are set in random configuration'
         print'(" ==> +/-",f6.2," deg. angle has been chosen for the convergence")', d_angle
 	if(opt_stg)then
-		print*,' ==> Staggered magnetization is SELECTED!'
+		print*,'==> Staggered magnetization is SELECTED!'
 	end if
 	if(field_b)then
-		print'(" ==> Magnetic field ::", 3f10.5, " (Mx, My, Mz) is SELECTED!")', h
+                if(para)then
+                        lbl = ' as H/J'
+                else
+                        lbl = " in Tesla"
+                end if
+		print'(" ==> Magnetic field ::", 3f10.5, " (Mx, My, Mz)",A9," is SELECTED!")', h, lbl
+	end if
+	if(field_sia)then
+                if(para)then
+                        sia_ = sia
+                        lbl = " as SIA/J"
+                else
+                        sia_ = sia*kb*1000
+                        lbl = " in meV"
+                end if
+		print'(" ==> SIA (Single Ion Anisotropy) ::", 3f10.5, " (SIAx, SIAy, SIAz)", A9," is SELECTED!")', sia_,lbl
+	end if
+	if(para)then
+		print'(" ==> Calculation in terms of parameter is ON w.r.t ", 1f10.5, " meV (parameter value)")', para_value
 	end if
 	print*,'~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
 	print*, ''
-	
+
 	!#########################################################################
 	!INCLUSION OF SPECIES FOR CALC.  #########################################
 	!#########################################################################
@@ -486,6 +524,15 @@
 	close(10003)
 	!#########################################################################
 
+        !LABELING of temp.#######################################################
+        !########################################################################
+        if(para)then
+                lbl = ' Kb/J'
+        else
+                lbl = " K"
+        end if
+        !########################################################################
+
         !SCAN LOOP ##############################################################
        	!#########################################################################
        	num = 20000
@@ -509,7 +556,7 @@
         !SAMPLING  ###############################################################
        	!#########################################################################
        	
-	print "(' Started for temp.', f10.5, ' K')",temp
+	print "(' Started for temp.', f10.5, A5)",temp, lbl
 	print "(' ``````````````````````````````')"
 	print*,''
         
@@ -605,6 +652,12 @@
 									eng_tp = eng_tp + trial_mag_eng
 								end if magnetic_tp
 
+								sia_tp : if(field_sia)then !single ion part
+									si_dot_si = ion_ref(1:3)**2 - ion(i, j, k, l, 1:3)**2
+									trial_sia_eng = -(dot_product(si_dot_si, sia))			! energy due to single ion anisiatropy
+									eng_tp = eng_tp + trial_sia_eng
+								end if sia_tp
+
 								!METROPOLIS ALGO #################################
 								!###################################################
 								call random_uniform(0.0_dp,1.0_dp,rn)
@@ -660,6 +713,12 @@
 							
 								mag = mag + stg*ion(i, j, k, l, 1:3)	! magnetization vector
 								
+								sia_tp_ : if(field_sia)then 		!single ion part
+									si_dot_si = ion(i, j, k, l, 1:3)**2
+									sia_eng = -(dot_product(si_dot_si, sia))		! energy due to single ion anisotropy
+									eng = eng + sia_eng
+								end if sia_tp_
+
 								do m = 1, no_of_nbd						! for distinct bond
 									do n = 1, int(nn(m, int(ion(i, j, k, l, 0)), 0, 0))	! no. of similar nbd for ith distinct bond
 									
@@ -687,7 +746,7 @@
 											Si_dot_Sj)
 2											continue
 									end do
-									end do
+								end do
 								
 						end do
 					end do
@@ -695,7 +754,7 @@
 			end do calculation
 
 			magnetic_ : if(field_b)then !magnetic part
-				mag_eng = -(g_factor*mb*dot_product(mag, h))	! energy due to magnetic field
+				mag_eng = -(g_factor*mb*dot_product(mag, h))			! energy due to magnetic field
 				eng = eng + mag_eng
 			end if magnetic_
 
