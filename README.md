@@ -2,7 +2,7 @@
 Based on the classical lattice model (Heisenberg, XY, XYZ, etc.), code Ether has been developed to study the thermodynamics of ANY CRYSTAL SYSTEM by performing the basic Monte Carlo methods. Metropolis algorithm has been used to equate all the observables.
 
 Code Ether solves the given Hamiltonian
-H = J.SiSj - g*mb*MSi	-----(1)
+H = J.SiSj - g*mb*MSi	- SIA.(Si^2) -----(1)
 
 or,
 H = Jxx.(SxiSxj) + Jyy.(SyiSyj) + Jzz.(SziSzj) - g.mb.(MxSx + MySy + MzSz)	-----(2)
@@ -15,6 +15,8 @@ J is defined as exchang energy (unit meV) splited into Jxx, Jyy, Jzz components.
 Jxx = a1.J_value, Jyy = a2.J_value, Jzz = a3.J_value. **J_value** is a input variable, can be supplied in '**j_exchange**' input file
 
 S is spin vector and has Sx, Sy, Sz components.
+
+SIA is single ion anisotropy vector (SIAx, SIAy, SIAz) in meV
 
 M is magnetic field vector (unit Tesla) and has Mx, My, Mz components as well.
 
@@ -42,7 +44,7 @@ I		---> Ising/Heisenberg (I/M) model
 
 10000		---> equilibration steps
 
-100 2 2		---> Temp(K) ==> final, initial, interval
+100 2 2		---> Temp(K) ==> final, initial, interval (for calculations in parameter, use temp (=KbT/J) from let say 0.001 to 2.00)
 
 3		---> no. of species present in the structure.vasp file 
 
@@ -66,7 +68,11 @@ c c c		---> boundary CLOSED/OPEN (c/o)
 
 .F. 5 5 0	---> Magnetic field (logic, Mx, My, Mz)
 
-2		---> g_factor 
+2		---> g_factor
+
+.T. 1 1 1 ---> SIA logic, SIAx, SIAy, SIAz (all in meV)
+
+.F. 0.0 ---> Parameter logic, J value (meV) :: temp. will be in KbT/J then
 
 # 2. About 'j_exchange' file
 
