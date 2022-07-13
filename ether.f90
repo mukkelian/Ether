@@ -5,7 +5,7 @@
 																
 !    Code Ether, based on Monte Carlo technique, can be used to study the 
 !    thermodynamics of magnetic system for any crystal system.
-!    Copyright (C) 2021 2021  Mukesh Kumar Sharma, Department of Physics,
+!    Copyright (C) 2021 - 2022  Mukesh Kumar Sharma, Department of Physics,
 !    Indian Institute of Technology Roorkee, Uttrakhand, India, PIN code 247667
 
 
