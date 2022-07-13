@@ -5,7 +5,7 @@ Code Ether solves the given Hamiltonian
 H = J.SiSj - g*mb*MSi	- SIA.(Si^2) -----(1)
 
 or,
-H = Jxx.(SxiSxj) + Jyy.(SyiSyj) + Jzz.(SziSzj) - g.mb.(MxSx + MySy + MzSz)	-----(2)
+H = Jxx.(SxiSxj) + Jyy.(SyiSyj) + Jzz.(SziSzj) - g.mb.(MxSx + MySy + MzSz)...	-----(2)
 
 where, 
 
