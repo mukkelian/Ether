@@ -12,5 +12,7 @@ c c c		! boundary CLOSED/OPEN (c/o)
 2		! for sampling
 50		! least phi angle to run
 50		! MC step interval to calculate observables
-.F. 5 5 0	! Magnetic field
+.F. 5 5 0	! Magnetic field logic, Mx, My, Mz
 2		! g_factor
+.T. 1 1 1	! SIA logic, SIAx, SIAy, SIAz (all in meV)
+.F. 0.0 	! Parameter logic, value (meV)
