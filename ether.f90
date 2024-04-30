@@ -920,7 +920,7 @@
 	subroutine lu(txtR, txtL, case_LU)
 		character (len=*), intent(in) :: txtR
 		character (len(txtR)), intent(out) :: txtL
-        	character(len=53):: s
+        	character(len=54):: s
 		character :: case_LU
 		integer :: i, j
         	s = ' abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ'
