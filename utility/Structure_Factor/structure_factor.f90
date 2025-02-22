@@ -19,54 +19,35 @@
 
 	implicit none
         integer :: nscan, sc_a, sc_b, sc_c, atom_count, count, &
-		i, j, k, l, ii, jj, kk, ll, nscan_qvec, iscan_qvec, total_ions, &
-		p, p_, n_species, nbd_cell_x, nbd_cell_y, nbd_cell_z, fromx, &
-        	fromy, fromz, tox, toy, toz
-
+	i, j, k, l, ii, jj, kk, ll, nscan_qvec, iscan_qvec, total_ions, &
+	p, p_, n_species
         real :: dx, dy, dz, lp1(3), lp2(3), vector(3), deg, &
-		qvec, qvec_f, qvec_i, qvec_int, temp, dis(3), a(3, 3), &
-        	to_angle, pi = 4.0*atan(1.0), light(3), mod_light, mod_vector, &
-		theta, q_vec, r(3), k_vec(3), s_i(3,1), s_j(3,1), volume, &
-		b(3,3), scaling(3), h_t, l_t, t_int
-
+	qvec, qvec_f, qvec_i, qvec_int, temp, dis(3), a(3, 3), &
+        to_angle, pi = 4.0*atan(1.0), light(3), mod_light, mod_vector, &
+	theta, q_vec, r(3), k_vec(3), s_i(3,1), s_j(3,1), volume, &
+	b(3,3), scaling(3), h_t, l_t, t_int
         real, allocatable :: ion(:, :, :, :, :)
 	integer, allocatable :: site(:, :), ionn(:)
 	complex :: img = (0,1), c_q
-	character (len=80) :: lbl
-	logical :: file_present = .FALSE.
+	character (len=6) :: lbl
         DOUBLE PRECISION :: start, finish
         call cpu_time(start)
 
-	print*, ''
-	inquire(file='in_SF.ether', exist=file_present)
-	if(.not.file_present) then
-		write(*, *) "==> 'input.ether' is not present"
-		write(*, *) "	  STOPPING now"
-		write(*, *) ""
-		stop
-	end if
-
-	if(file_present) print*, "'input.ether' file is found, now reading..."
-
-        open(unit=0, file='in_SF.ether', status='old', action='read')
-        open(unit=1, file='piller.ether', status='unknown')
-        open(unit=2,file='outputSF.dat', status='unknown',&
+        open(unit=0, file='input.muk', status='old', action='read')
+        open(unit=1, file='piller.muk', status='unknown')
+        open(unit=2,file='output_cq.dat', status='unknown',&
         action='write')
 	open(unit=3, file='plot_sf.sh', status='unknown', action='write')
         open(unit=10010, file='gss.dat', status='old', action='read')
 
-        read(10010, *) nscan, sc_a, sc_b, sc_c
-        read(10010, *) nbd_cell_x, nbd_cell_y, nbd_cell_z
-        read(10010, *) fromx, fromy, fromz, tox, toy, toz		
-	read(10010, *) atom_count, n_species, h_t, l_t, t_int
-	read(10010, *) lbl
-
+        read(10010, '(6I5, 3f11.5, A6)') nscan, sc_a, sc_b, sc_c, atom_count,&
+        n_species, h_t, l_t, t_int, lbl
         allocate(ionn(n_species))
         read(10010, *) (ionn(i), i = 1, n_species)
         structure : do i = 1,3
         	read(10010,*) (a(i,j), j = 1,3) !lattice vectors
         end do structure
-        allocate( ion(0:6, sc_a+2*nbd_cell_x, sc_b+2*nbd_cell_y, sc_c+2*nbd_cell_z, atom_count) )
+        allocate( ion(sc_a+2, sc_b+2, sc_c+2, atom_count, 0:6) )
 
         read(0, *) dx, dy, dz   ! directions
         read(0, *) deg
@@ -75,6 +56,12 @@
         a(1, :) = a(1, :)*scaling(1)
         a(2, :) = a(2, :)*scaling(2)
         a(3, :) = a(3, :)*scaling(3)
+
+        print*, ''
+        print*, '::::::::::::::: STRUCTURE FACTOR (SF) :::::::::::::::'
+        print*, ''
+        print"(' SF along ',3f7.3 )",dx, dy,dz
+        print"(' with scaling factors (x, y, z) :',3f7.3 )",scaling
 
         ! Evaluation of reciprocal vectors
         s_i = 0.0; s_j = 0.0
@@ -100,39 +87,31 @@
 
         ! READING LATTICES
         read(10010,*)
-        do k = 1, sc_c + 2*nbd_cell_x
-                do j = 1, sc_b + 2*nbd_cell_y
-                        do i = 1, sc_a + 2*nbd_cell_z
+        do k = 1, sc_c + 2
+                do j = 1, sc_b + 2
+                        do i = 1, sc_a + 2
                                 do l = 1, atom_count
-                                        read(10010,*) ion(4:6, i, j, k, l), ion(0, i, j, k, l)
+                                        read(10010,*) ion(i, j, k, l, 4:6), ion(i, j, k, l, 0)
                                 end do
                         end do
                 end do
         end do
 
-	print*, 'DONE, now evaluatng structure factors (SF) as per given inputs'
-
-        print*, ''
-        print*, '::::::::::::::: STRUCTURE FACTOR (SF) :::::::::::::::'
-        print*, ''
-        print"(' SF along ',3f7.3 )",dx, dy,dz
-        print"(' with scaling factors (x, y, z) :',3f7.3 )",scaling
-
         !SEARCHING LATTICE POINTS ALONG GIVEN DIRECTION
 	count = 0; p_ = 0
-        do i = fromx, tox
-                do j = fromy, toy
-                        do k = fromz, toz
+        do i = 2, sc_a + 1
+                do j = 2, sc_b + 1
+                        do k = 2, sc_c + 1
                                 do l = 1, atom_count
 
-        lp1(1:3) = ion(4:6, i, j, k, l)
+        lp1(1:3) = ion(i, j, k, l, 4:6)
 	p = 0
-        do ii = fromx, tox
-                do jj = fromy, toy
-                        do kk = fromz, toz
+        do ii = 2, sc_a + 1
+                do jj = 2, sc_b + 1
+                        do kk = 2, sc_c + 1
                                 do ll = 1, atom_count
 
-	        lp2(1:3) = ion(4:6, ii, jj, kk, ll)
+	        lp2(1:3) = ion(ii, jj, kk, ll, 4:6)
 
 	        vector = lp1 - lp2
 	
@@ -144,7 +123,7 @@
 	        if((theta .le. deg).or.((180-theta) .le. deg))then
 			p = 1
                           write(1, '(8I4, 4X, 2I10)') i, j, k, l, ii, jj, kk, ll,&
-                          int(ion(0, i, j, k, l)), int(ion(0, ii, jj, kk, ll))
+                          int(ion(i, j, k, l, 0)), int(ion(ii, jj, kk, ll, 0))
 			count = count + 1
 		end if
 
@@ -153,7 +132,7 @@
 		end do
 	end do
 
-	if(p.eq.1) p_ = p_ + 1	!for counting same ion within piller
+		if(p.eq.1) p_ = p_ + 1	!for counting same ion within piller
 
 				end do
 			end do
@@ -162,7 +141,7 @@
 
 	close (1)
 
-	open(unit=1, file='piller.ether', status='old', action='read')
+	open(unit=1, file='piller.muk', status='old', action='read')
 	
 	if(count==0) then
 		print*, ''
@@ -178,7 +157,6 @@
 		read(1, *) site(i, :)
 	end do
 	close (1)
-	call system('rm -rf piller*')
 
         !STRUCTURE FACTOR CORRELATION
         !################################################################
@@ -193,7 +171,7 @@
 		do j = 2, sc_b + 1
 			do i = 2, sc_a + 1
 				do l = 1, atom_count
-					read(10010,*) ion(1:3, i, j, k, l)
+					read(10010,*) ion(i, j, k, l, 1:3)
 				end do
 			end do
 		end do
@@ -206,12 +184,12 @@
 	do i = 1, count
 
 		r = &
-		ion(4:6, site(i, 1), site(i, 2), site(i, 3), site(i, 4)) - &
-		ion(4:6, site(i, 5), site(i, 6), site(i, 7), site(i, 8))
+		ion(site(i, 1), site(i, 2), site(i, 3), site(i, 4), 4:6) - &
+		ion(site(i, 5), site(i, 6), site(i, 7), site(i, 8), 4:6)
 
 		c_q = c_q + dot_product(&
-		ion(1:3, site(i, 1), site(i, 2), site(i, 3), site(i, 4)), &
-		ion(1:3, site(i, 5), site(i, 6), site(i, 7), site(i, 8)) &
+		ion(site(i, 1), site(i, 2), site(i, 3), site(i, 4), 1:3), &
+		ion(site(i, 5), site(i, 6), site(i, 7), site(i, 8), 1:3) &
 		)* &
 		exp(img*q_vec* dot_product(k_vec, r))
 
@@ -235,9 +213,9 @@
         print*, 'Creating polt file'
 	write(3, *) '#set parameters accordingly'
 	write(3, *) 'set nokey'
-	write(3, *) 'set terminal png size 1100, 900 font "Times-New-Roman,22"'
+	write(3, *) 'set terminal png size 1100, 900 font "Times-Bold,22"'
 	write(3, *) "set output 'figSF.png'"
-	write(3, *) 'set tics font "Times-New-Roman,20"'
+	write(3, *) 'set tics font "Times-Bold,20"'
 	write(3, *) 'set format y "%g"'
         write(3, 100)  l_t-t_int, abs(h_t-l_t+t_int)/5., h_t
 	write(3, *) 'set mxtics 10'
@@ -250,7 +228,7 @@
 	write(3, *) 'set palette defined (0 "blue", 0.4 "yellow", 1 "red")'
 	write(3, *) 'set view 360.0, 359.99'
 	write(3, *) 'set pm3d at b'
-	if(trim(adjustl(lbl)).eq.'K')then
+	if(lbl.eq.' K')then
 		write(3, 103) 'K'
 	else
 		write(3, 102) 'k_{B}T/J'
@@ -259,7 +237,7 @@
 	write(3, *) 'set xrange [:]'
 	write(3, *) 'set yrange[:]'
 	write(3, *) "#set zlabel 'C_{q}'"
-	write(3, *) "splot 'outputSF.dat' u 1:2:3 w l lc 'grey' t ''"
+	write(3, *) "splot 'output_cq.dat' u 1:2:3 w l lc 'grey' t ''"
 	close(3)
 	print*, ''
 	print*, 'command to plot Structure Factor ==> "gnuplot plot_sf.sh"'
