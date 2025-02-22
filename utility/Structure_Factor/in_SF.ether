@@ -1,0 +1,4 @@
+0 0 1 		! Direction
+1		! Least latency in pattern
+2 0.01 0.01	! Magnetic wave vector: q(to), q(from), q(step size)
+0.5 0.5 0.5	! (a, b, c), use to scale the Lattice parameters (a*L, b*L, c*L)
