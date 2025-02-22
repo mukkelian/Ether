@@ -1,12 +1,12 @@
-#!/bin/bash
-loc=$PWD/ether
-loc1="nohup"
-loc2="< /dev/null > out &"
-echo "$loc1" "$loc" "$loc2" >> run.bat
-chmod +x run.bat
+loc="$PWD/ether"
+mpirun="nohup mpirun -np"
+number_of_processor=6
+out="out"
+echo "$mpirun $number_of_processor \"$loc\" < /dev/null > $out &" > run.sh
+chmod +x run.sh
 echo 'Job is RUNNING'
-OMP_NUM_THREADS=64
-export OMP_NUM_THREADS
+export OMP_NUM_THREADS=2
 ulimit -s unlimited
-./run.bat
-rm *.bat
+./run.sh
+sleep 1
+rm -f run.sh
