@@ -1,0 +1,4 @@
+Included:
+	> MPI parallelization
+	> OpenMP parallelization
+        > vector program is included for spin vector visualizations
