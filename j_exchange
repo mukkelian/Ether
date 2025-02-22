@@ -1,5 +1,0 @@
-4				! no. of distinct bond
-Ce ce 1.0 1 1 1 4.16970		! ith ion, jth ion, j_value, anisotropy (Jxx, Jyy, Jzz), bond length.
-ce Ce 1.0 1 1 1 7.22213
-Ce Ce 1.0 1 1 1 4.08267
-ce ce 1.0 1 1 1 7.57543
