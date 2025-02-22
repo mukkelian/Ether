@@ -1,21 +1,21 @@
 h		! (I/H) Ising/Heisenberg model
-8000		! MC steps
+6000		! MC steps
 4000		! equilibration steps
-10 5 5	! Temp(K) ==> final, initial, interval
-1		! Moment
-1		! no. of species to include
-Si		! included species symbols
-10 10 10 	! cell size
+100 5 5	! Temp(K) ==> final, initial, interval
+1 1		! Moment
+2		! no. of species to include
+A B		! included species symbols
+6 6 6 	! cell size
 .F.		! for staggered  magn.
-o c c		! boundary CLOSED/OPEN (c/o)
-3		! for sampling
+c c c		! boundary CLOSED/OPEN (c/o)
+20		! for sampling
 .F. 10		! logic, least phi angle to run
 20		! MC step interval to calculate observables
 .F. 5 5 0	! Magnetic field logic, Mx, My, Mz
 2		! g_factor
 .F.		! SIA logic
 .F. 3	 	! Parameter logic, value (meV)
-.F. 40 12        ! Overrelaxed method logic (T/F), overrelaxation steps, start after MC interval
+.T. 40 12        ! Overrelaxed method logic (T/F), overrelaxation steps, start after MC interval
 .F. 11	.T.	! Exchange Algo(T/F), interval to exchange, use provided equi-spaced temperature (T/F)
 0.01 10 .F.
 0.01 10 .F.	!beta critria, steps to converge beta(M), steps for opt P(M), logic to use previous beta file
