@@ -16,6 +16,3 @@ c c c		! boundary CLOSED/OPEN (c/o)
 .F.		! SIA logic
 .F. 3	 	! Parameter logic, value (meV)
 .T. 40 12        ! Overrelaxed method logic (T/F), overrelaxation steps, start after MC interval
-.F. 11	.T.	! Exchange Algo(T/F), interval to exchange, use provided equi-spaced temperature (T/F)
-0.01 10 .F.
-0.01 10 .F.	!beta critria, steps to converge beta(M), steps for opt P(M), logic to use previous beta file
