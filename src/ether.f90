@@ -258,8 +258,6 @@
 			global_spn, tlspn, si_spn, &
 			MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
 
-	write(6, "(' Process ID', i3, ' is free now, assigned work is completed.')") rank
-
 	! Root process will finalize observables and write results after all data has been received
 	if (rank == 0) then
 
@@ -303,4 +301,3 @@
 	call MPI_FINALIZE(ierr)
 
 	end program ether
-
