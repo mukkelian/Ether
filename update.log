@@ -1,4 +1,10 @@
+Current status: stable
+
 Included:
+
+v 3.0.2
+	> Updated boundary condition subroutine for largest bond length
+v 3.0.1
 	> MPI parallelization
 	> OpenMP parallelization
         > vector program is included for spin vector visualizations
