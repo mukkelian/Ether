@@ -5,7 +5,7 @@ ifndef ROOTDIR
 ROOTDIR=.
 endif
 
-REALMAKEFILE=../src/Makefile.ether      
+REALMAKEFILE=../src/Makefile.ether
 
 all: ether     
 
