@@ -18,14 +18,15 @@
 ! along with this program; if not, see https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
       program vector
-        implicit none
-        integer :: i, j, num_ion, total_lines
-        character (len=2), allocatable :: ion(:)
-        real, allocatable :: a(:, :)
-        character (len=2) :: ion_lbl, out, dummy
-        character (len=2), allocatable :: ion_ID(:),  continue_tag(:)
-        character(len=6) :: file_name
-        logical :: file_present
+
+	implicit none
+	integer :: i, j, num_ion, total_lines
+	character (len=2), allocatable :: ion(:)
+	real, allocatable :: a(:, :)
+	character (len=2) :: ion_lbl, out, dummy
+	character (len=2), allocatable :: ion_ID(:),  continue_tag(:)
+	character(len=6) :: file_name
+	logical :: file_present
 
         call system('cp *spK* sp_vector.xsf')
 
@@ -38,7 +39,7 @@
         end if
 
         open (1, file='sp_vector.xsf', status='old', action='read')
-        open (2, file='input', status='old', action='read')
+        open (2, file='in_vec.ether', status='old', action='read')
         open (4, file='plot_vector.sh', status='unknown', action='write')
 
         read(2, *) num_ion ! number of ions
