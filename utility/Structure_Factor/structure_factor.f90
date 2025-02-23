@@ -212,8 +212,8 @@
 	print*, ''
         print*, 'Creating polt file'
 	write(3, *) '#set parameters accordingly'
-	write(3, *) 'set nokey'
-	write(3, *) 'set terminal png size 1100, 900 font "Times-Bold,22"'
+	write(3, *) 'set key'
+	write(3, *) 'set terminal png size 1100, 900 font "Times-New-Roman,22"'
 	write(3, *) "set output 'figSF.png'"
 	write(3, *) 'set tics font "Times-Bold,20"'
 	write(3, *) 'set format y "%g"'
