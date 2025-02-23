@@ -1,0 +1,11 @@
+2                               ! no. of distinct bond
+5.0 1                           ! bond length, no. of similar bonds
+Si Si -3 1 1 1                ! ith ion, jth ion, j_value, anisotropy (Jxx, Jyy, Jzz)
+
+
+
+7.07107 1
+si si -0.1 1 1 1
+
+8.66025 1
+si si -0.001 1 1 1
