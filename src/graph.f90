@@ -33,7 +33,7 @@
 		write(10008,*) '# set labels, lables, and xtics/ytics accordingly'
 		write(10008,*) 'set nokey'
 		write(10008,*) 'set terminal png size 1100, 900 font "Times-New-Roman,18"'
-		write(10008,*) "set output 'fig1.png'"
+		write(10008,*) "set output 'results_Ether.png'"
 		write(10008,*) 'set multiplot'                     
 		write(10008,*) "set size squar 0.5,0.5"
 		write(10008,*) 'set nokey'
@@ -46,8 +46,8 @@
 		        write(10008, 301) trim(lbl)
 	        else
 	                write(10008, 302) trim(lbl)
-		        end if
-	        if(opt_stg) then
+		end if
+	        if(staggered) then
 	        	write(10008,*) 'set ylabel "Staggered Magnetization (M)"'
 	        else
 	        	write(10008,*) 'set ylabel "Magnetization (M)"'
@@ -62,7 +62,7 @@
 	                write(10008, 302) lbl
 	        end if
 	
-	        if(opt_stg) then
+	        if(staggered) then
 	        	write(10008,*) 'set ylabel "Staggered Susceptibility (χ)"'
 	        else
 	        	write(10008,*) 'set ylabel "Susceptibility (χ)"'
