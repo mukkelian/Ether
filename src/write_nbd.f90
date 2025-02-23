@@ -26,7 +26,7 @@
 		integer :: i, j, k, l, m
 
 		open(unit=10006, file='nbd.dat', status='unknown')
-		write(6, *) "==> Neighbourhood informations are writing into the 'nbd.dat' file"
+		write(6, *) "==> Neighbourhood information are writing into the 'nbd.dat' file"
 
 		write(10006, *) "This file can be used to confirm the neighbourhood details of any central ion."
 		write(10006, *) "To do so, use 'XCrySDen' (http://www.xcrysden.org/) and open the generated"
