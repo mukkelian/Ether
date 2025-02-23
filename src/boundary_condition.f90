@@ -1,7 +1,5 @@
-! Ether, a Monte Carlo simulation program, impowers the users to study 
-! the thermodynamical properties of spins arranged in any complex 
-! lattice network.
-
+! Code Ether, based on the Monte Carlo technique, can be used to
+! study the static and dynamics of spin models applied to any ion geometry.
 ! Copyright (C) 2021  Mukesh Kumar Sharma (msharma1@ph.iitr.ac.in)
 
 ! This program is free software; you can redistribute it and/or
@@ -19,43 +17,43 @@
 
 	subroutine boundary_condition(ith, jth, kth, lth)
 
-		use init
+	use init
 
-		implicit none
+	implicit none
 
-		integer, intent(in) :: ith, jth, kth, lth
+	integer, intent(in) :: ith, jth, kth, lth
 
-		! BOUNDARY X
-		along_x : if(bc(1).eq.'c')then
-			if (ith.eq.sc(1)+1) then
-				ion(1:5, 1, jth, kth, lth) = &
-				ion(1:5, ith, jth, kth, lth)
-			elseif(ith.eq.2)then
-				ion(1:5, sc(1)+2, jth, kth, lth) = &
-				ion(1:5, ith, jth, kth, lth)
-			end if
-		end if along_x
-                                                                
-		! BOUNDARY Y
-		along_y : if(bc(2).eq.'c')then
-			if (jth.eq.sc(2)+1) then
-				ion(1:5, ith, 1, kth, lth) = &
-				ion(1:5, ith, jth, kth, lth)
-			elseif(jth.eq.2)then
-				ion(1:5, ith, sc(2)+2, kth, lth) = &
-				ion(1:5, ith, jth, kth, lth)
-			end if
-		end if along_y
+	! BOUNDARY X
+	along_x : if(bc(1).eq.'c')then
+		if (ith.gt.sc(1)) then
+			ion(1:5, ith - sc(1), jth, kth, lth) = &
+			ion(1:5, ith, jth, kth, lth)
+		elseif(ith.lt.(fromx + nbd_cell_x))then
+			ion(1:5, ith + sc(1), jth, kth, lth) = &
+			ion(1:5, ith, jth, kth, lth)
+		end if
+	end if along_x
 
-                 ! BOUNDARY Z
-                  along_z : if(bc(3).eq.'c')then
-			if (kth.eq.sc(3)+1) then
-				ion(1:5, ith, jth, 1, lth) = &
-				ion(1:5, ith, jth, kth, lth)
-			elseif(kth.eq.2)then
-				ion(1:5, ith, jth, sc(3)+2, lth) = &
-				ion(1:5, ith, jth, kth, lth)
-			end if
-		end if along_z
+	! BOUNDARY Y
+	along_y : if(bc(2).eq.'c')then
+		if (jth.gt.sc(2)) then
+			ion(1:5, ith, jth - sc(2), kth, lth) = &
+			ion(1:5, ith, jth, kth, lth)
+		elseif(jth.lt.(fromy + nbd_cell_y))then
+			ion(1:5, ith, jth + sc(2), kth, lth) = &
+			ion(1:5, ith, jth, kth, lth)
+		end if
+	end if along_y
+
+	! BOUNDARY Z
+	along_z : if(bc(3).eq.'c')then
+		if (kth.gt.sc(3)) then
+			ion(1:5, ith, jth, kth - sc(3), lth) = &
+			ion(1:5, ith, jth, kth, lth)
+		elseif(kth.lt.(fromz + nbd_cell_z))then
+			ion(1:5, ith, jth, kth + sc(3), lth) = &
+			ion(1:5, ith, jth, kth, lth)
+		end if
+	end if along_z
 
 	end subroutine boundary_condition
