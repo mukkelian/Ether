@@ -32,7 +32,7 @@
 		open(10008, file='graph.sh', status='unknown')
 		write(10008,*) '# set labels, lables, and xtics/ytics accordingly'
 		write(10008,*) 'set nokey'
-		write(10008,*) 'set terminal png size 1100, 900 font "Times-Roman,18"'
+		write(10008,*) 'set terminal png size 1100, 900 font "Times-New-Roman,18"'
 		write(10008,*) "set output 'fig1.png'"
 		write(10008,*) 'set multiplot'                     
 		write(10008,*) "set size squar 0.5,0.5"
