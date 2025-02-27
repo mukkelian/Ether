@@ -1,0 +1,168 @@
+! Ether, a Monte Carlo simulation program, impowers the users to study 
+! the thermodynamical properties of spins arranged in any complex 
+! lattice network.
+
+! Copyright (C) 2021  Mukesh Kumar Sharma (msharma1@ph.iitr.ac.in)
+
+! This program is free software; you can redistribute it and/or
+! modify it under the terms of the GNU General Public License
+! as published by the Free Software Foundation; either version 2
+! of the License, or (at your option) any later version.
+
+! This program is distributed in the hope that it will be useful,
+! but WITHOUT ANY WARRANTY; without even the implied warranty of
+! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+! GNU General Public License for more details.
+
+! You should have received a copy of the GNU General Public License
+! along with this program; if not, see https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
+
+	subroutine generate_supercell
+	
+	use init
+	
+	implicit none
+
+	integer :: i, j, k, l, s_count
+
+	real(8), allocatable :: atom(:, :), ar(:, :)
+	real(8) :: sx, sy, sz, rnum
+	logical :: file_found
+
+	! SAVING DETAILS OF ATOMS PRESENT IN STRUCTURE FILE
+	allocate(atom(total_ions_per_cell, 0:8))
+	atom = 0
+	atomic_details: do k = 1, nspecies
+		do i = int(sum(ionn(0:k-1)))+1, int(sum(ionn(0:k)))
+
+			atom(i,0) = i			! atom no.
+			if(Ising) then
+				atom(i, 3) = (-1)**(i)
+			else
+				if (angle.eqv..FALSE.) then
+					call George_Marsaglia(sx, sy, sz)
+					atom(i, 3) = sz	! S(z)
+					atom(i, 1) = sx	! S(x)
+					atom(i, 2) = sy	! S(y)
+					atom(i, 5) = 0	! phi value
+				else
+
+					call get_random_num(-1d0, +1d0, rnum)
+					atom(i, 3) = rnum					! S(z)
+					call get_random_num(0.0d0, 2d0*pi, rnum)
+          				atom(i, 1) = sqrt(1d0-(atom(i, 3)**2))*cos(rnum)	! S(x)
+					atom(i, 2) = sqrt(1d0-(atom(i, 3)**2))*sin(rnum)	! S(y)
+					atom(i, 5) = rnum					! phi value
+				end if
+			endif
+			atom(i, 4) = k							! tag for element
+			atom(i, 6) = x(i)						! x
+			atom(i, 7) = y(i)						! y
+			atom(i, 8) = z(i)						! z
+
+ 		enddo
+	enddo atomic_details
+
+	! FILTRATION OF SPECIES FOR CALC.
+	s_count = 0
+	do i = 1, n_speci_incl
+		do j =1 , nspecies
+			if (specicies_to_include(i).eq.species(j)) then
+				s_count = s_count + ionn(j)
+			end if
+		end do
+	end do
+
+	allocate(ar(s_count, 0:8), stgg_ion(s_count))
+	ar = 0
+
+	! STAGGERED INFO
+
+	if (staggered) then	!getting staggered values of each ion
+		inquire(file='staggered', exist=file_found)
+	
+		if(file_found) then
+			if (rank == 0) write(6, *) ''
+			if (rank == 0) write(6, *) '    :::::::::::::::::::::::::: &
+        	                        STG list ::::::::::::::::::::::::'
+        		open(unit=2, file='staggered', status='old', action='read')
+        		do i = 1, s_count
+        			read(2, *) stgg_ion(i)
+        		end do
+        		close(2)
+			if (rank == 0) write(6, "(/,'      > ',8f7.1)") stgg_ion
+			if (rank == 0) write(6, *) ''
+		else
+		if (rank == 0) then
+			write(6, *) ''
+			write(6, *) '	Logic for staggered magnetiaztion is .TRUE.'
+			write(6, *) "	but 'staggered' file is not provided"
+			write(6, *) '	     ~~~~~~~~~'
+			write(6, *) ''
+			write(6, *) "	file formate for 'staggered' is as follows"
+			write(6, *) ''
+			write(6, *) '	c1	for atom1'
+			write(6, *) '	c2	for atom1'
+			write(6, *) '	c3	for atom3'
+			write(6, *) '	.		.'
+			write(6, *) '	.		.'
+			write(6, *) '	.		.'
+			write(6, *) '	Note: Sequence of c[i] for ith atom should'
+			write(6, *) '	       follows the sequnce as according to'
+			write(6, *) '	       provided structure file'
+			write(6, *) ''
+			write(6, *) '	STOPPING now'
+			write(6, *) ''
+			stop
+		end if
+		end if
+        end if
+
+	! Getting total lattice per unit cell, which will be used for MC calculations
+	lattice_per_unit_cell = 0
+	inclusion : do i = 1, n_speci_incl
+			do j =1 , nspecies
+				if (specicies_to_include(i).eq.species(j)) then
+
+		do k = sum(ionn(0:j-1))+1, sum(ionn(0:j))
+			lattice_per_unit_cell = lattice_per_unit_cell +1	! Counting included ions
+			do l = 0, 8
+			ar(lattice_per_unit_cell, l) = atom(k, l)		! 'k' will be used for identifying
+			end do 							! these element in further last moment
+		enddo
+				endif
+			enddo
+		enddo inclusion
+	deallocate(atom)
+
+	! EXPANDING INTO SUPERCELL
+	allocate(ion(0:8, sc(1) + 2*nbd_cell_x, sc(2) + 2*nbd_cell_y, &
+		sc(3) + 2*nbd_cell_z, lattice_per_unit_cell))
+	s_count = 0; ion = 0
+	do i = 1, sc(1) + 2*nbd_cell_x
+		do j = 1, sc(2) + 2*nbd_cell_y
+			do k = 1, sc(3) + 2*nbd_cell_z
+				do l = 1, lattice_per_unit_cell
+
+		s_count = s_count +1				! Counting total no. of ions in supercell
+		ion(0, i, j, k, l) = s_count			! ID
+		ion(1:5, i, j, k, l) = ar(l, 1:5)		! Sx, Sy, Sz, species no. & phi
+		ion(6:8, i, j, k, l) = abc(1, 1:3)*(i - 1) &	! co-ordinates
+					+ abc(2, 1:3)*(j - 1) + abc(3, 1:3)*(k - 1) &
+					+ ar(l, 6:8)
+
+				end do
+			end do
+		end do
+	end do
+
+	deallocate(ar)
+
+	! total no. of lattice points
+	total_ions = s_count	! in super cell
+	total_lattice_sites = product(sc)*lattice_per_unit_cell	! in super cell simulation box
+
+	if (rank == 0) write(6, *) '==> Supercells are generated'
+
+	end subroutine generate_supercell
+
