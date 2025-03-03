@@ -27,7 +27,7 @@
 
 		real(8) :: A_ovr(3), Si(3), rn_ovr
 
-	        overrelaxation_method : do m = 1, overrelaxed
+	        overrelaxation_method : do m = 1, overr_steps
 			! Duplicate Names Between Modules are not Allowed (DNBM)
 			! it causes variables to exchange between the modules/threads
 		        call get_random_num(fromx*1d0, tox*1d0, rn_ovr); i = int(rn_ovr)	
