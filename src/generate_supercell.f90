@@ -161,8 +161,7 @@
 	! total no. of lattice points
 	total_ions = s_count	! in super cell
 	total_lattice_sites = product(sc)*lattice_per_unit_cell	! in super cell simulation box
-
+	overr_steps = nint(total_ions*overr_para)
 	if (rank == 0) write(6, *) '==> Supercells are generated'
 
 	end subroutine generate_supercell
-
