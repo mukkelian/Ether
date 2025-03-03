@@ -35,13 +35,14 @@
 	write(6, *)""
 	
 	if(Ising) then
-		write(6, *)"Based on Ising model (H = JSi.Sj)"
-	elseif(Heisenberg) then
-		write(6, *)"Based on classical Heisenberg model (H = JSi*Sj)"
+		write(6, *)"Based on Ising model"
+	elseif(XYZ) then
+		write(6, *)"Based on classical XYZ model"
 	else
 		write(6, *) "WARNING: unable to get right model ID"
-		write(6, *) "setting model to default 'Heisenberg model (ID = H)'"
-		model = 'h'
+		write(6, *) "setting model to default 'XYZ model (ID = XYZ)'"
+		model = 'xyz'
+		XYZ = .TRUE.
 	end if
 	
 	write(6, *)""
@@ -53,15 +54,14 @@
 	write(6, "(1X,A21,I8)") 'Equilibration steps: ', tmcs_eq
 	write(6, *) '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
 	write(6, *) ''
-        write(6, '(I4,1x,I4,1x,I4,"  :: Lx, Ly, Lz <==> Supercell size")') sc
-
+        write(6, '(I4,1x,I4,1x,I4,"  :: Lx, Ly, Lz <==> Supercell (SC) size")') sc
         write(6, *)''
         write(6, '(2X,A2,3x,A2,3x,A2,2x"(boundary conditions along x,y, and z-axis, respectively)")') bc(1:3)
         write(6, *)"                    'o' => open; 'c' => closed"
         write(6, *)''
-	write(6, *)'==> Spins are set in random configurations'
+	write(6, *)'==> Spins are set in random configurations
 
-        if((angle.eqv..FALSE.).and.Heisenberg) then
+        if((angle.eqv..FALSE.).and.XYZ) then
         	write(6, *) '==> Spin vectors will be chosen as per George Marsaglia method'
         	write(6, *)''	
         	write(6, *) '     >  George Marsaglia, The Annals of Mathematical Statistics'
@@ -80,8 +80,7 @@
 	end if
 	
         if (ovrr.and..not.Ising)then
-        	write(6, '(" ==> Overrelaxation method with ",I4," OVR steps has been considered along with &
-        		Metropolis algorithm")') overrelaxed
+        	write(6, '(" ==> Overrelaxation (OVRR) method will be applied with OVRR parameter :: ", f7.4)') overr_para
         	write(6, *)''
         	write(6, *) '     >  Michael Creutz, Physical Review D Vol. 36, 2 (1987).'
         	write(6, *) '     >  J. L. Alonso and A. Tranacon, Physical Review B Vol. 53, 5 (1996).'
