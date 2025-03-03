@@ -59,7 +59,7 @@
         write(6, '(2X,A2,3x,A2,3x,A2,2x"(boundary conditions along x,y, and z-axis, respectively)")') bc(1:3)
         write(6, *)"                    'o' => open; 'c' => closed"
         write(6, *)''
-	write(6, *)'==> Spins are set in random configurations
+	write(6, *)'==> Spins are set in random configurations'
 
         if((angle.eqv..FALSE.).and.XYZ) then
         	write(6, *) '==> Spin vectors will be chosen as per George Marsaglia method'
