@@ -24,18 +24,17 @@
 	implicit none
 
 	integer :: i
-        character(len=3) :: label
 
         open(unit=0, file='in.ether', status='old', action='read')
 
-	read(0, *) model				! Ising/Heisenberg model
+	read(0, *) model				! Ising/XYZ model
 
 	! CONVERTING STRING VARIBLES INTO LOWER CASE
-	call lu(model, label, 'L' )			!L: lower case, U: upper case
-	model = label
-	Ising= .FALSE.;  Heisenberg = .FALSE.
-	if(model.eq.'i') Ising = .TRUE.
-	if(model.eq.'h') Heisenberg = .TRUE.
+	call lu(model, model, 'L' )			!L: lower case, U: upper case
+
+	Ising= .FALSE.;  XYZ = .FALSE.
+	if(model.eq.'ising') Ising = .TRUE.
+	if(model.eq.'xyz') XYZ = .TRUE.
 
 	read(0, *) tmcs					! total Monte Carlo Steps per spins
 	read(0, *) tmcs_eq				! total Monte Carlo Steps per spins for equilibration
@@ -63,12 +62,9 @@
 	read(0, *) bc(1), bc(2), bc(3)			! boundary condition along x, y, z
 
 	! CONVERTING STRING VARIBLES INTO LOWER CASE
-	call lu(bc(1), label, 'L' )
-	bc(1) = label
-	call lu(bc(2), label, 'L' )
-	bc(2) = label
-	call lu(bc(3), label, 'L' )
-	bc(3) = label
+	call lu(bc(1), bc(1), 'L' )
+	call lu(bc(2), bc(2), 'L' )
+	call lu(bc(3), bc(3), 'L' )
 
 	read(0, *) sample 				! sample per unit MC calculations)
 
@@ -81,7 +77,8 @@
 	read(0, *) g_factor				! g-factor
 	read(0, *) single_ion_anisotropy		! Logic(.T./.F.)
 	read(0, *) para, para_value			! Logic, parameter value --> calculation in terms of parameter
-        read(0, *) ovrr, overrelaxed, ovrr_start_interval ! overrelaxed (T/F), overrelaxed step, interval of overrelaxation starts
+        read(0, *) ovrr, overr_para, ovrr_start_interval ! overrelaxed (T/F), overrelaxed parameter (0-1), interval of overrelaxation starts
+        overr_para = abs(overr_para)
 	!read(0, *) EXalgo, exchange_interval, temp_ex	!Exchange algo (logic), interval to exchange replicas, for using given equi-spaced temprature (T/F)
 	!read(0, *) beta_critria, optbeta, beta_file	!Beta(M) convergence criteria, optimization steps for beta(M), if Beta.dat file exists(logic)
 
