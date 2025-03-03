@@ -24,7 +24,7 @@
         implicit none
 
 	integer, public, save :: tmcs, tmcs_eq, n_speci_incl, sc(3), sample, samplei, &
-		overrelaxed, ovrr_start_interval, optbeta, nspecies, total_ions_per_cell, &
+		overr_steps, ovrr_start_interval, optbeta, nspecies, total_ions_per_cell, &
 		no_of_nbd, j_ID(2), similar_bonds, num_of_threads, total_lattice_sites, &
 		lattice_per_unit_cell, nscan, nbd_cell_x, nbd_cell_y, nbd_cell_z, &
 		total_ions, fromx, fromy, fromz, tox, toy, toz, total_calculations, itemp, &
@@ -40,7 +40,7 @@
 		s_eng_avg, s_eng2_avg, e_eng2_avg, s_U_eng, s_cv, &
 		s_mag_avg, s_mag2_avg, e_mag2_avg, s_U_mag, s_chi, &
 		net_mag(3), err_U_mag, err_chi, err_mag_avg, err_U_eng, err_cv, &
-		err_eng_avg
+		err_eng_avg, overr_para
 
         integer, allocatable, public, save :: ionn(:), nn(:,:,:,:), bblx(:), bbly(:), bblz(:)
 
@@ -53,10 +53,11 @@
 		err_cv_T(:), s_U_eng_T(:), err_U_eng_T(:), mm_vector_avg_T(:, :, :), &
 		acceptance_ratio(:)
 
-	character, public, save :: model, bc(3)
-	character*30, public, save :: title, coordinate, filename, lbl
+	character, public, save :: bc(3)
 	character(len=2), allocatable, public, save :: specicies_to_include(:), species(:)
+	character(len=5), public, save :: model
 	character(len=20), dimension(50), public, save :: m_head, e_head
+	character(len=30), public, save :: title, coordinate, filename, lbl
 
 	logical, public, save :: staggered, angle, Zeeman, single_ion_anisotropy, para, ovrr, &
 		EXalgo, temp_ex, beta_file, initiate_spin_files
@@ -73,6 +74,6 @@
 	real(8), allocatable, public, save :: local_obs(:), local_spn(:), &
 		global_obs(:), global_spn(:), temp_assigned(:)
 
-	logical, public, save :: completed, Ising, Heisenberg
+	logical, public, save :: completed, Ising, XYZ
 	
         end module init
