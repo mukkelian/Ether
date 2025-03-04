@@ -1,6 +1,6 @@
 # Ether
 
-latest v 3.1.0
+latest v 3.4.0
 
 *Contacts*  
 msharma1@ph.iitr.ac.in  
