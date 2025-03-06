@@ -105,7 +105,8 @@
 		end do
 
 		total_sites_to_dope = nint(doping_ratio*available_sites_to_dope)
-		if (rank == 0) write(6, "(' ==> Total sites for dopping: ',i6)") total_sites_to_dope
+		if (rank == 0) write(6, "(' ==> Total sites for dopping ',A2,' are:',i6)") &
+			dope_with_species, total_sites_to_dope
 		ith_dope = 0
 		dopping_sites: do
 			call get_random_indices(i, j, k, l)
