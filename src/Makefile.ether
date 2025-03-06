@@ -1,0 +1,138 @@
+# Avoid making changes below this line
+
+include ../make.sys
+
+OBJS  = init.o lu.o get_random_num.o get_tot_species.o read_input.o startup.o  read_structure.o get_nbd_extents.o \
+	generate_supercell.o get_random_indices.o  perform_dopping.o j_values.o get_sia_values.o parameters.o \
+	write_initial_conf.o getting_nbd.o write_nbd.o generate_bubble_indices.o allocate_observables.o write_gss.o \
+	write_output_files.o boundary_condition.o George_Marsaglia.o update_spin_details.o Hamiltonian.o \
+	get_tot_energy.o get_tot_magnetisation.o fresh_spins.o  evaluate_observables.o \
+	Monte_Carlo.o mc.o get_moment_vectors.o  write_spins_at_K.o zeroes.o \
+	get_ovrr_vec.o overrelaxation.o graph.o get_staggered_info.o
+	
+
+ether: ../ether
+
+../ether: $(OBJS) ../src/ether.f90
+	$(f90comp) $(switch) $(OBJS) ../src/ether.f90 -o ../ether
+
+clean:
+	rm -f *.o *.mod *.MOD *.obj
+
+init.o: ../src/init.f90
+	$(f90comp) -c $(switch) ../src/init.f90
+
+lu.o: ../src/lu.f90
+	$(f90comp) -c $(switch) ../src/lu.f90
+
+get_random_num.o: ../src/get_random_num.f90
+	$(f90comp) -c $(switch) ../src/get_random_num.f90
+
+get_tot_species.o: ../src/get_tot_species.f90
+	$(f90comp) -c $(switch) ../src/get_tot_species.f90
+
+read_input.o: ../src/read_input.f90
+	$(f90comp) -c $(switch) ../src/read_input.f90
+
+startup.o: ../src/startup.f90
+	$(f90comp) -c $(switch) ../src/startup.f90
+
+read_structure.o: ../src/read_structure.f90
+	$(f90comp) -c $(switch) ../src/read_structure.f90
+
+get_nbd_extents.o: ../src/get_nbd_extents.f90
+	$(f90comp) -c $(switch) ../src/get_nbd_extents.f90
+
+generate_supercell.o: ../src/generate_supercell.f90
+	$(f90comp) -c $(switch) ../src/generate_supercell.f90
+
+get_random_indices.o: ../src/get_random_indices.f90
+	$(f90comp) -c $(switch) ../src/get_random_indices.f90
+
+perform_dopping.o: ../src/perform_dopping.f90
+	$(f90comp) -c $(switch) ../src/perform_dopping.f90
+
+j_values.o: ../src/j_values.f90
+	$(f90comp) -c $(switch) ../src/j_values.f90
+
+get_sia_values.o: ../src/get_sia_values.f90
+	$(f90comp) -c $(switch) ../src/get_sia_values.f90
+
+parameters.o: ../src/parameters.f90
+	$(f90comp) -c $(switch) ../src/parameters.f90
+
+write_initial_conf.o: ../src/write_initial_conf.f90
+	$(f90comp) -c $(switch) ../src/write_initial_conf.f90
+
+getting_nbd.o: ../src/getting_nbd.f90
+	$(f90comp) -c $(switch) ../src/getting_nbd.f90
+
+write_nbd.o: ../src/write_nbd.f90
+	$(f90comp) -c $(switch) ../src/write_nbd.f90
+
+generate_bubble_indices.o: ../src/generate_bubble_indices.f90
+	$(f90comp) -c $(switch) ../src/generate_bubble_indices.f90
+
+allocate_observables.o: ../src/allocate_observables.f90
+	$(f90comp) -c $(switch) ../src/allocate_observables.f90
+
+write_gss.o: ../src/write_gss.f90
+	$(f90comp) -c $(switch) ../src/write_gss.f90
+
+write_output_files.o: ../src/write_output_files.f90
+	$(f90comp) -c $(switch) ../src/write_output_files.f90
+
+boundary_condition.o: ../src/boundary_condition.f90
+	$(f90comp) -c $(switch) ../src/boundary_condition.f90
+
+George_Marsaglia.o: ../src/George_Marsaglia.f90
+	$(f90comp) -c $(switch) ../src/George_Marsaglia.f90
+
+update_spin_details.o: ../src/update_spin_details.f90
+	$(f90comp) -c $(switch) ../src/update_spin_details.f90
+
+Hamiltonian.o: ../src/Hamiltonian.f90
+	$(f90comp) -c $(switch) ../src/Hamiltonian.f90
+
+get_tot_energy.o: ../src/get_tot_energy.f90
+	$(f90comp) -c $(switch) ../src/get_tot_energy.f90
+
+get_tot_magnetisation.o: ../src/get_tot_magnetisation.f90
+	$(f90comp) -c $(switch) ../src/get_tot_magnetisation.f90
+
+fresh_spins.o: ../src/fresh_spins.f90
+	$(f90comp) -c $(switch) ../src/fresh_spins.f90
+
+evaluate_observables.o: ../src/evaluate_observables.f90
+	$(f90comp) -c $(switch) ../src/evaluate_observables.f90
+
+Monte_Carlo.o: ../src/Monte_Carlo.f90
+	$(f90comp) -c $(switch) ../src/Monte_Carlo.f90
+
+mc.o: ../src/mc.f90
+	$(f90comp) -c $(switch) ../src/mc.f90
+
+get_moment_vectors.o: ../src/get_moment_vectors.f90
+	$(f90comp) -c $(switch) ../src/get_moment_vectors.f90
+
+write_spins_at_K.o: ../src/write_spins_at_K.f90
+	$(f90comp) -c $(switch) ../src/write_spins_at_K.f90
+
+zeroes.o: ../src/zeroes.f90
+	$(f90comp) -c $(switch) ../src/zeroes.f90
+
+get_ovrr_vec.o: ../src/get_ovrr_vec.f90
+	$(f90comp) -c $(switch) ../src/get_ovrr_vec.f90
+
+overrelaxation.o: ../src/overrelaxation.f90
+	$(f90comp) -c $(switch) ../src/overrelaxation.f90
+
+graph.o: ../src/graph.f90
+	$(f90comp) -c $(switch) ../src/graph.f90
+
+get_staggered_info.o: ../src/get_staggered_info.f90
+	$(f90comp) -c $(switch) ../src/get_staggered_info.f90
+
+
+
+.PHONY: ether clean
