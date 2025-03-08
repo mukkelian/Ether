@@ -18,7 +18,7 @@
         program structure_factor
 
 	implicit none
-        integer :: nscan, sc_a, sc_b, sc_c, atom_count, count, &
+        integer :: nscan, sc(3), lattice_per_unit_cell, count, &
 		i, j, k, l, ii, jj, kk, ll, nscan_qvec, iscan_qvec, total_ions, &
 		p, p_, n_species, nbd_cell_x, nbd_cell_y, nbd_cell_z, fromx, &
         	fromy, fromz, tox, toy, toz
@@ -40,33 +40,33 @@
 	print*, ''
 	inquire(file='in_SF.ether', exist=file_present)
 	if(.not.file_present) then
-		write(*, *) "==> 'input.ether' is not present"
+		write(*, *) "==> 'in_SF.ether' is not present"
 		write(*, *) "	  STOPPING now"
 		write(*, *) ""
 		stop
 	end if
 
-	if(file_present) print*, "'input.ether' file is found, now reading..."
+	if(file_present) print*, "'in_SF.ether' file is found, now reading..."
 
         open(unit=0, file='in_SF.ether', status='old', action='read')
         open(unit=1, file='piller.ether', status='unknown')
         open(unit=2,file='outputSF.dat', status='unknown',&
         action='write')
 	open(unit=3, file='plot_sf.sh', status='unknown', action='write')
-        open(unit=10010, file='gss.dat', status='old', action='read')
+        open(unit=4, file='gss.dat', status='old', action='read')
 
-        read(10010, *) nscan, sc_a, sc_b, sc_c
-        read(10010, *) nbd_cell_x, nbd_cell_y, nbd_cell_z
-        read(10010, *) fromx, fromy, fromz, tox, toy, toz		
-	read(10010, *) atom_count, n_species, h_t, l_t, t_int
-	read(10010, *) lbl
+        read(4, *) nscan, sc
+        read(4, *) nbd_cell_x, nbd_cell_y, nbd_cell_z
+        read(4, *) fromx, fromy, fromz, tox, toy, toz		
+	read(4, *) lattice_per_unit_cell, n_species, h_t, l_t, t_int
+	read(4, *) lbl
 
         allocate(ionn(n_species))
-        read(10010, *) (ionn(i), i = 1, n_species)
+        read(4, *) (ionn(i), i = 1, n_species)
         structure : do i = 1,3
-        	read(10010,*) (a(i,j), j = 1,3) !lattice vectors
+        	read(4,*) (a(i,j), j = 1,3) !lattice vectors
         end do structure
-        allocate( ion(0:6, sc_a+2*nbd_cell_x, sc_b+2*nbd_cell_y, sc_c+2*nbd_cell_z, atom_count) )
+        allocate(ion(0:6, sc(1)+2*nbd_cell_x, sc(2)+2*nbd_cell_y, sc(3)+2*nbd_cell_z, lattice_per_unit_cell) )
 
         read(0, *) dx, dy, dz   ! directions
         read(0, *) deg
@@ -99,12 +99,14 @@
         light = (/ dx, dy, dz/)
 
         ! READING LATTICES
-        read(10010,*)
-        do k = 1, sc_c + 2*nbd_cell_x
-                do j = 1, sc_b + 2*nbd_cell_y
-                        do i = 1, sc_a + 2*nbd_cell_z
-                                do l = 1, atom_count
-                                        read(10010,*) ion(4:6, i, j, k, l), ion(0, i, j, k, l)
+        read(4,*)
+	do l = 1, lattice_per_unit_cell
+		do k = 1, sc(3) + 2*nbd_cell_z
+			do j = 1, sc(2) + 2*nbd_cell_y
+				do i = 1, sc(1) + 2*nbd_cell_x
+
+                                        read(4,*) ion(4:6, i, j, k, l), ion(0, i, j, k, l)
+
                                 end do
                         end do
                 end do
@@ -120,17 +122,17 @@
 
         !SEARCHING LATTICE POINTS ALONG GIVEN DIRECTION
 	count = 0; p_ = 0
-        do i = fromx, tox
-                do j = fromy, toy
-                        do k = fromz, toz
-                                do l = 1, atom_count
+	do l = 1, lattice_per_unit_cell
+		do k = fromz, toz
+			do j = fromy, toy
+			        do i = fromx, tox
 
         lp1(1:3) = ion(4:6, i, j, k, l)
 	p = 0
-        do ii = fromx, tox
-                do jj = fromy, toy
-                        do kk = fromz, toz
-                                do ll = 1, atom_count
+	do ll = 1, lattice_per_unit_cell
+		do kk = fromz, toz
+			do jj = fromy, toy
+			        do ii = fromx, tox
 
 	        lp2(1:3) = ion(4:6, ii, jj, kk, ll)
 
@@ -187,13 +189,15 @@
 
         reading_files : do kk = 1, nscan
 
-        read(10010, *) temp
+        read(4, *) temp
 
-	do k = 2, sc_c + 1
-		do j = 2, sc_b + 1
-			do i = 2, sc_a + 1
-				do l = 1, atom_count
-					read(10010,*) ion(1:3, i, j, k, l)
+       	do l = 1, lattice_per_unit_cell
+       		do k = fromz, toz
+       			do j = fromy, toy
+				do i = fromx, tox
+				
+					read(4,*) ion(1:3, i, j, k, l)
+
 				end do
 			end do
 		end do
