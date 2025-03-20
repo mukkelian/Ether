@@ -24,7 +24,7 @@
 	implicit none
 
 	if (para) then
-		lbl = ' KbT/J'
+		lbl = ' kBT/J'
 		j_exc = j_exc/para_value
 		if(single_ion_anisotropy.and..not.Ising) sia_vec = sia_vec/para_value
 		kb = real(1.0, dp)
@@ -42,12 +42,12 @@
 		if(rank == 0) then
                 write(6, *) ''
                 write(6, *) "REMEMBER! 	For 'J in meV' case."
-                write(6, *) '		ALL variables should be provided in the terms of milli orders (meV), '
-                write(6, *) "		in 'input' file. eg., for 1meV put only 1 not 0.001"
+                write(6, *) '		ALL variables should be provided in terms of milli orders (meV), '
+                write(6, *) "		in the 'input' file. e.g., for 1meV, put only 1, not 0.001"
                 write(6, *) ''
                 write(6, *) '		*******************************'
                 write(6, *) "		KINDLY CHECK THE 'input' FILE"
-                write(6, *) '		(IGNOR, if it is already DONE!)'
+                write(6, *) '		(IGNORE, if it is already DONE!)'
                 write(6, *) '		*******************************'
                 write(6, *) ''
                 end if
