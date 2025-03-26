@@ -47,8 +47,8 @@
        	write(gss_ID, '(A20)') lbl
        	write(gss_ID, '(10I8)') tions(1:)
 	do i = 1,3
-		write(gss_ID,'(3f10.5)') (abc(i,j), j= 1,3)
-	enddo
+		write(gss_ID,'(f10.5,1x,f10.5,1x,f10.5)') (abc(i,j), j= 1,3)
+	end do
 	write(gss_ID,*) '# lattice points'
 	do l = 1, lattice_per_unit_cell
 		do k = 1, sc(3) + 2*nbd_cell_z
