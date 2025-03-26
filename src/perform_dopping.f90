@@ -25,16 +25,18 @@
 
 	integer :: eof, IDs_to_interchange(2,nspecies), dopant, &
 		ID_to_dope, dopant_ID, i, j, k, l, &
-		available_sites_to_dope, total_sites_to_dope, ith_dope
+		total_sites_to_dope, ith_dope
+	integer, allocatable :: dope_occupancy(:, :, :, :), available_sites_to_dope(:)
 
 	real(dp) :: dopants_spin, doping_ratio, dopants_spin_val(maxium_dopants)
 	real(dp), allocatable :: s_dummy(:)
 
 	character(len=80) :: text
-	character(len=2) :: dope_at_species, dope_with_species, dopants_species(maxium_dopants)
+	character(len=2) :: dope_at_species, dope_with_species, &
+		dopants_species(maxium_dopants)
 	character(len=2), allocatable :: species_dummy(:)
 
-	logical :: file_present
+	logical :: file_present, dope_at_species_present, dope_with_species_present
 
 	dopants_species = ''
 	dopants_spin_val = real(0.0, dp)
@@ -52,16 +54,29 @@
 
 	open(unit=1, file='dopants', status='old', action='read')
 	if (rank == 0) write(6, *) "==> Reading list of dopants"
+	if (rank == 0) write(6, *) ''
 
 	dopant = nspecies
 	IDs_to_interchange = 0
 	ndope = 0
+
+	allocate(dope_occupancy(fromx:tox, fromy:toy, fromz:toz, lattice_per_unit_cell))
+	dope_occupancy = 0	! 0 for not dopped, 1 for dopped
+
+	allocate(available_sites_to_dope(0:nspecies))
+	available_sites_to_dope = product(sc)*ions
+
 	reading_dopants_list: do
 	read(1, '(a)', end=10) text
 
 	read(text, *) dope_at_species, dope_with_species, dopants_spin, doping_ratio
 
-	if(any(dope_at_species.ne.species(1:))) then
+	dope_at_species_present = .FALSE.
+	do i = 1, nspecies
+		if(dope_at_species.ne.species(i)) dope_at_species_present = .TRUE.
+	end do
+
+	if(.not.dope_at_species_present) then
 		if (rank == 0) then
 			write(6, *) "==> Magnetic ion at which doping will be performed"
 			write(6, *) "    should be present in the 'structure.vasp' file."
@@ -78,7 +93,13 @@
 		ID_to_dope = findloc(species, value=dope_at_species, dim=1)
 		ID_to_dope = ID_to_dope - 1
 		IDs_to_interchange(1, ID_to_dope) = ID_to_dope
-		if(any(dope_with_species.eq.species(1:))) then
+		
+		dope_with_species_present = .FALSE.
+		do i = 1, nspecies
+			if(dope_with_species.ne.species(i)) dope_with_species_present = .TRUE.
+		end do
+
+		if(dope_with_species_present) then
 			dopant_ID = findloc(species, value=dope_with_species, dim=1)
 			dopant_ID = dopant_ID - 1
 			IDs_to_interchange(2, ID_to_dope) = dopant_ID
@@ -90,27 +111,19 @@
 			IDs_to_interchange(2, ID_to_dope) = dopant
 		end if
 
-		available_sites_to_dope = 0
-		do l = 1, lattice_per_unit_cell
-			do k = fromz, toz
-				do j = fromy, toy
-					do i = fromx, tox
+		total_sites_to_dope = nint(doping_ratio*available_sites_to_dope(ID_to_dope))
 
-		if(int(ion(4, i, j, k, l)).eq.IDs_to_interchange(1, ID_to_dope)) then
-			available_sites_to_dope = available_sites_to_dope + 1
-		end if
-					end do
-				end do
-			end do
-		end do
+		if (rank == 0) write(6, "(' 	Total ',i5,1x,A2,' ions will be dope with-in ',i5, 1x,A2,' sites')") &
+			total_sites_to_dope, dope_with_species, available_sites_to_dope(ID_to_dope), &
+			dope_at_species
 
-		total_sites_to_dope = nint(doping_ratio*available_sites_to_dope)
-		if (rank == 0) write(6, "(' ==> Total sites for dopping ',A2,' are:',i6)") &
-			dope_with_species, total_sites_to_dope
 		ith_dope = 0
 		dopping_sites: do
+
 			call get_random_indices(i, j, k, l)
-			if(int(ion(4, i, j, k, l)).eq.IDs_to_interchange(1, ID_to_dope)) then
+			if(int(ion(4, i, j, k, l)).eq.IDs_to_interchange(1, ID_to_dope).and.&
+				dope_occupancy(i, j, k, l).eq.0) then
+				dope_occupancy(i, j, k, l) = 1	! Now occupied
 				ion(4, i, j, k, l) = IDs_to_interchange(2, ID_to_dope)
 				ith_dope = ith_dope + 1
 			end if
@@ -131,6 +144,9 @@
 	end do reading_dopants_list
 10	close(1)
 
+	if (rank == 0) write(6, *) ''
+
+	tions = available_sites_to_dope
 	if(dopant.gt.nspecies) then
 
 		allocate(s_dummy(nspecies), species_dummy(0:nspecies))
@@ -171,5 +187,6 @@
 		deallocate(s_dummy, species_dummy)
 	end if
 
+		deallocate(dope_occupancy)
 
 	end subroutine perform_dopping
