@@ -47,7 +47,7 @@
 			call lu(ab(2:2), ab(2:2), 'L' )
 			atom1 = ab
 
-			if (rank == 0) write(6, "(4X,A4,3f10.3)") atom1, sia_vec(1:3, i)
+			if (rank == 0) write(6, "(4X,A4,f10.3,1x,f10.3,1x,f10.3)") atom1, sia_vec(1:3, i)
 
 			do j = 1, nspecies
 				if (atom1.eq.species(j)) then
