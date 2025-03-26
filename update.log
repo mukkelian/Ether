@@ -2,6 +2,11 @@ Current status: stable
 
 Included:
 
+v 4.0.0
+	> Inpur information can be feeded randomly without any restriction or ordering.
+	> Bud associated to the single ion anisotropy term is eliminated
+	> Advance feature is added and new input tags are introduced
+
 v 3.5.0
 	> New dopping feature is included.
 	> Few subroutines are modified
