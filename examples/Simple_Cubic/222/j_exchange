@@ -1,3 +1,0 @@
-2			! no. of distinct bond
-5.0 1			! bond length, no. of similar bonds
-A A -3 1 1 1		! ith ion, jth ion, j_value, anisotropy (Jxx, Jyy, Jzz)
