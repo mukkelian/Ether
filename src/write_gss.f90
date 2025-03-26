@@ -45,7 +45,7 @@
        	write(gss_ID, '(I5,1x, I5, f11.5, 1x, f11.5, 1x, f11.5,1x, A6)') &
        		lattice_per_unit_cell, nspecies, ht, lt, tint
        	write(gss_ID, '(A20)') lbl
-       	write(gss_ID, '(10I5)') tions(1:)
+       	write(gss_ID, '(10I8)') tions(1:)
 	do i = 1,3
 		write(gss_ID,'(3f10.5)') (abc(i,j), j= 1,3)
 	enddo
