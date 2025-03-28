@@ -75,7 +75,7 @@
 			do j = fromy, toy
 				do i = fromx, tox
 
-			write(gss_ID, '(f11.6, 1x, f11.6, 1x, f11.6,1X, i8, 1x, i8)') &
+			write(gss_ID, '(f11.6, 1x, f11.6, 1x, f11.6,1X, i8)') &
 			global_spn(m + 1 + lspn), global_spn(m + 2 + lspn), &
 			global_spn(m + 3 + lspn), int(global_spn(m + 4 + lspn))
 			m = m + 4
