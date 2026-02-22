@@ -28,7 +28,7 @@
 	integer :: tmcs, tmcs_eq, n_speci_incl, sc(3), repeat, repeati, &
 		ovrr_steps, ovrr_MCS, optbeta, nspecies, total_ions_per_cell, &
 		no_of_nbd, j_ID(2), similar_bonds, num_of_threads, total_lattice_sites, &
-		lattice_per_unit_cell, nscan, nbd_cell_x, nbd_cell_y, nbd_cell_z, &
+		lattice_per_unit_cell, nscan, nbd_extent_x, nbd_extent_y, nbd_extent_z, &
 		total_ions, fromx, fromy, fromz, tox, toy, toz, total_calculations, itemp, &
 		spin_file_ID, gss_ID, acceptance_counting, acceptance_count, ndope = 0, &
 		seed_value, maxium_dopants = 100
@@ -43,13 +43,13 @@
 		s_eng_avg, s_eng2_avg, e_eng2_avg, s_U_eng, s_cv, &
 		s_mag_avg, s_mag2_avg, e_mag2_avg, s_U_mag, s_chi, &
 		net_mag(3), err_U_mag, err_chi, err_mag_avg, err_U_eng, err_cv, &
-		err_eng_avg, ovrr_para
+		err_eng_avg, ovrr_para, SCabc(3, 3)
 
         integer, allocatable :: ions(:), tions(:), nn(:,:,:,:), bblx(:), bbly(:), bblz(:), &
         	seed(:)
 
         real(dp), allocatable :: x(:), y(:), z(:), s(:), nbd_dis(:), &
-        	j_exc(:,:,:,:), sia_vec(:, :), stgg(:), stgg_ion(:), ion(:, :, :, :, :), &
+        	j_exc(:,:,:,:), sia_vec(:, :), stgg(:), stgg_ion(:), ion(:, :), &
         	e_mag_avg(:), e_U_mag(:), e_chi(:), e_eng_avg(:), e_U_eng(:), e_cv(:), &
         	mm_vector(:, :), &
 		temp_T(:), s_mag_avg_T(:), s_chi_T(:), err_mag_avg_T(:), err_chi_T(:), &

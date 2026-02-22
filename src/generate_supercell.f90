@@ -82,7 +82,7 @@
 	! Getting total lattice per unit cell, which will be used for MC calculations
 	lattice_per_unit_cell = 0
 	inclusion : do i = 1, n_speci_incl
-		do j =1, nspecies
+		do j = 1, nspecies
 			
 		if (species_to_include(i).eq.species(j)) then
 		do k = sum(ions(0:j-1))+1, sum(ions(0:j))
@@ -99,21 +99,23 @@
 	deallocate(atom)
 
 	! EXPANDING INTO SUPERCELL
-	allocate(ion(0:8, sc(1) + 2*nbd_cell_x, sc(2) + 2*nbd_cell_y, &
-		sc(3) + 2*nbd_cell_z, lattice_per_unit_cell))
+	allocate(ion(0:8, product(sc)*lattice_per_unit_cell))
 	s_count = 0; ion = 0
 
-	do l = 1, lattice_per_unit_cell
-		do k = 1, sc(3) + 2*nbd_cell_z
-			do j = 1, sc(2) + 2*nbd_cell_y
-				do i = 1, sc(1) + 2*nbd_cell_x
+	! Simulation box start from_ till to_
+	fromx = 1; tox = sc(1)
+	fromy = 1; toy = sc(2)
+	fromz = 1; toz = sc(3)
+
+	do k = fromz, toz
+		do j = fromy, toy
+			do i = fromx, tox
+				do l = 1, lattice_per_unit_cell
 			
-
-
 		s_count = s_count +1				! Counting total no. of ions in supercell
-		ion(0, i, j, k, l) = s_count			! ID
-		ion(1:5, i, j, k, l) = ar(l, 1:5)		! Sx, Sy, Sz, species no. & phi
-		ion(6:8, i, j, k, l) = abc(1, 1:3)*(i - 1) &	! co-ordinates
+		ion(0, s_count) = s_count			! ID
+		ion(1:5, s_count) = ar(l, 1:5)		! Sx, Sy, Sz, species no. & phi
+		ion(6:8, s_count) = abc(1, 1:3)*(i - 1) &	! co-ordinates
 					+ abc(2, 1:3)*(j - 1) + abc(3, 1:3)*(k - 1) &
 					+ ar(l, 6:8)
 
@@ -130,12 +132,9 @@
 
 	allocate(tions(0:nspecies))
 	tions = 0	! total ions in simulation box w.r.t. species
-	do l = 1, lattice_per_unit_cell
-		do k = fromz, toz
-			do j = fromy, toy
-				do i = fromx, tox
+	do i = 1, total_ions
 
-		tions(int(ion(4, i, j, k, l))) = tions(int(ion(4, i, j, k, l))) + 1
+		tions(int(ion(4, i)) = tions(int(ion(4, i))) + 1
 
 				end do
 			end do

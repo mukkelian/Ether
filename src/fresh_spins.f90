@@ -23,24 +23,18 @@
 	
 		implicit none
 	
-		integer :: i, j, k, l
+		integer :: i
 		real(dp) :: S_vec_previous(5), S_vec_updated(5)
 
 		S_vec_previous = 0; S_vec_updated = 0
 
-		do i = fromx, tox
-			do j = fromy, toy
-				do k = fromz, toz
-					do l = 1, lattice_per_unit_cell
+		do i = 1, total_ions
 
-					S_vec_previous = ion(1:5, i, j, k, l)
+			S_vec_previous = ion(1:5, i)
 
-					call update_spin_details(S_vec_previous, S_vec_updated)
-					ion(1:5, i, j, k, l) = S_vec_updated
+			call update_spin_details(S_vec_previous, S_vec_updated)
+			ion(1:5, i) = S_vec_updated
 
-					end do
-				end do
-			end do
 		end do
 
 	end subroutine fresh_spins

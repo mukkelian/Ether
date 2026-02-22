@@ -19,27 +19,22 @@
 
 	subroutine get_moment_vectors
 
-		use init
+	use init
 
-		implicit none
+	implicit none
 		
-		integer :: i, j, k, l
+	integer :: i
 		
-		mm_vector = 0
+	mm_vector = 0
 
-		do l = 1, lattice_per_unit_cell
-			do k = fromz, toz
-				do j = fromy, toy
-					do i = fromx, tox
+	do i = 1, total_ions
 
-		! moment vectors for each magentic ion
-		mm_vector(int(ion(4, i, j, k, l)), 1:3) = &
-		mm_vector(int(ion(4, i, j, k, l)), 1:3) &
-		+ ion(1:3, i, j, k, l)*s(int(ion(4, i, j, k, l)))
+	! moment vectors for each magentic ion
+	mm_vector(int(ion(4, i)), 1:3) = &
+		mm_vector(int(ion(4, i)), 1:3) &
+		+ ion(1:3, i)*s(int(ion(4, i)))
 
-					end do
-				end do
-			end do
-		end do
+
+	end do
 
 	end subroutine get_moment_vectors

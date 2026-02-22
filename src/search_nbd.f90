@@ -17,45 +17,46 @@
 ! You should have received a copy of the GNU General Public License
 ! along with this program; if not, see https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
-	subroutine generate_bubble_indices
+	subroutine search_nbd(pos0, pos1, captured)
 
-		use init
-	    
-		implicit none
-	    
-		allocate(bblx(sc(1)), bbly(sc(2)), bblz(sc(3)))
+	use init
 
-		bblx = 0; bbly = 0; bblz = 0
+	implicit none
 
-		call get_index(bblx, nbd_cell_x + 1, fromx, tox)
-		call get_index(bbly, nbd_cell_y + 1, fromy, toy)
-		call get_index(bblz, nbd_cell_z + 1, fromz, toz)
+	real(dp), intent (in), dimension(3) :: pos0, pos1
+	real(dp) :: R_vec(3), distance, ion_pos(3)
+	integer :: shift(3), i, j, k, ii, jj, kk
+	logical, intent (out) :: captured
 
-	contains
+	captured = .FALSE.
+	to_x = 3; to_y = 3; to_z = 3 
 	
-	subroutine get_index(indices, stepi, from, to)
-	
-		implicit none
+	if(bc(1).eq.'o') to_x = 1
+	if(bc(2).eq.'o') to_y = 1
+	if(bc(3).eq.'o') to_z = 1
 
-		integer :: i, j, k, extension
-		integer, intent(in) :: stepi, from, to
-		integer, allocatable, intent(out) :: indices(:)
+	shift = (/0, 1, -1/)
+	do i = 1, to_x
+	ii = shift(i)
+		do j = 1, to_y
+		jj = shift(j)
+			do k = 1, to_z
+			kk = shift(k)
 
-		extension = to - from + 1
-		allocate(indices(extension))
-		j = from; k = 0
-		do i = 1, extension
+	ion_pos = SCabc(1, 1:3)*ii &
+		+ SCabc(2, 1:3)*jj &
+		+ SCabc(3, 1:3)*kk &
+		+ pos1(1:3)
 
-			indices(i) = j + stepi*k
-			 k = k + 1
-			if(indices(i).gt.to) then
-				j = j + 1; k = 0
-				indices(i) = j
-				k = k + 1
-			end if
+	R_vec = pos0 - ion_pos
+	distance = sqrt(dot_product(R_vec, R_vec))
+	if(distance.le.nbd_finding_criteria) then
+		captured = .TRUE.
+		return
+	end if
 
+			end do
 		end do
+	end do
 
-	end subroutine get_index
-	
-	end subroutine generate_bubble_indices
+	end subroutine search_nbd

@@ -24,39 +24,31 @@
 
 	implicit none
 
-	integer :: i, j, k, l, stg
+	integer :: i, stg
 	real(dp), intent(out) :: magnetisation(3)
 	real(dp) :: temp_magnetisation(3)
 
 	magnetisation = real(0, dp)
 	call omp_set_nested(.true.)
 
-	!$OMP PARALLEL DEFAULT(SHARED) PRIVATE(i, j, k, l, stg, temp_magnetisation) &
+	!$OMP PARALLEL DEFAULT(SHARED) PRIVATE(i, stg, temp_magnetisation) &
 	!$OMP& REDUCTION(+:magnetisation)  ! Reduction on all elements of the magnetisation array
 
 	temp_magnetisation = real(0, dp)
 
 	!$OMP DO SCHEDULE(DYNAMIC) COLLAPSE(3)
-	do k = fromz, toz
-		do j = fromy, toy
-			do i = fromx, tox
+	do i = 1, total_ions
 
-			do l = 1, lattice_per_unit_cell
+		! Get the stg value depending on the 'staggered' flag
+		if (staggered .eqv. .TRUE.) then
+			stg = stgg_ion(l)
+		else
+			stg = 1
+		end if
 
-			! Get the stg value depending on the 'staggered' flag
-			if (staggered .eqv. .TRUE.) then
-				stg = stgg_ion(l)
-			else
-				stg = 1
-			end if
+		temp_magnetisation(1:3) = temp_magnetisation(1:3) + &
+			stg*ion(1:3, i)*s(int(ion(4, i)))
 
-			temp_magnetisation(1:3) = temp_magnetisation(1:3) + &
-				stg*ion(1:3, i, j, k, l)*s(int(ion(4, i, j, k, l)))
-
-               		end do
-
-			end do
-		end do
 	end do
 	!$OMP END DO
 

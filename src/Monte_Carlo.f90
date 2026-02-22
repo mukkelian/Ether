@@ -24,7 +24,7 @@
 
 	implicit none
 
-	integer :: i, j, k, ith, jth, kth, lth
+	integer :: i
 	real(dp) :: S_vec_previous(5), S_vec_updated(5), &
 		total_eng, eta
 	integer, intent(out) :: accept_count
@@ -32,28 +32,20 @@
 	accept_count = 0
 	call omp_set_nested(.true.)
 
-	!$OMP PARALLEL DEFAULT(SHARED) PRIVATE(i, j, k, ith, jth, kth, lth, &
+	!$OMP PARALLEL DEFAULT(SHARED) PRIVATE(i, &
 	!$OMP& S_vec_previous, S_vec_updated, total_eng, eta)
 
 	!$OMP DO SCHEDULE(DYNAMIC) COLLAPSE(3)
-	do i = 1, sc(1)
-		do j = 1, sc(2)
-			do k = 1, sc(3)
-
-		ith = bblx(i)
-		jth = bbly(j)   
-		kth = bblz(k)   
-
-		do lth = 1, lattice_per_unit_cell
+	do i = 1, total_ions
 
 		! Copy current spin state
-		S_vec_previous(1:5) = ion(1:5, ith, jth, kth, lth)
+		S_vec_previous(1:5) = ion(1:5, i)
 
 		! Update spin details
 		call update_spin_details(S_vec_previous, S_vec_updated)
 
 		! Calculate energy from Hamiltonian
-		call Hamiltonian(.TRUE., ith, jth, kth, lth, S_vec_updated(1:3), &
+		call Hamiltonian(.TRUE., i, S_vec_updated(1:3), &
 				S_vec_previous(1:3), total_eng)
 
 		! Get random number for Metropolis criterion
@@ -61,13 +53,12 @@
 
 		! Metropolis acceptance algorithm
 		if (exp(-beta*total_eng) .gt. eta) then
-		ion(1:5, ith, jth, kth, lth) = S_vec_updated(1:5)
+		ion(1:5, i) = S_vec_updated(1:5)
 
 		!$OMP ATOMIC
 		accept_count = accept_count + 1
 		!$OMP END ATOMIC
-                        
-	                call boundary_condition(ith, jth, kth, lth)
+
 		end if
 
 		end do

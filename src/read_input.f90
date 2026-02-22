@@ -129,8 +129,6 @@
 		case("seed")
 			read(value, *) seed_value
 			seed = seed_value
-		case("dope")
-			read(value, *) dope
 
 		case default
 				print*, ''

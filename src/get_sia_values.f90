@@ -41,7 +41,8 @@
 		if (rank == 0) write(6, *) ''
   		sia_vec = 0.0_dp
 		do i = 1, nspecies
-			read(10011, *, end=10) atom1, sia_vectors(1:3)	! Single Ion Anisotropy (SIA) vector in the unit of meV
+			! Single Ion Anisotropy (SIA) vector in the unit of meV
+			read(10011, *, end=10) atom1, sia_vectors(1:3)
 			sia_vec(1:3, i) = sia_vectors(1:3)
 			ab = atom1
 			call lu(ab(1:1), ab(1:1), 'U' )

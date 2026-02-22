@@ -24,25 +24,21 @@
 
 	implicit none
 
-	integer :: i, j, k, l
+	integer :: i
 	real(dp), intent(out) :: toten
 	real(dp) :: partial_toten, Spin_vec(3)
 
 	toten = 0.0
 	call omp_set_nested(.true.)
 
-	!$OMP PARALLEL DEFAULT(SHARED) PRIVATE(i, j, k, l, Spin_vec, partial_toten) REDUCTION(+:toten)
+	!$OMP PARALLEL DEFAULT(SHARED) PRIVATE(i, Spin_vec, partial_toten) REDUCTION(+:toten)
 	!$OMP DO SCHEDULE(DYNAMIC) COLLAPSE(3)
-	do k = fromz, toz
-		do j = fromy, toy
-			do i = fromx, tox
-
-		do l = 1, lattice_per_unit_cell
+	do i = 1, total_ions
 			! Get spin vector from the ion array
-			Spin_vec(1:3) = ion(1:3, i, j, k, l)
+			Spin_vec(1:3) = ion(1:3, i)
 
 			! Calculate partial energy for this spin
-			call Hamiltonian(.FALSE., i, j, k, l, Spin_vec, Spin_vec, partial_toten)
+			call Hamiltonian(.FALSE., i, Spin_vec, Spin_vec, partial_toten)
 
 			! Accumulate the total energy
 			toten = toten + partial_toten

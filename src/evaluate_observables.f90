@@ -23,7 +23,7 @@
 
 		implicit none
 		
-		integer :: i, j, k, l, m
+		integer :: i, m
 		real(dp) :: mag_value, U_mag, chi, U_eng, cv, repeat_1, mag_per_site, &
 			eng_per_site
 		
@@ -163,20 +163,14 @@
 			end do
 			
 			m = 0
-			do i = fromx, tox
-				do j = fromy, toy
-					do k = fromz, toz
-						do l = 1, lattice_per_unit_cell
+			do i = 1, total_ions
 
-				local_spn(m + 1 + li_spn) = ion(1, i, j, k, l)*s(int(ion(4, i, j, k, l)))
-				local_spn(m + 2 + li_spn) = ion(2, i, j, k, l)*s(int(ion(4, i, j, k, l)))
-				local_spn(m + 3 + li_spn) = ion(3, i, j, k, l)*s(int(ion(4, i, j, k, l)))
-				local_spn(m + 4 + li_spn) = ion(4, i, j, k, l)
+				local_spn(m + 1 + li_spn) = ion(1, i)*s(int(ion(4, i)))
+				local_spn(m + 2 + li_spn) = ion(2, i)*s(int(ion(4, i)))
+				local_spn(m + 3 + li_spn) = ion(3, i)*s(int(ion(4, i)))
+				local_spn(m + 4 + li_spn) = ion(4, i)
 				m = m + 4
 
-						end do
-					end do
-				end do
 			end do
 
 		case('write')

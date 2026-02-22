@@ -17,42 +17,20 @@
 ! You should have received a copy of the GNU General Public License
 ! along with this program; if not, see https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
-	subroutine get_random_indices(ith, jth, kth, lth)
-
-	use init
+	subroutine get_random_indices(n, ith)
 
 	implicit none
 
-	integer, intent(out) :: ith, jth, kth, lth
+	integer, intent(in) :: n
+	integer, intent(out) :: ith
 
 	real(dp) :: rn
 
-        call get_random_num(fromx*real(1, dp), tox*real(1, dp), rn); ith = nint(rn)	
-        if(ith.lt.fromx) then
-        	ith = fromx
-        elseif(ith.gt.tox)then
-        	ith = tox
-        end if
-
-        call get_random_num(fromy*real(1, dp), toy*real(1, dp), rn); jth = nint(rn)
-        if(jth.lt.fromy) then
-        	jth = fromy
-        elseif(jth.gt.toy)then
-        	jth = toy
-        end if
-
-        call get_random_num(fromz*real(1, dp), toz*real(1, dp), rn); kth = nint(rn)
-        if(kth.lt.fromz) then
-        	kth = fromz
-        elseif(kth.gt.toz)then
-        	kth = toz
-        end if
-	
-        call get_random_num(real(1, dp), lattice_per_unit_cell*real(1, dp), rn); lth = nint(rn)
-        if(lth.lt.1) then
-        	lth = 1
-        elseif(lth.gt.(lattice_per_unit_cell))then
-        	lth = lattice_per_unit_cell
+        call get_random_num(1*real(1, dp), n*real(1, dp), rn); ith = nint(rn)	
+        if(ith.lt.1) then
+        	ith = 1
+        elseif(ith.gt.n)then
+        	ith = n
         end if
 
 	end subroutine get_random_indices

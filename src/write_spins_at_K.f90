@@ -24,7 +24,7 @@
 		implicit none
 
 		integer, intent(in) :: tempi
-		integer :: i, j, k, l, sce(3)
+		integer :: i, sce(3)
 
 		if(initiate_spin_files) then
 
@@ -54,22 +54,15 @@
 		end if
 
 		! SPINS
-		do l = 1, lattice_per_unit_cell
-			do k = fromz, toz
-				do j = fromy, toy
-					do i = fromx, tox
+		do i = 1, total_ions
 
+		if (ion(4, i).ne.0) then
 
-		if (ion(4, i, j, k, l).ne.0) then
-
-			write(spin_file_ID, 101) species(int(ion(4, i, j, k, l))), &
-			ion(6:8, i, j, k, l), ion(1:3, i, j, k, l)
+			write(spin_file_ID, 101) species(int(ion(4, i))), &
+			ion(6:8, i), ion(1:3, i)
 
 		end if
 
-					end do
-				end do
-			end do
 		end do
 101	   	format(A5,7f13.7)
 

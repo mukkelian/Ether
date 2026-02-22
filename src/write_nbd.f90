@@ -23,7 +23,7 @@
 
 		implicit none
 	
-		integer :: i, j, k, l, m
+		integer :: i, m
 
 		open(unit=2, file='nbd.dat', status='unknown')
 		write(6, *) "==> Neighbourhood informations are writing into the 'nbd.dat' file"
@@ -34,28 +34,23 @@
 		write(2, *) "Check nbd's details by clicking the <Atom Info> (at bottom) and see the 'Selected Atom No.' informations. "
 		write(2, *) ''
 
-		nbd_inf : do l = 1, lattice_per_unit_cell
-				do k = 1, sc(3) + 2*nbd_cell_z
-					do j = 1, sc(2) + 2*nbd_cell_y
-	                    do i = 1, sc(1) + 2*nbd_cell_x
+		nbd_inf : do i = 1, total_ions
 
-						write(2,10) int(ion(0, i, j, k, l))
-						write(2,*)"~~~~~~~~~~~~~~"
+			write(2,10) int(ion(0, i))
+			write(2,*)"~~~~~~~~~~~~~~"
  
-						nbd_write : do m = 1, no_of_nbd
-							write(2, 11) m, &
-							nn(m, int(ion(0, i, j, k, l)), &
-							1:nn(m, int(ion(0, i, j, k, l)), 0, 0), &
-							 0)
+			nbd_write : do m = 1, no_of_nbd
+				write(2, 11) m, &
+				nn(m, int(ion(0, i)), &
+				1:nn(m, int(ion(0, i)), 0, 0), &
+				 0)
 
 10	      	format(" ION no. ",i5)
 11      	format(" For bond length no. ",i2," nbds are ==> "20i7)
-						end do nbd_write
+			end do nbd_write
 
-						write(2,*)''
-                        end do
-					end do
-				end do
+			write(2,*)''
+
 		end do nbd_inf
 
 		close(2)

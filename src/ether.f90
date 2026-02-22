@@ -63,16 +63,13 @@
 	if (rank == 0) call startup(start)
 	call read_structure(nspecies, total_ions_per_cell, lp, abc, &
 		x, y, z, ions, species, rank)
-	call get_nbd_extents
 	call generate_supercell
-	if(dope) call perform_dopping
 	call j_values
 	call get_sia_values
 	call parameters
 	if (rank == 0) call write_initial_conf
 	call getting_nbd
 	if (rank == 0) call write_nbd
-	call generate_bubble_indices
 
 	! Total temperature count
 	nscan = nint((ht - lt) / (tint)) + 1

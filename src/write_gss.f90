@@ -23,7 +23,7 @@
 		
 	implicit none
 		
-	integer :: i, j, k, l, m
+	integer :: i, m
 	integer, intent(in) :: tempi
 	gss_ID = 10009
 
@@ -39,7 +39,6 @@
 
 	! STORING crystal information in GSS (Ground Spin States)
        	write(gss_ID, '(I5,1x, I5, 1x, I5, 1x, I5)') nscan, sc
-       	write(gss_ID, '(I5,1x, I5, 1x, I5)') nbd_cell_x, nbd_cell_y, nbd_cell_z
        	write(gss_ID, '(I5,1x, I5, 1x, I5, 1x, I5, 1x, I5, 1x, I5)') fromx, &
        		fromy, fromz, tox, toy, toz
        	write(gss_ID, '(I5,1x, I5, f11.5, 1x, f11.5, 1x, f11.5,1x, A6)') &
@@ -50,17 +49,11 @@
 		write(gss_ID,'(f10.5,1x,f10.5,1x,f10.5)') (abc(i,j), j= 1,3)
 	end do
 	write(gss_ID,*) '# lattice points'
-	do l = 1, lattice_per_unit_cell
-		do k = 1, sc(3) + 2*nbd_cell_z
-			do j = 1, sc(2) + 2*nbd_cell_y
-				do i = 1, sc(1) + 2*nbd_cell_x
+	do l = 1, total_ions
 
-			write(gss_ID,'(f11.6, 1x, f11.6, 1x, f11.6, 1X, i8)') &
-				ion(6:8, i, j, k, l), int(ion(0, i, j, k, l))
+		write(gss_ID,'(f11.6, 1x, f11.6, 1x, f11.6, 1X, i8)') &
+			ion(6:8, i), int(ion(0, i))
 
-				end do
-			end do
-		end do
 	end do
 	return
 
@@ -70,19 +63,13 @@
         m = 0
 	write(gss_ID, '(f11.5)') temp_T(tempi)
 
-	do l = 1, lattice_per_unit_cell
-		do k = fromz, toz
-			do j = fromy, toy
-				do i = fromx, tox
+	do l = 1, total_ions
 
-			write(gss_ID, '(f11.6, 1x, f11.6, 1x, f11.6,1X, i8)') &
-			global_spn(m + 1 + lspn), global_spn(m + 2 + lspn), &
-			global_spn(m + 3 + lspn), int(global_spn(m + 4 + lspn))
-			m = m + 4
+		write(gss_ID, '(f11.6, 1x, f11.6, 1x, f11.6,1X, i8)') &
+		global_spn(m + 1 + lspn), global_spn(m + 2 + lspn), &
+		global_spn(m + 3 + lspn), int(global_spn(m + 4 + lspn))
+		m = m + 4
 
-				end do
-			end do
-		end do
 	end do
 
 	if(tempi.eq.nscan) close(gss_ID)

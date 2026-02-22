@@ -23,26 +23,26 @@
 
 	implicit none
 
-	integer :: i, j, k, l, m
+	integer :: i, m
 
 	real(dp) :: A_ovr(3), Si(3), rn_ovr
 
         overrelaxation_method : do m = 1, ovrr_steps
         
-        	call get_random_indices(i, j, k, l)
+        	call get_random_indices(total_ions, i)
 
 		A_ovr = real(0.0, dp)
 
-		call get_ovrr_vec(i, j, k, l, A_ovr)
+		call get_ovrr_vec(i, A_ovr)
 	
 
-		Si(1:3) = ion(1:3, i, j, k, l)
+		Si(1:3) = ion(1:3, i)
 
 	        Si(1:3) = (2* &
 	        (dot_product(A_ovr(1:3), Si(1:3))/dot_product(A_ovr(1:3), A_ovr(1:3)) )* &
 	        A_ovr(1:3)) - Si(1:3)
 
-		ion(1:3, i, j, k, l) = Si(1:3)/sqrt(dot_product(Si(1:3), Si(1:3)))
+		ion(1:3, i) = Si(1:3)/sqrt(dot_product(Si(1:3), Si(1:3)))
 
 	end do overrelaxation_method
 
