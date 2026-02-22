@@ -4,3 +4,6 @@
 *.mod 
 *.MOD 
 *.obj
+*.old
+/src/*.old
+ether
