@@ -24,7 +24,7 @@
 		implicit none
 
 		integer, intent(in) :: tempi
-		integer :: i, sce(3)
+		integer :: i, j, sce(3)
 
 		if(initiate_spin_files) then
 

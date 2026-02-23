@@ -23,7 +23,7 @@
 
 		implicit none
 		
-		integer :: i, m
+		integer :: i, j, m
 		real(dp) :: mag_value, U_mag, chi, U_eng, cv, repeat_1, mag_per_site, &
 			eng_per_site
 		
@@ -33,7 +33,7 @@
 		
 		case('eng')
 			
-			eng_per_site = eng/(2*total_lattice_sites)
+			eng_per_site = eng/(2*total_ions)
 			eng_avg = eng_avg + eng_per_site
 			eng2_avg = eng2_avg + eng_per_site**2
 			eng4_avg = eng4_avg + eng_per_site**4
@@ -41,7 +41,7 @@
 		case('mag')
 
 			mag_value =  sqrt(dot_product(net_mag, net_mag))
-			mag_per_site = mag_value/total_lattice_sites
+			mag_per_site = mag_value/total_ions
 			mag_avg = mag_avg + mag_per_site
 			mag2_avg = mag2_avg + mag_per_site**2
 			mag4_avg = mag4_avg + mag_per_site**4
@@ -57,7 +57,7 @@
 			U_mag = real(1, dp) - ((real(1, dp)/real(3, dp))*(mag4_avg/(mag2_avg**2)))
 			s_U_mag = U_mag + s_U_mag
 			e_U_mag(repeati) = U_mag
-			chi = beta*(mag2_avg - mag_avg**2)*total_lattice_sites
+			chi = beta*(mag2_avg - mag_avg**2)*total_ions
 			s_chi = chi + s_chi
 			e_chi(repeati) = chi
 
@@ -74,7 +74,7 @@
 			s_U_eng = U_eng + s_U_eng
 			e_U_eng(repeati) = U_eng
 
-			cv = (beta**2)*(eng2_avg - eng_avg**2)*total_lattice_sites
+			cv = (beta**2)*(eng2_avg - eng_avg**2)*total_ions
 			s_cv = cv + s_cv
 			e_cv(repeati) = cv
 
@@ -150,7 +150,7 @@
 
 			! ACCEPTANCE RATIOS
 			local_obs(14 + li_obs) = acceptance_counting/&
-				(tmcs*total_lattice_sites*repeat*real(1, dp))*100
+				(tmcs*total_ions*repeat*real(1, dp))*100
 
 			j = 0
 			do i = 1, nspecies

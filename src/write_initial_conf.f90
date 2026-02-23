@@ -24,7 +24,7 @@
 
 		implicit none
 
-		integer :: i, sce(3)
+		integer :: i, j, sce(3)
 
 		open(unit=2, file='starting_spin_conf.xsf', status='unknown')
 

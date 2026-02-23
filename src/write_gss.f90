@@ -23,7 +23,7 @@
 		
 	implicit none
 		
-	integer :: i, m
+	integer :: i, j, m
 	integer, intent(in) :: tempi
 	gss_ID = 10009
 
@@ -49,7 +49,7 @@
 		write(gss_ID,'(f10.5,1x,f10.5,1x,f10.5)') (abc(i,j), j= 1,3)
 	end do
 	write(gss_ID,*) '# lattice points'
-	do l = 1, total_ions
+	do i = 1, total_ions
 
 		write(gss_ID,'(f11.6, 1x, f11.6, 1x, f11.6, 1X, i8)') &
 			ion(6:8, i), int(ion(0, i))
@@ -63,7 +63,7 @@
         m = 0
 	write(gss_ID, '(f11.5)') temp_T(tempi)
 
-	do l = 1, total_ions
+	do i = 1, total_ions
 
 		write(gss_ID, '(f11.6, 1x, f11.6, 1x, f11.6,1X, i8)') &
 		global_spn(m + 1 + lspn), global_spn(m + 2 + lspn), &

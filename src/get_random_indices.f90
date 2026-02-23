@@ -19,6 +19,8 @@
 
 	subroutine get_random_indices(n, ith)
 
+	use init
+
 	implicit none
 
 	integer, intent(in) :: n

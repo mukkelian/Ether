@@ -27,9 +27,9 @@
 
 	integer :: tmcs, tmcs_eq, n_speci_incl, sc(3), repeat, repeati, &
 		ovrr_steps, ovrr_MCS, optbeta, nspecies, total_ions_per_cell, &
-		no_of_nbd, j_ID(2), similar_bonds, num_of_threads, total_lattice_sites, &
-		lattice_per_unit_cell, nscan, nbd_extent_x, nbd_extent_y, nbd_extent_z, &
-		total_ions, fromx, fromy, fromz, tox, toy, toz, total_calculations, itemp, &
+		no_of_nbd, j_ID(2), similar_bonds, num_of_threads, total_ions, &
+		lattice_per_unit_cell, nscan, &
+		fromx, fromy, fromz, tox, toy, toz, total_calculations, itemp, &
 		spin_file_ID, gss_ID, acceptance_counting, acceptance_count, ndope = 0, &
 		seed_value, maxium_dopants = 100
 	

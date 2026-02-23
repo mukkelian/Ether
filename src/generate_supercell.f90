@@ -76,9 +76,6 @@
 	allocate(ar(s_count, 0:8), stgg_ion(s_count))
 	ar = 0
 
-	! STAGGERED INFO
-	if (staggered) call get_staggered_info(s_count)
-
 	! Getting total lattice per unit cell, which will be used for MC calculations
 	lattice_per_unit_cell = 0
 	inclusion : do i = 1, n_speci_incl
@@ -127,21 +124,20 @@
 	deallocate(ar)
 
 	! total no. of lattice points
-	total_ions = s_count	! in super cell + in boundary layer
-	total_lattice_sites = product(sc)*lattice_per_unit_cell ! in super cell == simulation box
+	total_ions = s_count	! in super cell
+
+	! STAGGERED INFO
+	if (staggered) call get_staggered_info(total_ions)
 
 	allocate(tions(0:nspecies))
 	tions = 0	! total ions in simulation box w.r.t. species
 	do i = 1, total_ions
 
-		tions(int(ion(4, i)) = tions(int(ion(4, i))) + 1
+		tions(int(ion(4, i))) = tions(int(ion(4, i))) + 1
 
-				end do
-			end do
-		end do
 	end do
 
-	if (ovrr) ovrr_steps = nint(total_lattice_sites*ovrr_para)
+	if (ovrr) ovrr_steps = nint(total_ions*ovrr_para)
 	if (rank == 0) then
 		write(6, *) '==> Supercells are generated'
 		if (ovrr) write(6, "(' ==> Total number of OVRR steps: ',I6)") ovrr_steps

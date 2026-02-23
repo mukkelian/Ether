@@ -25,7 +25,8 @@
 
 	real(dp), intent (in), dimension(3) :: pos0, pos1
 	real(dp) :: R_vec(3), distance, ion_pos(3)
-	integer :: shift(3), i, j, k, ii, jj, kk
+	integer :: shift(3), i, j, k, ii, jj, kk, &
+		to_x, to_y, to_z
 	logical, intent (out) :: captured
 
 	captured = .FALSE.

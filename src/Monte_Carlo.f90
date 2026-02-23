@@ -35,7 +35,7 @@
 	!$OMP PARALLEL DEFAULT(SHARED) PRIVATE(i, &
 	!$OMP& S_vec_previous, S_vec_updated, total_eng, eta)
 
-	!$OMP DO SCHEDULE(DYNAMIC) COLLAPSE(3)
+	!$OMP DO SCHEDULE(DYNAMIC) COLLAPSE(1)
 	do i = 1, total_ions
 
 		! Copy current spin state
@@ -61,10 +61,6 @@
 
 		end if
 
-		end do
-
-			end do
-		end do
 	end do
 
 	!$OMP END DO

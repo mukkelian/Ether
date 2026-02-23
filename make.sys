@@ -7,7 +7,7 @@
 
 #--- gnu
 f90comp = mpif90
-switch = -O2 -fopenmp
+# switch = -O2 -fopenmp
 
 #--- for debug
-# switch = -g -fcheck=all -fbounds-check -O2 -fopenmp
+switch = -O0 -fopenmp -g -fcheck=all

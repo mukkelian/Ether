@@ -31,23 +31,16 @@
 	magnetisation = real(0, dp)
 	call omp_set_nested(.true.)
 
-	!$OMP PARALLEL DEFAULT(SHARED) PRIVATE(i, stg, temp_magnetisation) &
+	!$OMP PARALLEL DEFAULT(SHARED) PRIVATE(i, temp_magnetisation) &
 	!$OMP& REDUCTION(+:magnetisation)  ! Reduction on all elements of the magnetisation array
 
 	temp_magnetisation = real(0, dp)
 
-	!$OMP DO SCHEDULE(DYNAMIC) COLLAPSE(3)
+	!$OMP DO SCHEDULE(DYNAMIC) COLLAPSE(1)
 	do i = 1, total_ions
 
-		! Get the stg value depending on the 'staggered' flag
-		if (staggered .eqv. .TRUE.) then
-			stg = stgg_ion(l)
-		else
-			stg = 1
-		end if
-
 		temp_magnetisation(1:3) = temp_magnetisation(1:3) + &
-			stg*ion(1:3, i)*s(int(ion(4, i)))
+			stgg_ion(i)*ion(1:3, i)*s(int(ion(4, i)))
 
 	end do
 	!$OMP END DO

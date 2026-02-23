@@ -32,7 +32,7 @@
 	call omp_set_nested(.true.)
 
 	!$OMP PARALLEL DEFAULT(SHARED) PRIVATE(i, Spin_vec, partial_toten) REDUCTION(+:toten)
-	!$OMP DO SCHEDULE(DYNAMIC) COLLAPSE(3)
+	!$OMP DO SCHEDULE(DYNAMIC) COLLAPSE(1)
 	do i = 1, total_ions
 			! Get spin vector from the ion array
 			Spin_vec(1:3) = ion(1:3, i)
@@ -42,10 +42,7 @@
 
 			! Accumulate the total energy
 			toten = toten + partial_toten
-		end do
 
-			end do
-		end do
 	end do
 	!$OMP END DO
 	!$OMP END PARALLEL
