@@ -6,5 +6,5 @@
 *.obj
 *.old
 /src/*.old
-/example/test
+/examples/test
 ether
