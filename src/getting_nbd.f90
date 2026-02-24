@@ -61,7 +61,7 @@
 		nbd_ID = int(ion(0, j))
 
 		if(central_ion_ID.ne.nbd_ID)then
-			call search_nbd(origin, nbd_pos, captured)						
+			call search_nbd(origin, nbd_pos, nbd_dis(ith_bond), captured)						
 			if(captured)then
 
 				nbd_count = nbd_count + 1

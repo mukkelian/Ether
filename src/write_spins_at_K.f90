@@ -36,10 +36,10 @@
 			open(file = adjustl(filename), unit = spin_file_ID)
 			write(spin_file_ID, *) 'CRYSTAL'
 			write(spin_file_ID, *) 'PRIMVEC'
-			sce = sc	! Supercell extent (sce)
-			if(bc(1).eq.'o') sce(1) = sc(1)+1
-			if(bc(2).eq.'o') sce(2) = sc(2)+1
-			if(bc(3).eq.'o') sce(3) = sc(3)+1
+			sce = sc*lp	! Supercell extent (sce)
+			if(bc(1).eq.'o') sce(1) = sce(1)+lp(1)/2.0
+			if(bc(2).eq.'o') sce(2) = sce(2)+lp(2)/2.0
+			if(bc(3).eq.'o') sce(3) = sce(3)+lp(3)/2.0
 			write(spin_file_ID, *) (abc(1,j)*(sce(1)), j= 1,3)
 			write(spin_file_ID, *) (abc(2,j)*(sce(2)), j= 1,3)
 			write(spin_file_ID, *) (abc(3,j)*(sce(3)), j= 1,3)
@@ -48,7 +48,7 @@
 			write(spin_file_ID, *) (abc(2,j)*(sce(2)), j= 1,3)
 			write(spin_file_ID, *) (abc(3,j)*(sce(3)), j= 1,3)
 			write(spin_file_ID, *) 'PRIMCOORD'
-			write(spin_file_ID, *) product(sc)*lattice_per_unit_cell, " 1"
+			write(spin_file_ID, *) total_ions, " 1"
 			return
 
 		end if

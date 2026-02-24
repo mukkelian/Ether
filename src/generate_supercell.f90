@@ -73,7 +73,7 @@
 		end do
 	end do
 
-	allocate(ar(s_count, 0:8), stgg_ion(s_count))
+	allocate(ar(s_count, 0:8))
 	ar = 0
 
 	! Getting total lattice per unit cell, which will be used for MC calculations
@@ -95,6 +95,13 @@
 
 	deallocate(atom)
 
+	if (rank.eq.0.and.lattice_per_unit_cell.eq.0) then
+                write(6, *) "==> Selected ions from 'in.ether' are not present in 'structure.vasp' file"
+                write(6, *) "    STOPPING now"
+                write(6, *) ""
+                stop
+        end if
+	
 	! EXPANDING INTO SUPERCELL
 	allocate(ion(0:8, product(sc)*lattice_per_unit_cell))
 	s_count = 0; ion = 0
@@ -111,7 +118,7 @@
 			
 		s_count = s_count +1				! Counting total no. of ions in supercell
 		ion(0, s_count) = s_count			! ID
-		ion(1:5, s_count) = ar(l, 1:5)		! Sx, Sy, Sz, species no. & phi
+		ion(1:5, s_count) = ar(l, 1:5)			! Sx, Sy, Sz, species no. & phi
 		ion(6:8, s_count) = abc(1, 1:3)*(i - 1) &	! co-ordinates
 					+ abc(2, 1:3)*(j - 1) + abc(3, 1:3)*(k - 1) &
 					+ ar(l, 6:8)
@@ -127,7 +134,7 @@
 	total_ions = s_count	! in super cell
 
 	! STAGGERED INFO
-	if (staggered) call get_staggered_info(total_ions)
+	call get_staggered_info(total_ions)
 
 	allocate(tions(0:nspecies))
 	tions = 0	! total ions in simulation box w.r.t. species

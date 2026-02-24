@@ -116,10 +116,6 @@
 
 	end if
 
-	if(staggered)then
-		write(6, *)'==> Staggered magnetization is SELECTED!'
-	end if
-
 	if(Zeeman)then
                 if(para)then
                         lbl = ' as H/J'

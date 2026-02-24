@@ -84,21 +84,6 @@
 			end do
 		case("sc")
 			read(value, *) sc(1:3)
-			if(mod(sc(1), 2).ne.0.or.&
-				mod(sc(2), 2).ne.0.or.&
-				mod(sc(3), 2).ne.0) then
-				write(6, *) ''
-				write(6, *) '	ERROR'
-				write(6, *) '	~~~~~'
-				write(6, *) ''
-				write(6, *) '	Dimension of supercell along x, y, and z &
-				must be in the multiples of 2'
-				write(6, *) '	STOPPING now'
-				write(6, *) ''
-				stop
-			end if
-		case("stg")
-			read(value, *) staggered
 		case("bc")
 			read(value, *) bc(1:3)
 		case("repeat")

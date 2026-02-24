@@ -32,7 +32,7 @@
 	call omp_set_nested(.true.)
 
 	!$OMP PARALLEL DEFAULT(SHARED) PRIVATE(i, temp_magnetisation) &
-	!$OMP& REDUCTION(+:magnetisation)  ! Reduction on all elements of the magnetisation array
+	!$OMP& REDUCTION(+:magnetisation)
 
 	temp_magnetisation = real(0, dp)
 
@@ -48,7 +48,7 @@
 	! Accumulating net magnetisation
 	magnetisation(1:3) = magnetisation(1:3) + temp_magnetisation(1:3)
 
-	!$OMP END PARALLEL  ! End of the parallel region
+	!$OMP END PARALLEL
 
 	end subroutine get_tot_magnetisation
 

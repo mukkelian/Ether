@@ -30,10 +30,10 @@
 
 		write(2, *) 'CRYSTAL'
 		write(2, *) 'PRIMVEC'
-		sce = sc	! Supercell extent (sce)
-		if(bc(1).eq.'o') sce(1) = sc(1)+1
-		if(bc(2).eq.'o') sce(2) = sc(2)+1
-		if(bc(3).eq.'o') sce(3) = sc(3)+1
+		sce = sc*lp	! Supercell extent (sce)
+		if(bc(1).eq.'o') sce(1) = sce(1)+lp(1)/2.0
+		if(bc(2).eq.'o') sce(2) = sce(2)+lp(2)/2.0
+		if(bc(3).eq.'o') sce(3) = sce(3)+lp(3)/2.0
 		write(2, *) (abc(1,j)*(sce(1)), j= 1,3)
 		write(2, *) (abc(2,j)*(sce(2)), j= 1,3)
 		write(2, *) (abc(3,j)*(sce(3)), j= 1,3)

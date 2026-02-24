@@ -31,7 +31,6 @@
         lt = 10
         tint = 5
         sc = (/2, 2, 2/)
-        staggered = .FALSE.
         repeat = 10
         angle = .FALSE.
         to_cal = 20

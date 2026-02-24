@@ -32,14 +32,14 @@
 	
 	character(len=3) :: atom, ab, out
 
-	allocate(stgg_ion(s_count))
-	
+	allocate(stgg_ion(s_count), stg_IDs(nspecies))
+	stg_IDs = 1
+
+	staggered = .FALSE.
 	inquire(file='staggered', exist=file_found)
 	
 	if(file_found) then
-		if (rank == 0) write(6, *) ''
-		if (rank == 0) write(6, *) '    :::::::::::::::::::::::::: &
-        	                        STG list ::::::::::::::::::::::::'
+		staggered = .TRUE.
         	open(unit=2, file='staggered', status='old', action='read')
         	total_lines = 0
         	do
@@ -51,8 +51,8 @@
 
         	open(unit=2, file='staggered', status='old', action='read')
 
-		allocate(stg_info(total_lines), stg_IDs(nspecies))
-		stg_IDs = 1
+		allocate(stg_info(total_lines))
+
         	do i = 1, total_lines
         		read(2, *) stg_info(i), atom
 
@@ -70,45 +70,29 @@
 			
         	end do
         	close(2)
+        end if
 
-		!$OMP PARALLEL DEFAULT(SHARED) PRIVATE(i)
-		!$OMP DO SCHEDULE(DYNAMIC)
-		do i = 1, total_ions
-			stgg_ion(i) = stg_IDs(int(ion(4, i)))
+	!$OMP PARALLEL DEFAULT(SHARED) PRIVATE(i)
+	!$OMP DO SCHEDULE(DYNAMIC)
+	do i = 1, total_ions
+		stgg_ion(i) = stg_IDs(int(ion(4, i)))
+	end do
+	!$OMP END DO
+	!$OMP END PARALLEL
+
+	if (rank == 0) then
+		write(6, *) ''
+		write(6, *) '    :::::::::::::::::::::::::: &
+        	                        STG list ::::::::::::::::::::::::'
+		write(6, *) ''
+        	if(staggered) write(6, *) "    (From 'staggered' file)"
+        	if(.not.staggered) write(6, *) '    (DEFAULT values)'
+        	write(6, *) ''
+		do i = 1, nspecies
+			write(6, "(9x,f7.1,4x,'-->',4x,A3)") &
+				stg_IDs(i), species(i) 
+			write(6, *) ''
 		end do
-		!$OMP END DO
-		!$OMP END PARALLEL
-
-		if (rank == 0) then
-			do i = 1, nspecies
-				write(6, "(9x,8f7.1,4x,'-->'4x,A3)") &
-					stg_IDs(i), species(i) 
-				write(6, *) ''
-			end do
-		end if
-	else
-		if (rank == 0) then
-			write(6, *) ''
-			write(6, *) '	Logic for staggered magnetiaztion is .TRUE.'
-			write(6, *) "	but 'staggered' file is not provided"
-			write(6, *) '	     ~~~~~~~~~'
-			write(6, *) ''
-			write(6, *) "	file formate for 'staggered' is as follows"
-			write(6, *) ''
-			write(6, *) '	c1	for atom1'
-			write(6, *) '	c2	for atom1'
-			write(6, *) '	c3	for atom3'
-			write(6, *) '	.		.'
-			write(6, *) '	.		.'
-			write(6, *) '	.		.'
-			write(6, *) '	Note: Sequence of c[i] for ith atom should'
-			write(6, *) '	       follows the sequnce as according to'
-			write(6, *) '	       provided structure file'
-			write(6, *) ''
-			write(6, *) '	STOPPING now'
-			write(6, *) ''
-			stop
-		end if
 	end if
 
 	end subroutine get_staggered_info
