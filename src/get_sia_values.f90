@@ -33,7 +33,8 @@
 
 	if(allocated(sia_vec)) deallocate(sia_vec)
 	allocate(sia_vec(1:3, nspecies))
-	
+
+        sia_vec = 0.0_dp        
 	inquire(file='single_ion_anisotropy', exist=file_found)
 	if(file_found) then
 		open(10011, file='single_ion_anisotropy', status='old', action='read')

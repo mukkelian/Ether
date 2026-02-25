@@ -84,6 +84,8 @@
 			end do
 		case("sc")
 			read(value, *) sc(1:3)
+		case("stg")
+			read(value, *) staggered
 		case("bc")
 			read(value, *) bc(1:3)
 		case("repeat")

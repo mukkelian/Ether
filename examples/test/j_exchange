@@ -1,6 +1,7 @@
 1				! no. of distinct bond
 1.0 1				! bond length, no. of similar bonds
-fe fe -3.0 -3.0 -3.0		! ith ion, jth ion, anisotropy (Jxx, Jyy, Jzz)
+fe fe 0.0 0.0 0.0		! ith ion, jth ion, anisotropy (Jxx, Jyy, Jzz)
+fe fe -3.0 -3.0 -3.0            ! ith ion, jth ion, anisotropy (Jxx, Jyy, Jzz)
 
 Note:	line 2 and 3 will be repeat for different bond length.
 	Example~

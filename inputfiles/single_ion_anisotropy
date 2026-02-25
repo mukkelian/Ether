@@ -1,0 +1,2 @@
+Species_{i} Dx_{i} Dy_{i} Dz_{i} ! For Species(i) in unit cell
+Species_{i+1} Dx_{i+1} Dy_{i+1} Dz_{i+1} ! For Species(i+1) in unit cell

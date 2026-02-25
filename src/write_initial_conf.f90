@@ -24,7 +24,8 @@
 
 		implicit none
 
-		integer :: i, j, sce(3)
+		integer :: i, j
+		real(dp) :: sce(3)
 
 		open(unit=2, file='starting_spin_conf.xsf', status='unknown')
 
@@ -49,7 +50,7 @@
 
 		if (ion(4, i).ne.0) then
 			write(2, 101) species(int(ion(4, i))), &
-			ion(6:8, i), ion(1:3, i)
+			ion(6:8, i)!, ion(1:3, i)
 		end if
 
 		end do

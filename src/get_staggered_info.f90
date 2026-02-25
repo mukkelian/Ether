@@ -35,11 +35,10 @@
 	allocate(stgg_ion(s_count), stg_IDs(nspecies))
 	stg_IDs = 1
 
-	staggered = .FALSE.
 	inquire(file='staggered', exist=file_found)
 	
-	if(file_found) then
-		staggered = .TRUE.
+	if(file_found.and.staggered) then
+
         	open(unit=2, file='staggered', status='old', action='read')
         	total_lines = 0
         	do
