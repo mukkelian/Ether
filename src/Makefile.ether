@@ -3,7 +3,7 @@
 include ../make.sys
 
 OBJS  = init.o lu.o get_random_num.o get_tot_species.o process_file.o defaults.o count_species.o \
-	read_input.o startup.o  read_structure.o  generate_supercell.o get_random_indices.o  \
+	read_input.o startup.o frac_to_cart.o read_structure.o generate_supercell.o get_random_indices.o  \
 	j_values.o get_sia_values.o parameters.o write_initial_conf.o search_nbd.o getting_nbd.o \
 	write_nbd.o allocate_observables.o write_gss.o write_output_files.o \
 	George_Marsaglia.o update_spin_details.o Hamiltonian.o get_tot_energy.o get_tot_magnetisation.o fresh_spins.o \
@@ -45,6 +45,9 @@ read_input.o: ../src/read_input.f90
 
 startup.o: ../src/startup.f90
 	$(f90comp) -c $(switch) ../src/startup.f90
+
+frac_to_cart.o: ../src/frac_to_cart.f90
+	$(f90comp) -c $(switch) ../src/frac_to_cart.f90
 
 read_structure.o: ../src/read_structure.f90
 	$(f90comp) -c $(switch) ../src/read_structure.f90

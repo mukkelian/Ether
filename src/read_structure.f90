@@ -30,7 +30,7 @@
 
 	real(dp), intent(out) :: lp(3), abc(3, 3), coordx(nions), &
 		coordy(nions), coordz(nions)
-	real(dp) :: wt
+	real(dp) :: wt, frac_pos(3), cart_pos(3)
 		
 	character(len=200) :: title, label
 	character(len=2), intent(out) :: species_name(0:nsp)
@@ -76,16 +76,38 @@
 
 	coordx = 0; coordy = 0; coordz = 0
 	read(10001, *) label
-	if(trim(adjustl(label)).eq.'Direct')then
-		write(6, *) 'Choose POSCAR in cartesian co-ordinate only'
-		write(6, *) 'STOPPING'
-		stop
-	endif
+	
+	call lu(label, label, "L")
 
-	do i = 1, tions
-		read(10001,*) coordx(i), coordy(i), coordz(i) ! cartesian co-ordinates
-	end do
-	close(10001)
+	if(trim(adjustl(label)).eq.'direct')then
+
+		do i = 1, tions
+			! fractional co-ordinates
+			read(10001,*) coordx(i), coordy(i), coordz(i)
+			frac_pos = (/coordx(i), coordy(i), coordz(i)/)
+			call frac_to_cart(abc, frac_pos, cart_pos)
+			coordx(i) = cart_pos(1)
+			coordy(i) = cart_pos(2)
+			coordz(i) = cart_pos(3)
+		end do
+ 		close(10001)
+
+	elseif(trim(adjustl(label)).eq.'cartesian')then
+	
+		! cartesian co-ordinates
+		do i = 1, tions
+			read(10001,*) coordx(i), coordy(i), coordz(i)
+		end do
+		close(10001)
+
+	else
+		if (rank == 0) print*, ''
+		if (rank == 0) print*, '    Incorrect structure file'
+		if (rank == 0) print*, ''
+		if (rank == 0) print*, '    STOPPING now'
+		stop
+	end if
+
     	if (rank == 0) write(6, *) '==> Reading structure is completed!'
 		
 	end subroutine read_structure
