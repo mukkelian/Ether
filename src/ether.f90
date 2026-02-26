@@ -220,7 +220,7 @@
 			do stepi = 1, tmcs
 
 			if (ovrr.and.XYZ.and. &
-				(mod(real(stepi), real(ovrr_MCS)) == real(0.0, dp))) then
+				(mod(real(stepi, dp), real(ovrr_MCS, dp)) == 0.0_dp)) then
 
 				call overrelaxation
 

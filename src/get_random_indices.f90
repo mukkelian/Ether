@@ -28,7 +28,7 @@
 
 	real(dp) :: rn
 
-        call get_random_num(1*real(1, dp), n*real(1, dp), rn); ith = nint(rn)	
+        call get_random_num(1.0_dp, n*1.0_dp, rn); ith = nint(rn)	
         if(ith.lt.1) then
         	ith = 1
         elseif(ith.gt.n)then
