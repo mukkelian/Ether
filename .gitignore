@@ -8,3 +8,6 @@
 /src/*.old
 test/
 ether
+data/
+spins/
+*.dat
