@@ -90,7 +90,6 @@
 		do i = 1, nspecies
 			write(6, "(9x,f7.1,4x,'-->',4x,A3)") &
 				stg_IDs(i), species(i) 
-			write(6, *) ''
 		end do
 	end if
 

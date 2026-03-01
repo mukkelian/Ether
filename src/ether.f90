@@ -59,7 +59,7 @@
 		species(0:nspecies), ions(0:nspecies))
 
 	call read_input
-	call random_seed(put=seed)
+	call random_seed(put=seed+rank)
 	if (rank == 0) call startup(start)
 	call read_structure(nspecies, total_ions_per_cell, lp, abc, &
 		x, y, z, ions, species, rank)

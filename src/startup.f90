@@ -67,13 +67,13 @@
         	write(6, *) '     >  George Marsaglia, The Annals of Mathematical Statistics'
         	write(6, *) '        Vol. 43, No. 2, 645-646 (1972).'
         	write(6, *)''
-        elseif(angle) then
+        elseif(angle.and..not.Ising) then
         	write(6, '(" ==> +/-",f6.2," deg. angle has been chosen for the convergence")') dphi/convert_to_rad
         	write(6, *)''
         	write(6, *) '     >  Application of the Monte Carlo Method in Statistical Physics'
         	write(6, *) '        by Kurt Binder, Second Edition'
         	write(6, *)''
-        end if
+                end if
 
 	if(Ising) then
 		write(6, *) '==> Spin states will be chosen from two states i.e., +S and -S'
