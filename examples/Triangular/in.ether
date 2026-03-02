@@ -1,0 +1,17 @@
+model = Ising           ! (Ising/XYZ) Ising/XYZ model
+mcs = 90000 40000       ! MC steps, Equilibration steps
+temp = 3.3 2.5 0.02     ! Temp(K) ==> final, initial, interval
+spin = 1 1              ! Moment list (A = 1) in Bohr magneton
+species = A B           ! Included species symbols
+sc = 12 12 12           ! Super Cell size
+bc = c c c              ! Boundary CLOSED/OPEN (c/o)
+repeat = 10             ! For repeating the MC simulations
+angle = .T. 50          ! Logic, least phi angle to run
+coa = 10                ! Calculate observables at each MCS
+zeeman = .F. 0 0 50      ! Zeeman logic, Mx, My, Mz
+g_factor = 2            ! g_factor
+stg = .F.		! For staggered  magnetization 
+sia = .F.               ! SIA logic
+para = .T. 1            ! Parameter logic, value (meV)
+ovrr = .F. 0.40 12      ! Over-relaxed (OVRR) logic, ovrr steps, start after MC interval
+seed = 1992             ! Seed for random number generation

@@ -1,6 +1,9 @@
-1				! no. of distinct bond
-1.0 1				! bond length, no. of similar bonds
-A B 3.0 3.0 3.0            ! ith ion, jth ion, anisotropy (Jxx, Jyy, Jzz)
+2				! no. of distinct bond
+4.19767 2				! bond length, no. of similar bonds
+A A 1.0 1.0 1.0            ! ith ion, jth ion, anisotropy (Jxx, Jyy, Jzz)
+B B 1.0 1.0 1.0
+6.08420 1
+A B -1.0 -1.0 -1.0
 
 Note:	line 2 and 3 will be repeat for different bond length.
 	Example~
