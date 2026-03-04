@@ -18,7 +18,7 @@
 ! along with this program; if not, see https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
 	! WRITING INITIAL STRUCTURE FILE
-	subroutine write_initial_conf
+	subroutine write_fetched_lattice_network
 
 		use init
 
@@ -27,7 +27,7 @@
 		integer :: i, j
 		real(dp) :: sce(3)
 
-		open(unit=2, file='starting_spin_conf.xsf', status='unknown')
+		open(unit=2, file='fetched_lattice_network.xsf', status='unknown')
 
 		write(2, *) 'CRYSTAL'
 		write(2, *) 'PRIMVEC'
@@ -58,6 +58,6 @@
 
 		close(2)
 
-		write(6, *) "==> Initial spin states have be written into 'starting_spin_conf.xsf'"
+		write(6, *) "==> Initial spin states have be written into 'fetched_lattice_network.xsf'"
 
-	end subroutine write_initial_conf
+	end subroutine write_fetched_lattice_network

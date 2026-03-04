@@ -38,7 +38,7 @@
         real(dp) :: temp, ht, lt, tint, dphi, to_cal, g_factor, J_para, &
         	exchange_interval, lp(3), abc(3, 3), kb = 8.617333262d-5, &
         	h(3), anisotropy(3), mb, beta_critria, &
-		nbd_finding_criteria = real(0.0001, dp), convert_to_rad = pi/real(180.0, dp), &
+		nbd_finding_criteria, convert_to_rad = pi/real(180.0, dp), &
 		beta, eng, eng_avg, eng2_avg, eng4_avg, mag_avg, mag2_avg, mag4_avg, &
 		s_eng_avg, s_eng2_avg, e_eng2_avg, s_U_eng, s_cv, &
 		s_mag_avg, s_mag2_avg, e_mag2_avg, s_U_mag, s_chi, &

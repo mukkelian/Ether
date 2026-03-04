@@ -43,5 +43,5 @@
         ovrr = .FALSE.
         seed = 1992
         dope = .FALSE.
-
+        nbd_finding_criteria = 0.00001
         end subroutine defaults

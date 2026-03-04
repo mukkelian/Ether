@@ -40,13 +40,13 @@
 			write(2,*)"~~~~~~~~~~~~~~"
  
 			nbd_write : do m = 1, no_of_nbd
-				write(2, 11) m, &
+				write(2, 11) nbd_dis(m), &
 				nn(m, int(ion(0, i)), &
 				1:nn(m, int(ion(0, i)), 0, 0), &
 				 0)
 
 10	      	format(" ION no. ",i5)
-11      	format(" For bond length no. ",i2," nbds are ==> "20i7)
+11      	format(" For bond length: ",f12.8,", nbds are ==> "20i7)
 			end do nbd_write
 
 			write(2,*)''

@@ -67,7 +67,7 @@
 	call j_values
 	call get_sia_values
 	call parameters
-	if (rank == 0) call write_initial_conf
+	if (rank == 0) call write_fetched_lattice_network
 	call getting_nbd
 	if (rank == 0) call write_nbd
 

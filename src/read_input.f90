@@ -116,8 +116,10 @@
 		case("seed")
 			read(value, *) seed_value
 			seed = seed_value
+                case("nbdfc")
+                        read(value, *) nbd_finding_criteria
 
-		case default
+                case default
 				print*, ''
 				print*, ">	Found unknown/missing information in the given line"
 				print*, "	      ~~~~~~~~~~~~~~~"

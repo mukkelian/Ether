@@ -1,9 +1,9 @@
 model = Ising           ! (Ising/XYZ) Ising/XYZ model
-mcs = 90000 40000       ! MC steps, Equilibration steps
+mcs = 80000 40000       ! MC steps, Equilibration steps
 temp = 3.3 2.5 0.02     ! Temp(K) ==> final, initial, interval
 spin = 1 1              ! Moment list (A = 1) in Bohr magneton
 species = A B           ! Included species symbols
-sc = 12 12 12           ! Super Cell size
+sc = 20 20 20           ! Super Cell size
 bc = c c c              ! Boundary CLOSED/OPEN (c/o)
 repeat = 10             ! For repeating the MC simulations
 angle = .T. 50          ! Logic, least phi angle to run
