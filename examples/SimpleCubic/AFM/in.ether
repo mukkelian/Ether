@@ -3,14 +3,14 @@ mcs = 8000 4000         ! MC steps, Equilibration steps
 temp = 80 2 2           ! Temp(K) ==> final, initial, interval
 spin = 1 1              ! Moment list (A = 1) in Bohr magneton
 species = A B           ! Included species symbols
-sc = 8 8 8              ! Super Cell size
+sc = 4 4 4              ! Super Cell size
 bc = c c c              ! Boundary CLOSED/OPEN (c/o)
 repeat = 10             ! For repeating the MC simulations
 angle = .T. 50          ! Logic, least phi angle to run
-coa = 20                ! Calculate observables at each MCS
+coa = 10                ! Calculate observables at each MCS
 zeeman = .F. 0 0 50     ! Zeeman logic, Mx, My, Mz
 g_factor = 2            ! g_factor
-stg = .F.		! For staggered  magnetization 
+stg = .T.		! For staggered  magnetization 
 sia = .F.               ! SIA logic
 para = .F. 1            ! Parameter logic, value (meV)
 ovrr = .T. 0.60 12      ! Over-relaxed (OVRR) logic, ovrr steps, start after MC interval

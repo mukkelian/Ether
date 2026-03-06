@@ -19,9 +19,8 @@
 
 	implicit none
         integer :: nscan, sc(3), lattice_per_unit_cell, count, &
-		i, j, k, l, ii, jj, kk, ll, nscan_qvec, iscan_qvec, total_ions, &
-		p, p_, n_species, nbd_cell_x, nbd_cell_y, nbd_cell_z, fromx, &
-        	fromy, fromz, tox, toy, toz
+		i, j, k, l, ii, jj, kk, ll, nscan_qvec, iscan_qvec, &
+		p, p_, n_species, fromx, fromy, fromz, tox, toy, toz, total_ions
 
         real :: dx, dy, dz, lp1(3), lp2(3), vector(3), deg, &
 		qvec, qvec_f, qvec_i, qvec_int, temp, dis(3), a(3, 3), &
@@ -29,7 +28,7 @@
 		theta, q_vec, r(3), k_vec(3), s_i(3,1), s_j(3,1), volume, &
 		b(3,3), scaling(3), h_t, l_t, t_int
 
-        real, allocatable :: ion(:, :, :, :, :)
+        real, allocatable :: ion(:, :)
 	integer, allocatable :: site(:, :), ionn(:)
 	complex :: img = (0,1), c_q
 	character (len=80) :: lbl
@@ -56,7 +55,6 @@
         open(unit=4, file='gss.dat', status='old', action='read')
 
         read(4, *) nscan, sc
-        read(4, *) nbd_cell_x, nbd_cell_y, nbd_cell_z
         read(4, *) fromx, fromy, fromz, tox, toy, toz		
 	read(4, *) lattice_per_unit_cell, n_species, h_t, l_t, t_int
 	read(4, *) lbl
@@ -66,7 +64,10 @@
         structure : do i = 1,3
         	read(4,*) (a(i,j), j = 1,3) !lattice vectors
         end do structure
-        allocate(ion(0:6, sc(1)+2*nbd_cell_x, sc(2)+2*nbd_cell_y, sc(3)+2*nbd_cell_z, lattice_per_unit_cell) )
+
+        total_ions = product(sc)*lattice_per_unit_cell
+
+        allocate(ion(0:6, total_ions))
 
         read(0, *) dx, dy, dz   ! directions
         read(0, *) deg
@@ -100,16 +101,8 @@
 
         ! READING LATTICES
         read(4,*)
-	do l = 1, lattice_per_unit_cell
-		do k = 1, sc(3) + 2*nbd_cell_z
-			do j = 1, sc(2) + 2*nbd_cell_y
-				do i = 1, sc(1) + 2*nbd_cell_x
-
-                                        read(4,*) ion(4:6, i, j, k, l), ion(0, i, j, k, l)
-
-                                end do
-                        end do
-                end do
+	do i = 1, total_ions
+                read(4,*) ion(4:6, i), ion(0, i)
         end do
 
 	print*, 'DONE, now evaluatng structure factors (SF) as per given inputs'
@@ -122,19 +115,13 @@
 
         !SEARCHING LATTICE POINTS ALONG GIVEN DIRECTION
 	count = 0; p_ = 0
-	do l = 1, lattice_per_unit_cell
-		do k = fromz, toz
-			do j = fromy, toy
-			        do i = fromx, tox
+	do i = 1, total_ions
 
-        lp1(1:3) = ion(4:6, i, j, k, l)
+        lp1(1:3) = ion(4:6, i)
 	p = 0
-	do ll = 1, lattice_per_unit_cell
-		do kk = fromz, toz
-			do jj = fromy, toy
-			        do ii = fromx, tox
+        do ii = 1, total_ions
 
-	        lp2(1:3) = ion(4:6, ii, jj, kk, ll)
+	        lp2(1:3) = ion(4:6, ii)
 
 	        vector = lp1 - lp2
 	
@@ -145,21 +132,15 @@
 
 	        if((theta .le. deg).or.((180-theta) .le. deg))then
 			p = 1
-                          write(1, '(8I4, 4X, 2I10)') i, j, k, l, ii, jj, kk, ll,&
-                          int(ion(0, i, j, k, l)), int(ion(0, ii, jj, kk, ll))
+                        write(1, '(8I4, 4X, 2I10)') i, ii,&
+                        int(ion(0, i)), int(ion(0, ii))
 			count = count + 1
 		end if
 
-				end do
-			end do
-		end do
 	end do
 
 	if(p.eq.1) p_ = p_ + 1	!for counting same ion within piller
 
-				end do
-			end do
-		end do
 	end do
 
 	close (1)
@@ -174,7 +155,7 @@
 		stop
 	end if
 
-	allocate(site(count,8))
+	allocate(site(count,4))
 
 	do i = 1, count
 		read(1, *) site(i, :)
@@ -191,16 +172,9 @@
 
         read(4, *) temp
 
-       	do l = 1, lattice_per_unit_cell
-       		do k = fromz, toz
-       			do j = fromy, toy
-				do i = fromx, tox
-				
-					read(4,*) ion(1:3, i, j, k, l)
 
-				end do
-			end do
-		end do
+	do i = 1, total_ions
+		read(4,*) ion(1:3, i)
 	end do
 
 	q_vector: do iscan_qvec = 1, nscan_qvec
@@ -210,12 +184,12 @@
 	do i = 1, count
 
 		r = &
-		ion(4:6, site(i, 1), site(i, 2), site(i, 3), site(i, 4)) - &
-		ion(4:6, site(i, 5), site(i, 6), site(i, 7), site(i, 8))
+		ion(4:6, site(i, 1)) - &
+		ion(4:6, site(i, 2))
 
 		c_q = c_q + dot_product(&
-		ion(1:3, site(i, 1), site(i, 2), site(i, 3), site(i, 4)), &
-		ion(1:3, site(i, 5), site(i, 6), site(i, 7), site(i, 8)) &
+		ion(1:3, site(i, 1)), &
+		ion(1:3, site(i, 2)) &
 		)* &
 		exp(img*q_vec* dot_product(k_vec, r))
 
