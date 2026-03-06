@@ -274,11 +274,10 @@
 		call system('mkdir spins')
 		call system('mkdir data')
 		call system('mv *spK* spins')
-		call system('mv *conf.xsf *.dat data')
+		call system('mv *network.xsf *.dat data')
 		call system('mv graph* data')
 
 		write(6, *) ''
-		write(6, *) "May the force be with you"
 		write(6, *) "~ Mukesh Kumar Sharma"
 		write(6, *) "e-mail@ msharma1@ph.iitr.ac.in"
 		write(6, *) ''
