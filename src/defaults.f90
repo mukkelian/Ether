@@ -33,7 +33,7 @@
         sc = (/2, 2, 2/)
         repeat = 10
         angle = .FALSE.
-        to_cal = 20
+        to_cal = 10
         Zeeman = .FALSE.
         h = 0
         g_factor = 2
