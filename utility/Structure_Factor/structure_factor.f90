@@ -132,7 +132,7 @@
 
 	        if((theta .le. deg).or.((180-theta) .le. deg))then
 			p = 1
-                        write(1, '(8I4, 4X, 2I10)') i, ii,&
+                        write(1, '(8I9, 4X, 2I10)') i, ii,&
                         int(ion(0, i)), int(ion(0, ii))
 			count = count + 1
 		end if
@@ -251,7 +251,6 @@
         int(mod(mod((finish-start), 3600.0),60.0))
         print*,''
         print*,''
-        print*,"May the force be with you"
         print*,"~ Mukesh Kumar Sharma"
         print*,'e-mail: msharma1@ph.iitr.ac.in'
         print*,''
