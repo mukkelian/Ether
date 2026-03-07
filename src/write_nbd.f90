@@ -27,11 +27,13 @@
 
 		open(unit=2, file='nbd.dat', status='unknown')
 		write(6, *) "==> Neighbourhood informations are writing into the 'nbd.dat' file"
-
-		write(2, *) "This file can be used to confirm the neighbourhood details of any central ion."
-		write(2, *) "To do so, use 'XCrySDen' (http://www.xcrysden.org/) and open the generated"
-		write(2, *) "'starting_spin_conf.xsf' as file > Open Structure > Open XSF > starting_spin_conf.dat."
-		write(2, *) "Check nbd's details by clicking the <Atom Info> (at bottom) and see the 'Selected Atom No.' informations. "
+                write(2, *) "# This file can be used to confirm the neighbourhood details of any selected"
+                write(2, *) "# central ion with ion number (<ION no.>)."
+                write(2, *) "# [NOTE: The content of nbd.dat is independent of the species labels present in 'structure.vasp'."
+                write(2, *) "# The contents of nbd.dat depend only on the bond lengths provided in the 'j_exchange' file.]"
+                write(2, *) "# To visualize the structure, use the 'VESTA' software (https://jp-minerals.org/vesta/en/download.html)"
+                write(2, *) "# and open the generated 'fetched_lattice_network.xsf' file."
+                write(2, *) "# Check the neighbourhood details (given in this file) using the <Atom Label> for the selected central <ION no.> IDs."
 		write(2, *) ''
 
 		nbd_inf : do i = 1, total_ions
