@@ -42,6 +42,5 @@
         J_para = 1.0
         ovrr = .FALSE.
         seed = 1992
-        dope = .FALSE.
         nbd_finding_criteria = 0.00001
         end subroutine defaults

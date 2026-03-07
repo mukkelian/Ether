@@ -30,8 +30,8 @@
 		no_of_nbd, j_ID(2), similar_bonds, num_of_threads, total_ions, &
 		lattice_per_unit_cell, nscan, &
 		fromx, fromy, fromz, tox, toy, toz, total_calculations, itemp, &
-		spin_file_ID, gss_ID, acceptance_counting, acceptance_count, ndope = 0, &
-		seed_value, maxium_dopants = 100
+		spin_file_ID, gss_ID, acceptance_counting, acceptance_count, &
+		seed_value
 	
         real(dp), parameter :: pi = real(4.0, dp)*atan(real(1.0, dp))
 
@@ -65,7 +65,7 @@
 	character(len=200), allocatable :: input_data(:)
 
 	logical :: staggered, angle, Zeeman, SIA, para, ovrr, &
-		EXalgo, temp_ex, beta_file, initiate_spin_files, dope
+		EXalgo, temp_ex, beta_file, initiate_spin_files
 		
 !	For MPI's
 	integer :: rank, size, ierr, interval, left, tag, local_olen, local_slen, &
