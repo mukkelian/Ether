@@ -1,13 +1,17 @@
 # Wannier program's Makefile has been used in building this Makefile
 # Ref:: (http://www.wannier.org/download/)
 
-#--- intel
-#f90comp = mpiifort
-#switch = -O2 -qopenmp
-
 #--- gnu
 f90comp = mpif90
-# switch = -O2 -fopenmp
+switch = -O3 -fopenmp
 
-#--- for debug
-switch = -O0 -fopenmp -g -fcheck=all
+#--- for gnu debug
+# switch = -O0 -fopenmp -g -fcheck=all
+
+#--- intel
+# f90comp = mpiifx
+# switch = -O3 -qopenmp
+
+#--- for intel debug
+# switch = -O0 -qopenmp -check all -warn unused -debug extended \
+	-check bounds -check uninit -check arg_temp_created

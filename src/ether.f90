@@ -25,15 +25,8 @@
 
 	implicit none
 
-	! DATE & TIME
-	character(8) :: date
-	character(10) :: time
-	character(5) :: zone
-
 	integer, dimension(8) :: start, finish
-	integer :: days, hrs, mins, secs, n_seed, &
-		stepi, ei, ej, el, i
-		real(dp):: rnd
+	integer :: n_seed, stepi, ei, ej, el
 
 	! Initialize MPI
 	call MPI_INIT(ierr)
