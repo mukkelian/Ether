@@ -58,6 +58,6 @@
 
 		close(2)
 
-		write(6, *) "==> Initial spin states have be written into 'fetched_lattice_network.xsf'"
+		write(6, *) "==> Fetched lattice networks have be written into 'fetched_lattice_network.xsf'"
 
 	end subroutine write_fetched_lattice_network
