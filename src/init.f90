@@ -70,7 +70,7 @@
 !	For MPI's
 	integer :: rank, size, ierr, interval, left, tag, local_olen, local_slen, &
 		total_observables, status(MPI_STATUS_SIZE), request_obs, request_spn, &
-		status_obs, status_spn, li_obs, li_spn, lobs, lspn
+		status_obs, status_spn, li_obs, li_spn, lobs, lspn, nprocs
 
 	integer, allocatable :: addmoreitr(:), num_iterations(:), &
 		istart(:), iend(:), tlobs(:), tlspn(:), si_obs(:), &

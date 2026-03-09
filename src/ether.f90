@@ -31,7 +31,7 @@
 	! Initialize MPI
 	call MPI_INIT(ierr)
 	call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierr)
-	call MPI_COMM_SIZE(MPI_COMM_WORLD, size, ierr)
+	call MPI_COMM_SIZE(MPI_COMM_WORLD, nprocs, ierr)
 
 	call random_seed(size=n_seed)
 	allocate(seed(n_seed))
@@ -74,14 +74,14 @@
 	! For creating output files
 	if (rank == 0) call write_output_files(0)
 
-	allocate(addmoreitr(size), num_iterations(size), istart(0:size), iend(0:size), &
-		tlobs(size), tlspn(size))
+	allocate(addmoreitr(nprocs), num_iterations(nprocs), istart(0:nprocs), iend(0:nprocs), &
+		tlobs(nprocs), tlspn(nprocs))
 
 	addmoreitr = 0; istart = 0; iend = 0
      
-	! Calculate the reminder (left) values is size divides the nscan,
+	! Calculate the reminder (left) values after nprocs divides the nscan,
 	! it can be used for assigning this leftovers to other processors.
-	left = mod(nscan, size)
+	left = mod(nscan, nprocs)
 	do el = 1, left
 
 		addmoreitr(el) = 1  ! add more iterations
@@ -89,15 +89,15 @@
 	end do
 
 	! Calculate the work distribution: number of iterations per process
-	interval = nscan / size
-	do ei = 1, size
+	interval = nscan / nprocs
+	do ei = 1, nprocs
 
 		num_iterations(ei) = addmoreitr(ei) + interval
 
 	end do
 
 	! Calculate the starting and end points of distributed temperature index
-	do ei = 1, size
+	do ei = 1, nprocs
 
 		istart(ei) = iend(ei-1) + 1
 		iend(ei) = iend(ei-1) + num_iterations(ei)
@@ -114,7 +114,7 @@
     	local_slen = product(sc)*lattice_per_unit_cell*4  	! total no. of cell * lattice per unit cel * 
                                                           	! (3 spin vectors + ID)
 
-	do ei = 1, size
+	do ei = 1, nprocs
 
 		! Total length of observables for local array
 		tlobs(ei) = local_olen*(iend(ei) - istart(ei) + 1)
@@ -124,15 +124,15 @@
 
 	end do
 	
-	allocate(local_obs(tlobs(rank+1)), local_spn(tlspn(rank+1)), si_obs(size), &
-		si_spn(size))
+	allocate(local_obs(tlobs(rank+1)), local_spn(tlspn(rank+1)), si_obs(nprocs), &
+		si_spn(nprocs))
 
 	local_obs = real(0, dp); local_spn = real(0, dp)
     	
 	! Calculate the starting index for recieving buffer from non-root processors
 	si_obs(1) = 0
 	si_spn(1) = 0
-	do ei = 2, size
+	do ei = 2, nprocs
 
 		! For observables
 		si_obs(ei) = sum(tlobs(1:ei-1))
@@ -151,14 +151,14 @@
         write(6,'(" Calculations are running on total: ")')
         write(6, *) ''
         write(6,'("              OpenMP threads =>", i3)') num_of_threads
-        write(6,'("              MPI processes  =>", i3)') size
+        write(6,'("              MPI processes  =>", i3)') nprocs
         write(6, *) ''
 
 	write(6, "(' List of temperatures')")
 	write(6, "(' ~~~~~~~~~~~~~~~~~~~~')")
 	write(6, *) ''
 
-	do ei = 0, size-1
+	do ei = 0, nprocs-1
 
 		allocate(temp_assigned(num_iterations(ei + 1)))
 		el = 0
