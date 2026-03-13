@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+title: "ETHER: An Efficient Tool for Monte Carlo Simulations of Magnetic Systems"
+message: "If you use this software, please cite it using the metadata from this file."
+type: software
+
+authors:
+
+* family-names: Sharma
+  given-names: Mukesh Kumar
+
+year: 2026
+doi: 10.48550/ARXIV.2603.07569
+url: https://arxiv.org/abs/2603.07569
+
+license: "CC-BY-NC-SA-4.0"
+
+abstract: >
+Monte Carlo (MC) simulations are powerful computational tools for investigating
+thermodynamic behavior and validating analytical approaches in complex physical
+systems. ETHER (Efficient Tool for THermodynamics Exploration via Relaxations)
+is an open-source MC simulation package developed for studying temperature-
+dependent magnetic properties in spin systems. The code enables large-scale
+simulations of various spin systems to analyze phase transitions, critical
+behavior, and complex magnetic structures.
+
+repository-code: "https://github.com/USERNAME/Ether"
+version:
+
