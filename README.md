@@ -5,4 +5,10 @@ Monte Carlo (MC) simulations are powerful computational tools for investigating 
 
 *Contacts*
 msharma1@ph.iitr.ac.in
-mukelian92@gmail.com  
+mukelian92@gmail.com 
+
+
+## Citation
+
+If this repository helps your research or work, please consider citing our code.  
+The citation information is available in [citation.bib](./citation.bib). 
