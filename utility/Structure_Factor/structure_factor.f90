@@ -251,10 +251,6 @@
         int(mod(mod((finish-start), 3600.0),60.0))
         print*,''
         print*,''
-        print*,"~ Mukesh Kumar Sharma"
-        print*,'e-mail: msharma1@ph.iitr.ac.in'
-        print*,''
-        print*,''
 100	format (" set xtics ", f11.5,",", f11.5,",", f11.5," scale &
         2, 0.75 textcolor 'blue'")
 101	format (" set ytics 0,0.25,",f10.5," scale 1, 0 textcolor 'red'")

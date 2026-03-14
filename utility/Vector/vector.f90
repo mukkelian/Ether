@@ -117,8 +117,6 @@
         write(6, *) ''
         call system ('more plot_vector.sh')
         write(*, *) ''
-        write(*, *) "~ Mukesh Kumar Sharma"
-        write(*, *) "e-mail@ msharma1@ph.iitr.ac.in"
         write(*, *) ''
 
         contains

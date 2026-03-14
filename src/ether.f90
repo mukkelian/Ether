@@ -271,11 +271,6 @@
 		call system('mv graph* data')
 
 		write(6, *) ''
-		write(6, *) "~ Mukesh Kumar Sharma"
-		write(6, *) "e-mail@ msharma1@ph.iitr.ac.in"
-		write(6, *) ''
-		write(6, *) ''
-		write(6, *) ''
 		write(6, *) ''
 		write(6, *) 'SUMMARY :::::::::::::::::::::::::::::::::::::'
 		write(6, *) ''
