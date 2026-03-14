@@ -29,7 +29,6 @@
 	real(dp) :: partial_toten, Spin_vec(3)
 
 	toten = 0.0
-	call omp_set_nested(.true.)
 
 	!$OMP PARALLEL DEFAULT(SHARED) PRIVATE(i, Spin_vec, partial_toten) REDUCTION(+:toten)
 	!$OMP DO SCHEDULE(DYNAMIC) COLLAPSE(1)

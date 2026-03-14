@@ -30,7 +30,6 @@
 	integer, intent(out) :: accept_count
 
 	accept_count = 0
-	call omp_set_nested(.true.)
 
 	!$OMP PARALLEL DEFAULT(SHARED) PRIVATE(i, &
 	!$OMP& S_vec_previous, S_vec_updated, total_eng, eta)

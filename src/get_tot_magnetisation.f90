@@ -29,7 +29,6 @@
 	real(dp) :: temp_magnetisation(3)
 
 	magnetisation = real(0, dp)
-	call omp_set_nested(.true.)
 
 	!$OMP PARALLEL DEFAULT(SHARED) PRIVATE(i, temp_magnetisation) &
 	!$OMP& REDUCTION(+:magnetisation)
