@@ -24,14 +24,14 @@
 		implicit none
 
 		integer, intent(in) :: ih
-		integer :: ionID, nbdi, inbr, cell
+		integer :: ionID
 		
 		real(dp) :: sia_value(3), S_diff(3), S2_diff(3)
 		real(dp), intent(in) :: S_trial(3), S_old(3)	! central ion
 		logical, intent(in) :: check_trail_spin
 		real(dp), intent(out) :: total_eng
 
-		total_eng = 0
+		total_eng = 0.0_dp
 		if(check_trail_spin) then
 			S_diff = S_trial - S_old
 			S2_diff = S_trial**2 - S_old**2
@@ -45,22 +45,23 @@
 
 		call JSiSj(ih, S_diff, ionID, total_eng)
 
-		if(Zeeman) call gmbSH(S_diff, g_factor, mb, H, total_eng)
+		if(Zeeman) call gmbSH(S_diff, ionID, total_eng)
 
 		if(SIA.and.XYZ) then
-			sia_value(1:3) = sia_vec(1:3, ionID)
-			call siaS2(S2_diff, sia_value, total_eng)
+			call siaS2(S2_diff, ionID, total_eng)
 		end if
-	
-	contains
+
+        end subroutine Hamiltonian
 
 	! JSiSj	
 	subroutine JSiSj(i, Si, central_ion_ID, total_energy)
-	
+
+                use init, only: dp, ion, nn, j_exc, no_of_nbd
+        
 		implicit none
 
 		integer, intent(in) :: i, central_ion_ID
-		integer :: total_nbr, ID_num, ion_ID
+		integer :: total_nbr, ID_num, ion_ID, cell, inbr, nbdi
 
 		real(dp), intent(in) :: Si(3)
 		real(dp) :: Sj(3), SiSj(3), Jij(3), eout
@@ -104,36 +105,39 @@
 	end subroutine JSiSj
 	
 	!gmbSH	
-	subroutine gmbSH(Si, g, mu, H, total_energy)
+	subroutine gmbSH(Si, central_Ion, total_energy)
+
+                use init, only: dp, mb, g_factor, H, s
 
 		implicit none
 
+                integer, intent(in) :: central_Ion
 		real(dp) :: eout
-		real(dp), intent(in) :: Si(3), g, mu, H(3)
+		real(dp), intent(in) :: Si(3)
 		real(dp), intent(inout) :: total_energy
 
 		! energy due to magnetic field
-		eout = -(g*mu*dot_product(Si, H))
+		eout = -g_factor*mb*s(central_Ion)*dot_product(Si, H)
 		
 		total_energy = total_energy + eout
 	
 	end subroutine gmbSH
 
 	!SINGLE ION ANISOTRPY (SIA)
-	subroutine siaS2(Si2, sia_val, total_energy)
+	subroutine siaS2(Si2, central_Ion, total_energy)
+
+                use init, only: dp, sia_vec
 
 		implicit none
 
-		real(dp) :: eout
-		real(dp), intent(in) :: Si2(3), sia_val(3)
+                integer, intent(in) :: central_Ion
+		real(dp) :: sia(3)
+		real(dp), intent(in) :: Si2(3)
 		real(dp), intent(inout) :: total_energy
 
-		! energy due to single ion anisiatropy
-		eout = dot_product(Si2, sia_val)
+                sia(1:3) = sia_vec(1:3, central_Ion)
 
-		total_energy = total_energy + eout
+		! energy due to single ion anisiatropy
+		total_energy = total_energy + dot_product(sia, Si2)
 
 	end subroutine siaS2
-
-	end subroutine Hamiltonian
-	
