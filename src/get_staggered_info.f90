@@ -91,6 +91,7 @@
 			write(6, "(9x,f7.1,4x,'-->',4x,A3)") &
 				stg_IDs(i), species(i) 
 		end do
+                write(6, *)
 	end if
 
 	end subroutine get_staggered_info
