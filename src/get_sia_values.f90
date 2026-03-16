@@ -25,7 +25,7 @@
 
 	integer :: i, j, SIA_ID
 	real(dp) :: sia_vectors(3)
-	character(len=2) :: atom1, ab
+	character(len=2) :: atom, ab
 
 	logical :: file_found
 
@@ -41,26 +41,26 @@
 		if (rank == 0) write(6, '(3X,":::::::::: SIA list (meV) ::::::::::")')
 		if (rank == 0) write(6, *) ''
   		sia_vec = 0.0_dp
-		do i = 1, nspecies
+		do
 			! Single Ion Anisotropy (SIA) vector in the unit of meV
-			read(10011, *, end=10) atom1, sia_vectors(1:3)
-			sia_vec(1:3, i) = sia_vectors(1:3)
-			ab = atom1
+			read(10011, *, end=10) atom, sia_vectors(1:3)
+			ab = atom
 			call lu(ab(1:1), ab(1:1), 'U' )
 			call lu(ab(2:2), ab(2:2), 'L' )
-			atom1 = ab
-
-			if (rank == 0) write(6, "(4X,A4,f10.3,1x,f10.3,1x,f10.3)") atom1, sia_vec(1:3, i)
+			atom = ab
 
 			do j = 1, nspecies
-				if (atom1.eq.species(j)) then
+				if (atom.eq.species(j)) then
 					SIA_ID = j
 				end if
 			end do
+                        sia_vec(1:3, SIA_ID) = sia_vectors(1:3)
 			sia_vec(1:3, SIA_ID) = sia_vec(1:3, SIA_ID)*s(SIA_ID)**2
+                        if (rank == 0) write(6, "(4X,A4,f10.3,1x,f10.3,1x,f10.3)")& 
+                                atom, sia_vec(1:3, SIA_ID)/s(SIA_ID)**2
 		end do
-		write(6, *) ''
 10		close(10011)
+                if (rank == 0) write(6, *) ''
 	else
 		if (rank == 0) then
 			write(6, *) "	 SIA is .TRUE. but file 'single_ion_anisotropy'"

@@ -38,7 +38,7 @@
 	write(10008,*) "set size squar 0.5,0.5"
 	write(10008,*) 'set nokey'
 	write(10008,*) 'set format y "%g"'
-        write(10008, 303)  lt - tint, abs(ht - lt + tint)/5., ht
+        write(10008, 303)  lt, abs(ht - lt)/5., ht
 	write(10008,*) 'set mxtics 10'
 	write(10008,*) 'set origin 0.0,0.0'
 	write(10008,*) 'set grid'

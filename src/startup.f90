@@ -79,7 +79,7 @@
 		write(6, *) '==> Spin states will be chosen from two states i.e., +S and -S'
 	end if
 	
-        if (ovrr.and.XYZ)then
+        if (ovrr.and.XYZ.and..not.Zeeman.and..not.SIA)then
         	write(6, '(" ==> Overrelaxation (OVRR) method will be applied with OVRR parameter :: ", f7.4)') ovrr_para
         	write(6, *)''
         	write(6, *) '     >  Michael Creutz, Physical Review D Vol. 36, 2 (1987).'
@@ -87,7 +87,11 @@
         	write(6, *) '     >  Nicholas Metropolis, Arianna W. Rosenbluth, Marshall N. Rosenblunth,'
         	write(6, *) '        Augusta H. Teller, and Edward Teller, The Journal of Chemical Physics'
         	write(6, *) '        Vol. 21, 1087 (1953).'
-       		write(6, *)''
+                write(6, *) ''
+                write(6, *) '       -------------------------------------------------------------------------'
+       		write(6, *) '       | NOTE: OVRR algo is not compatible for ZEEMAN = .TRUE. and SIA = .TRUE.|'
+                write(6, *) '       -------------------------------------------------------------------------'
+                write(6, *) ''
         else
         	write(6, *) '==> Metropolis algorithm will be used'
         	write(6, *)''

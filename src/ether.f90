@@ -212,7 +212,7 @@
 
 			do stepi = 1, tmcs
 
-			if (ovrr.and.XYZ.and. &
+			if (ovrr.and.XYZ.and..not.Zeeman.and..not.SIA.and. &
 				(mod(real(stepi, dp), real(ovrr_MCS, dp)) == 0.0_dp)) then
 
 				call overrelaxation

@@ -100,7 +100,7 @@
 		case("g_factor")
 			read(value, *) g_factor
 		case("sia")
-			read(value, *) sia
+			read(value, *) SIA
 		case("para")
 			read(value, *) para, J_para
                         J_para = abs(J_para)
