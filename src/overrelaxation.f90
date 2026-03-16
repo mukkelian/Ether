@@ -31,30 +31,33 @@
         
         	call get_random_indices(total_ions, i)
 
-		A_ovr = 0.0_dp
-
-		call get_ovrr_vec(i, A_ovr)
-
 		Si(1:3) = ion(1:3, i)
 
-		! check energy before applying overrelaxation algorithm
-		!call Hamiltonian(.FALSE., i, Si, Si, on_site_eng)
-		!print*, 'BEFORE OVRR:'
-		!print*, 'Eng:',on_site_eng
-		!print*, 'Central ION vec:', Si(1:3)
+                !##################################################################################
+		! check energy before applying overrelaxation algorithm (uncomment the gieven lines)
+		!if (rank == 0) call Hamiltonian(.FALSE., i, Si, Si, on_site_eng)
+		!if (rank == 0) print*, 'BEFORE OVRR:'
+		!if (rank == 0) print*, 'Eng:',on_site_eng
+		!if (rank == 0) print*, 'Central ION vec:', Si(1:3)
+                !##################################################################################
 
+                A_ovr = 0.0_dp
+                call get_ovrr_vec(i, A_ovr)
 	        Si(1:3) = (2* &
 	        (dot_product(A_ovr(1:3), Si(1:3))/dot_product(A_ovr(1:3), A_ovr(1:3)) )* &
-	        A_ovr(1:3)) - Si(1:3)
-
+                A_ovr(1:3)) - Si(1:3)
 		ion(1:3, i) = Si(1:3)/sqrt(dot_product(Si(1:3), Si(1:3)))
 
-		! check energy before applying overrelaxation algorithm
-		!call Hamiltonian(.FALSE., i, ion(1:3, i), ion(1:3, i), on_site_eng)
-		!print*, 'AFTER OVRR:'
-		!print*, ' Eng:', on_site_eng
-		!print*, 'Central ION vec:', ion(1:3, i)
-	
+                !#################################################################################
+		! check energy after applying overrelaxation algorithm (uncomment the given lines)
+                !Si(1:3) = ion(1:3, i)
+		!if (rank == 0) call Hamiltonian(.FALSE., i, Si, Si, on_site_eng)
+		!if (rank == 0) print*, 'AFTER OVRR:'
+		!if (rank == 0) print*, ' Eng:', on_site_eng
+		!if (rank == 0) print*, 'Central ION vec:', Si(1:3)
+                !if (rank == 0) print*, ''
+	        !#################################################################################
+
 	end do overrelaxation_method
 
 	end subroutine overrelaxation
