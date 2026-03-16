@@ -26,37 +26,26 @@
 	integer, intent(in) :: io
 	integer :: ionID, ith_bond, ith_nbr, cell
 
-	real(dp) :: Si_ref(3), sia_value(3)
 	real(dp), intent(inout) :: ovrr_vec(3)
 
-	ovrr_vec = 0
+	ovrr_vec = 0.0_dp
 
-	! Central ion's species ID
+	! Species ID of central ion
 	ionID = int(ion(4, io))
-		
-	! Central ion's spin vectors
-	Si_ref = ion(1:3, io)
-
+	
 	call JSiSj_ovrr(io, ionID, ovrr_vec)
 
-	if(Zeeman) call gmbSH_ovrr(g_factor, mb, H, ovrr_vec)
-
-	if(SIA) then
-		sia_value(1:3) = sia_vec(1:3, ionID)
-		call siaS2_ovrr(Si_ref, sia_value, ovrr_vec)
-	end if
-
-	contains
+	end subroutine get_ovrr_vec
 
 	! JSiSj	
 	subroutine JSiSj_ovrr(i, central_ion_ID, ovrr_vec)
 
-	use init, only: dp
+	use init, only: dp, nn, ion, j_exc, no_of_nbd
 
 	implicit none
 
 	integer, intent(in) :: i, central_ion_ID
-	integer :: total_nbr, ion_ID
+	integer :: total_nbr, ion_ID, cell, ith_bond, ith_nbr
 
 	real(dp) :: Sj(3), Jij(3), JSj(3)
 	real(dp), intent(inout) :: ovrr_vec(3)
@@ -94,41 +83,3 @@
 	end do
 
 	end subroutine JSiSj_ovrr
-	
-	!gmbSH	
-	subroutine gmbSH_ovrr(g, mu, H, ovrr_vec)
-
-	use init, only: dp
-
-	implicit none
-
-	real(dp) :: ref_vec(3)
-	real(dp), intent(in) :: g, mu, H(3)
-	real(dp), intent(inout) :: ovrr_vec(3)
-
-	! OVRR vec. due to magnetic field
-	ref_vec = -(g*mu*H)
-		
-	ovrr_vec = ovrr_vec + ref_vec
-	
-	end subroutine gmbSH_ovrr
-
-	!SINGLE ION ANISOTRPY (SIA)
-	subroutine siaS2_ovrr(Si, sia_val, ovrr_vec)
-
-	use init, only: dp
-
-	implicit none
-
-	real(dp) :: ref_vec(3)
-	real(dp), intent(in) :: Si(3), sia_val(3)
-	real(dp), intent(inout) :: ovrr_vec(3)
-
-	! OVVR vec. due to single ion anisiatropy
-	ref_vec = Si*sia_val			
-
-	ovrr_vec = ovrr_vec + ref_vec
-
-	end subroutine siaS2_ovrr
-
-	end subroutine get_ovrr_vec
