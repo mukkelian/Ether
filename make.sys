@@ -2,15 +2,15 @@
 # Ref:: (http://www.wannier.org/download/)
 
 #--- gnu
-f90comp = mpif90
-switch = -O3 -fopenmp
+ f90comp = mpif90
+ switch = -O3 -fopenmp
 
 #--- for gnu debug
 # switch = -O0 -fopenmp -g -fcheck=all
 
 #--- intel
-# f90comp = mpiifx
-# switch = -O3 -qopenmp
+#f90comp = mpiifx
+#switch = -O3 -qopenmp
 
 #--- for intel debug
 # switch = -O0 -qopenmp -check all -warn unused -debug extended \
