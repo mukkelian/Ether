@@ -25,23 +25,18 @@
 		implicit none
 
 		integer :: i, j
-		real(dp) :: sce(3)
 
 		open(unit=2, file='fetched_lattice_network.xsf', status='unknown')
 
 		write(2, *) 'CRYSTAL'
 		write(2, *) 'PRIMVEC'
-		sce = sc	! Supercell extent (sce)
-		if(bc(1).eq.'o') sce(1) = sce(1)+lp(1)/2.0
-		if(bc(2).eq.'o') sce(2) = sce(2)+lp(2)/2.0
-		if(bc(3).eq.'o') sce(3) = sce(3)+lp(3)/2.0
-		write(2, *) (abc(1,j)*(sce(1)), j= 1,3)
-		write(2, *) (abc(2,j)*(sce(2)), j= 1,3)
-		write(2, *) (abc(3,j)*(sce(3)), j= 1,3)
+		write(2, *) (abc(1,j)*(sc(1)), j= 1,3)
+		write(2, *) (abc(2,j)*(sc(2)), j= 1,3)
+		write(2, *) (abc(3,j)*(sc(3)), j= 1,3)
 		write(2, *) 'CONVEC'
-		write(2, *) (abc(1,j)*(sce(1)), j= 1,3)
-		write(2, *) (abc(2,j)*(sce(2)), j= 1,3)
-		write(2, *) (abc(3,j)*(sce(3)), j= 1,3)
+		write(2, *) (abc(1,j)*(sc(1)), j= 1,3)
+		write(2, *) (abc(2,j)*(sc(2)), j= 1,3)
+		write(2, *) (abc(3,j)*(sc(3)), j= 1,3)
 		write(2, *) 'PRIMCOORD'
 		write(2, *) product(sc)*lattice_per_unit_cell, " 1"
 

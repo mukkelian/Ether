@@ -25,9 +25,8 @@
 
 		integer, intent(in) :: tempi
 		integer :: i, j
-		real(dp) :: sce(3)
 
-		if(initiate_spin_files) then
+                if(initiate_spin_files) then
 
 			initiate_spin_files = .FALSE.
 			!FORMATION OF FILES @ temp. K
@@ -37,17 +36,13 @@
 			open(file = adjustl(filename), unit = spin_file_ID)
 			write(spin_file_ID, *) 'CRYSTAL'
 			write(spin_file_ID, *) 'PRIMVEC'
-			sce = sc	! Supercell extent (sce)
-			if(bc(1).eq.'o') sce(1) = sce(1)+lp(1)/2.0
-			if(bc(2).eq.'o') sce(2) = sce(2)+lp(2)/2.0
-			if(bc(3).eq.'o') sce(3) = sce(3)+lp(3)/2.0
-			write(spin_file_ID, *) (abc(1,j)*(sce(1)), j= 1,3)
-			write(spin_file_ID, *) (abc(2,j)*(sce(2)), j= 1,3)
-			write(spin_file_ID, *) (abc(3,j)*(sce(3)), j= 1,3)
+			write(spin_file_ID, *) (abc(1,j)*(sc(1)), j= 1,3)
+			write(spin_file_ID, *) (abc(2,j)*(sc(2)), j= 1,3)
+			write(spin_file_ID, *) (abc(3,j)*(sc(3)), j= 1,3)
 			write(spin_file_ID, *) 'CONVEC'
-			write(spin_file_ID, *) (abc(1,j)*(sce(1)), j= 1,3)
-			write(spin_file_ID, *) (abc(2,j)*(sce(2)), j= 1,3)
-			write(spin_file_ID, *) (abc(3,j)*(sce(3)), j= 1,3)
+			write(spin_file_ID, *) (abc(1,j)*(sc(1)), j= 1,3)
+			write(spin_file_ID, *) (abc(2,j)*(sc(2)), j= 1,3)
+			write(spin_file_ID, *) (abc(3,j)*(sc(3)), j= 1,3)
 			write(spin_file_ID, *) 'PRIMCOORD'
 			write(spin_file_ID, *) total_ions, " 1"
 			return
