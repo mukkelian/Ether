@@ -64,11 +64,13 @@
 	enddo atomic_details
 
 	! FILTRATION OF SPECIES FOR CALC.
-	s_count = 0
-	do i = 1, n_speci_incl
+	s_count = 0;
+        allocate(included_species_ID(total_species_to_include))
+	do i = 1, total_species_to_include
 		do j =1, nspecies
 			if (species_to_include(i).eq.species(j)) then
 				s_count = s_count + ions(j)
+                                included_species_ID(i) = j
 			end if
 		end do
 	end do
@@ -78,7 +80,7 @@
 
 	! Getting total lattice per unit cell, which will be used for MC calculations
 	lattice_per_unit_cell = 0
-	inclusion : do i = 1, n_speci_incl
+	inclusion : do i = 1, total_species_to_include
 		do j = 1, nspecies
 			
 		if (species_to_include(i).eq.species(j)) then

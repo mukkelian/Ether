@@ -73,10 +73,11 @@
 		case("spin")
 			read(value, *) (s(k), k = 1, nspecies)
 		case("species")
-			call count_species(value, n_speci_incl)
-			allocate(species_to_include(n_speci_incl), stgg(n_speci_incl))
-			read(value, *) (species_to_include(k), k = 1, n_speci_incl)
-			do k = 1, n_speci_incl
+			call count_species(value, total_species_to_include)
+			allocate(species_to_include(total_species_to_include), &
+                                stgg(total_species_to_include))
+			read(value, *) (species_to_include(k), k = 1, total_species_to_include)
+			do k = 1, total_species_to_include
 				ab = species_to_include(k)
 				call lu(ab(1:1), ab(1:1), 'U' )
 				call lu(ab(2:2), ab(2:2), 'L' )

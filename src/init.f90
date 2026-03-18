@@ -25,7 +25,7 @@
         
 	integer, parameter :: dp = 8
 
-	integer :: tmcs, tmcs_eq, n_speci_incl, sc(3), repeat, repeati, &
+	integer :: tmcs, tmcs_eq, total_species_to_include, sc(3), repeat, repeati, &
 		ovrr_steps, ovrr_MCS, optbeta, nspecies, total_ions_per_cell, &
 		no_of_nbd, j_ID(2), similar_bonds, num_of_threads, total_ions, &
 		lattice_per_unit_cell, nscan, &
@@ -46,7 +46,7 @@
 		err_eng_avg, ovrr_para, SCabc(3, 3)
 
         integer, allocatable :: ions(:), tions(:), nn(:,:,:,:), bblx(:), bbly(:), bblz(:), &
-        	seed(:)
+        	seed(:), included_species_ID(:)
 
         real(dp), allocatable :: x(:), y(:), z(:), s(:), nbd_dis(:), &
         	j_exc(:,:,:,:), sia_vec(:, :), stgg(:), stgg_ion(:), ion(:, :), &

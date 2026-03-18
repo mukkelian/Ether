@@ -19,22 +19,20 @@
 
 	subroutine get_moment_vectors
 
-	use init
+	use init, only: dp, ion, s, total_ions, mm_vector
 
 	implicit none
 		
-	integer :: i
+	integer :: i, j
 		
-	mm_vector = 0
+	mm_vector = 0.0_dp
 
 	do i = 1, total_ions
-
-	! moment vectors for each magentic ion
-	mm_vector(int(ion(4, i)), 1:3) = &
-		mm_vector(int(ion(4, i)), 1:3) &
-		+ ion(1:3, i)*s(int(ion(4, i)))
-
-
+                j = int(ion(4, i))
+	        ! moment vectors for each magentic ion
+	        mm_vector(j, 1:3) = &
+		        mm_vector(j, 1:3) &
+		        + ion(1:3, i)*s(j)
 	end do
 
 	end subroutine get_moment_vectors

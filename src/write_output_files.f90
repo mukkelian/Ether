@@ -56,17 +56,18 @@
 104   		format(A13,A13,A13,A13,1x,A13,1x,A13,A13,A13)
 
 		write(20003, *) '# Showing moment vectors (Mx, My, Mz) for species(sp):'
-		write(20003, 105) species(1:)
+		write(20003, 105) (species(included_species_ID(i)), i = 1, total_species_to_include)
 		write(20003, *) '# Temp, sp1(Mx,My,Mz), sp1(Mx,My,Mz),..spN(Mx,My,Mz), sp1|M|, sp2|M|,..spN|M|'
 105		format(' #	', 5A3)
 		return
 	end if
 
 	!MAGNETIC MOMENT VECTORS
-       	write(20003, 101) temp_T(tempi), (mm_vector_avg_T(i, 1:3, tempi)&
-       		/tions(i), i = 1, nspecies), &
-       	(sqrt(dot_product(mm_vector_avg_T(i, 1:3, tempi), mm_vector_avg_T(i, 1:3, tempi)))&
-       		/tions(i), i = 1, nspecies)
+       	write(20003, 101) temp_T(tempi), (mm_vector_avg_T(included_species_ID(i), 1:3, tempi)&
+       		/tions(included_species_ID(i)), i = 1, total_species_to_include), &
+       	(sqrt(dot_product(mm_vector_avg_T(included_species_ID(i), 1:3, tempi), &
+                        mm_vector_avg_T(included_species_ID(i), 1:3, tempi))) &
+       		/tions(included_species_ID(i)), i = 1, total_species_to_include)
        
 	!MAGNETIC
 		write(20001,102) temp_T(tempi), s_mag_avg_T(tempi), &
