@@ -146,11 +146,13 @@
 
 	end do
 
-	if (ovrr) ovrr_steps = nint(total_ions*ovrr_para)
+	if (ovrr.and.XYZ.and..not.Zeeman.and..not.SIA) ovrr_steps = nint(total_ions*ovrr_para)
 	if (rank == 0) then
 		write(6, *) '==> Supercells are generated'
-		if (ovrr) write(6, "(' ==> Total number of OVRR steps: ',I6)") ovrr_steps
-		if (ovrr) write(6, "('     MCS steps after which OVRR will be performed: ',I4)") ovrr_MCS
+		if (ovrr.and.XYZ.and..not.Zeeman.and..not.SIA) &
+                        write(6, "(' ==> Total number of OVRR steps: ',I6)") ovrr_steps
+		if (ovrr.and.XYZ.and..not.Zeeman.and..not.SIA) &
+                        write(6, "('     MCS steps after which OVRR will be performed: ',I4)") ovrr_MCS
 	end if
 	end subroutine generate_supercell
 
