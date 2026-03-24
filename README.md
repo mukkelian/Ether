@@ -34,6 +34,6 @@ The citation information is available in [citation.bib](./citation.bib).
 | G_FACTOR | g factor value | 2 |
 | SIA | Single ion anisotropy logic | `.FALSE.` |
 | PARA | Parameter logic with J_para (in meV) | `.FALSE.` 1.0 |
-| OVRR | Over relaxation method applied after each ovrr_MCS steps *(logic, over_para, ovrr_MCS)* | `.FALSE.` 0.1 11 |
+| OVRR | Over relaxation method applied after each ovrr_MCS steps *(logic, over_para, ovrr_MCS)* | `.FALSE.` 0 0 |
 | SEED | Seed for random number generation | 1992 |
 | NBDFC | Neighbourhood finding criteria | 10⁻⁵ |
