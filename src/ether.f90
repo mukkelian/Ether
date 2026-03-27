@@ -251,8 +251,8 @@
 
         	! Getting magnetic moment vectors
         	call get_moment_vectors
-     print*, acceptance_counting, temp, rank   		
-        	! Evaluate all observables
+
+                ! Evaluate all observables
         	call process_observables('store')
 
         	! Writing spin states into *spK* file
