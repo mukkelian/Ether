@@ -74,7 +74,11 @@
 	!$OMP PARALLEL DEFAULT(SHARED) PRIVATE(i)
 	!$OMP DO SCHEDULE(DYNAMIC)
 	do i = 1, total_ions
-		stgg_ion(i) = stg_IDs(int(ion(4, i)))
+                if(Checkerboard) then
+                        stgg_ion(i) = (-1)**i
+                else
+		        stgg_ion(i) = stg_IDs(int(ion(4, i)))
+                end if
 	end do
 	!$OMP END DO
 	!$OMP END PARALLEL
@@ -84,14 +88,22 @@
 		write(6, *) '    :::::::::::::::::::::::::: &
         	                        STG list ::::::::::::::::::::::::'
 		write(6, *) ''
-        	if(staggered) write(6, *) "    (From 'staggered' file)"
-        	if(.not.staggered) write(6, *) '    (DEFAULT values)'
-        	write(6, *) ''
-		do i = 1, nspecies
-			write(6, "(9x,f7.1,4x,'-->',4x,A3)") &
+                if (.not.Checkerboard) then
+        	        if(staggered) write(6, *) "    (From 'staggered' file)"
+        	        if(.not.staggered) write(6, *) '    (DEFAULT values)'
+        	        write(6, *) ''
+		        do i = 1, nspecies
+			        write(6, "(9x,f7.1,4x,'-->',4x,A3)") &
 				stg_IDs(i), species(i) 
-		end do
-                write(6, *)
+		        end do
+                else
+                        write(6, *) '     +------------------------------------------------+'
+                        write(6, *) '     |NOTE: STG list are taken as Checkerboard fashion|'
+                        write(6, *) '     +------------------------------------------------+'
+                        write(6, *) ''
+                        write(6, *) '     for n-th ion, stg = (-1)^n'
+                end if
+                write(6, *) ''
 	end if
 
 	end subroutine get_staggered_info

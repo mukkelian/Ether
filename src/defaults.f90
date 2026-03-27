@@ -43,4 +43,8 @@
         ovrr = .FALSE.
         seed = 1992
         nbd_finding_criteria = 0.00001
+        ovrr_MCS = 0
+        ovrr_para = 0.0
+        PTalgo = .FALSE.
+        Checkerboard = .FALSE.
         end subroutine defaults

@@ -88,9 +88,9 @@
         	write(6, *) '        Augusta H. Teller, and Edward Teller, The Journal of Chemical Physics'
         	write(6, *) '        Vol. 21, 1087 (1953).'
                 write(6, *) ''
-                write(6, *) '       -------------------------------------------------------------------------'
+                write(6, *) '       +-----------------------------------------------------------------------+'
        		write(6, *) '       | NOTE: OVRR algo is not compatible for ZEEMAN = .TRUE. and SIA = .TRUE.|'
-                write(6, *) '       -------------------------------------------------------------------------'
+                write(6, *) '       +-----------------------------------------------------------------------+'
                 write(6, *) ''
         else
         	write(6, *) '==> Metropolis algorithm will be used'
@@ -101,22 +101,22 @@
         	write(6, *)''
         end if
 
-	if(EXalgo) then
-		write(6, *) '==> Exchange alogorithm will be used along with Metropolis algorithm'
+	if(PTalgo) then
+		write(6, *) '==> Parallel Tempering (PT) algo will be used along with Metropolis algorithm'
 		write(6, '("     with exchange interval", i4)') exchange_interval
 		write(6, *) ''
 		write(6, *) '     >  Koji Hukushima and Koji Nemoto, Journal of the Physical Society'
 		write(6, *) '	 of Japan 65, 1604-1608 (1996).'
 		write(6, *) ''
 
-	if(temp_ex.eqv..FALSE.)then
-		write(6, '(" ==> Temperature points will be generated as per the method given in the appendix")')
-		write(6, *) ''
-		write(6, *) '     >  Koji Hukushima, Physical Review E 60, 4 (1999).'
-		write(6, *)''
-	else
+	!if(temp_ex.eqv..FALSE.)then
+	!	write(6, '(" ==> Temperature points will be generated as per the method given in the appendix")')
+	!	write(6, *) ''
+	!	write(6, *) '     >  Koji Hukushima, Physical Review E 60, 4 (1999).'
+	!	write(6, *)''
+	!else
 		write(6, *) '==> Equi-spaced temperature points have been considered for Exchange algorithm'
-	end if
+	!end if
 
 	end if
 

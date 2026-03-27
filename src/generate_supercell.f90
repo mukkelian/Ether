@@ -30,7 +30,7 @@
 	logical :: file_found
 
 	! SAVING DETAILS OF ATOMS PRESENT IN STRUCTURE FILE
-	allocate(atom(total_ions_per_cell, 0:8))
+	allocate(atom(total_ions_per_cell, 0:total_info))
 	atom = 0
 	atomic_details: do k = 1, nspecies
 		do i = int(sum(ions(0:k-1)))+1, int(sum(ions(0:k)))
@@ -75,7 +75,7 @@
 		end do
 	end do
 
-	allocate(ar(s_count, 0:8))
+	allocate(ar(s_count, 0:total_info))
 	ar = 0
 
 	! Getting total lattice per unit cell, which will be used for MC calculations
@@ -105,7 +105,7 @@
         end if
 	
 	! EXPANDING INTO SUPERCELL
-	allocate(ion(0:8, product(sc)*lattice_per_unit_cell))
+	allocate(ion(0:total_info, product(sc)*lattice_per_unit_cell))
 	s_count = 0; ion = 0
 
 	! Simulation box start from_ till to_

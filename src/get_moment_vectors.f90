@@ -19,7 +19,7 @@
 
 	subroutine get_moment_vectors
 
-	use init, only: dp, ion, s, total_ions, mm_vector
+	use init, only: dp, ion, s, total_ions, mm_vector, stgg_ion
 
 	implicit none
 		
@@ -32,7 +32,7 @@
 	        ! moment vectors for each magentic ion
 	        mm_vector(j, 1:3) = &
 		        mm_vector(j, 1:3) &
-		        + ion(1:3, i)*s(j)
+		        + stgg_ion(i)*ion(1:3, i)*s(j)
 	end do
 
 	end subroutine get_moment_vectors

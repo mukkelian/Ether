@@ -17,7 +17,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with this program; if not, see https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
-	subroutine Monte_Carlo(accept_count)
+	subroutine Metropolis(beta_value, accept_count)
 
 	use init
 	use omp_lib
@@ -25,11 +25,13 @@
 	implicit none
 
 	integer :: i
+	
+	real(dp), intent(in) :: beta_value
 	real(dp) :: S_vec_previous(5), S_vec_updated(5), &
 		total_eng, eta
-	integer, intent(out) :: accept_count
+	real(dp), intent(out) :: accept_count
 
-	accept_count = 0
+	accept_count = 0.0_dp
 
 	!$OMP PARALLEL DEFAULT(SHARED) PRIVATE(i, &
 	!$OMP& S_vec_previous, S_vec_updated, total_eng, eta)
@@ -48,14 +50,14 @@
 				S_vec_previous(1:3), total_eng)
 
 		! Get random number for Metropolis criterion
-		call get_random_num(0d0, 1d0, eta)
+		call get_random_num(0.0_dp, 1.0_dp, eta)
 
 		! Metropolis acceptance algorithm
-		if (exp(-beta*total_eng) .gt. eta) then
+		if (exp(-beta_value*total_eng) .gt. eta) then
 		ion(1:5, i) = S_vec_updated(1:5)
 
 		!$OMP ATOMIC
-		accept_count = accept_count + 1
+		accept_count = accept_count + 1_dp
 		!$OMP END ATOMIC
 
 		end if
@@ -65,5 +67,8 @@
 	!$OMP END DO
 	!$OMP END PARALLEL
 
-	end subroutine Monte_Carlo
+	! accept_count per total_ions
+	accept_count = accept_count/total_ions
+
+	end subroutine Metropolis
 

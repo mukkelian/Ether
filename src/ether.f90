@@ -26,8 +26,9 @@
 	implicit none
 
 	integer, dimension(8) :: start, finish
-	integer :: n_seed, stepi, ei, ej, el
-
+	integer :: n_seed, stepi, ei, ej, el, max_temp_count, swap_count
+	integer :: comm_ei, color
+	real(dp) :: beta_before
 	! Initialize MPI
 	call MPI_INIT(ierr)
 	call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierr)
@@ -67,6 +68,11 @@
 	! Total temperature count
 	nscan = nint((ht - lt) / (tint)) + 1
 
+        allocate(temperature(nscan))
+        do ei = 1, nscan
+        	temperature(ei) =  ht - tint * (ei - 1)
+        end do
+
 	call allocate_observables
 
 	! For initiating Ground Spin State (GSS) file
@@ -74,34 +80,20 @@
 	! For creating output files
 	if (rank == 0) call write_output_files(0)
 
-	allocate(addmoreitr(nprocs), num_iterations(nprocs), istart(0:nprocs), iend(0:nprocs), &
+	allocate(addmoreitr(nprocs), num_iterations(nprocs), istart(0:nprocs), &
 		tlobs(nprocs), tlspn(nprocs))
 
-	addmoreitr = 0; istart = 0; iend = 0
-     
-	! Calculate the reminder (left) values after nprocs divides the nscan,
-	! it can be used for assigning this leftovers to other processors.
-	left = mod(nscan, nprocs)
-	do el = 1, left
-
-		addmoreitr(el) = 1  ! add more iterations
-
-	end do
-
-	! Calculate the work distribution: number of iterations per process
-	interval = nscan / nprocs
-	do ei = 1, nprocs
-
-		num_iterations(ei) = addmoreitr(ei) + interval
-
-	end do
+	addmoreitr = 0; istart = 0
 
 	! Calculate the starting and end points of distributed temperature index
+	allocate(total_temperatures(nprocs))
 	do ei = 1, nprocs
-
-		istart(ei) = iend(ei-1) + 1
-		iend(ei) = iend(ei-1) + num_iterations(ei)
-
+		istart(ei) = ei
+		el = 0
+		do ej = istart(ei), nscan, nprocs
+			el = el + 1
+		end do
+		total_temperatures(ei) = el 
 	end do
     
 	! Number of observable (like: temp., energy, Cv, Mag., Chi,..., etc.)
@@ -117,85 +109,78 @@
 	do ei = 1, nprocs
 
 		! Total length of observables for local array
-		tlobs(ei) = local_olen*(iend(ei) - istart(ei) + 1)
+		tlobs(ei) = local_olen*total_temperatures(ei)
 
 		! Total length of spin details for local array
-		tlspn(ei) = local_slen*(iend(ei) - istart(ei) + 1)
+		tlspn(ei) = local_slen*total_temperatures(ei)
 
 	end do
 	
 	allocate(local_obs(tlobs(rank+1)), local_spn(tlspn(rank+1)), si_obs(nprocs), &
 		si_spn(nprocs))
 
-	local_obs = real(0, dp); local_spn = real(0, dp)
+	local_obs = 0.0_dp; local_spn = 0.0_dp
     	
 	! Calculate the starting index for recieving buffer from non-root processors
 	si_obs(1) = 0
 	si_spn(1) = 0
 	do ei = 2, nprocs
-
 		! For observables
 		si_obs(ei) = sum(tlobs(1:ei-1))
 		! For spin details
 		si_spn(ei) = sum(tlspn(1:ei-1))
-		
         end do
 
     	if (rank == 0) then
-
-        !$OMP PARALLEL
-        num_of_threads = omp_get_num_threads()
-        !$OMP END PARALLEL
-
-        write(6, *) ''
-        write(6,'(" Calculations are running on total: ")')
-        write(6, *) ''
-        write(6,'("              OpenMP threads =>", i3)') num_of_threads
-        write(6,'("              MPI processes  =>", i3)') nprocs
-        write(6, *) ''
-
-	write(6, "(' List of temperatures')")
-	write(6, "(' ~~~~~~~~~~~~~~~~~~~~')")
-	write(6, *) ''
-
-	do ei = 0, nprocs-1
-
-		allocate(temp_assigned(num_iterations(ei + 1)))
-		el = 0
-		do ej = istart(ei + 1), iend(ei + 1)
-			el = el + 1
-			temp_assigned(el) = ht - tint * (ej - 1)
-		end do
-		write(6, "(' At process ID', i3, ' are:')") ei
-		write(6, "('                      ',5g11.4)") temp_assigned
-		write(6, *) ''
-		deallocate(temp_assigned)
-
-	end do
-		
-	! Allocate global array only on the root process (rank 0)
-    	allocate(global_obs(local_olen*nscan), global_spn(local_slen*nscan))
-
+		call write_temperature_infos
+		! Allocate global array only on the root process (rank 0)
+    		allocate(global_obs(local_olen*nscan), global_spn(local_slen*nscan))
 	else
 		! This is necessay because for command line flag -check=all it gives error
 		! so we are making these buffer as dummy things for non-root processes
 		allocate(global_obs(0), global_spn(0))
 	end if
 
-	el = 0
 	li_obs = 0	! local index for observables
 	li_spn = 0	! local index for spins
-	temperature: do itemp = istart(rank + 1), iend(rank + 1)
 
-		! local index for local_* array
+	max_temp_count = maxval(total_temperatures)
+	allocate(temp_range(nprocs, max_temp_count))
+	temp_range = 0
+	do ei = 1, nprocs
+		el = 0
+		do ej = istart(ei), nscan, nprocs
+			el = el + 1
+			temp_range(ei, el) = ej
+		end do
+	end do
+
+	el = 0
+
+	temperature_MPI: do ei = 1, max_temp_count
+	
+		itemp = temp_range(rank + 1, ei)
+
+		! Create dynamic communicator for this iteration
+		if (itemp /= 0) then
+			color = ei
+		else
+			color = MPI_UNDEFINED
+		end if
+
+		call MPI_Comm_split(MPI_COMM_WORLD, color, rank, comm_ei, ierr)
+
+		if(itemp.eq.0) goto 1
+
+		! local index for local_olen/local_slen array
 		el = el + 1
 		li_obs = local_olen*(el - 1)
 		li_spn = local_slen*(el - 1)
 
 		! Temperature (T)
-		temp = ht - tint * (itemp - 1)
+		temp = temperature(itemp)
 		! kBT^-1
-		beta = real(1, dp)/(kb*temp)
+		beta = 1.0_dp/(kb*temp)
 
 		! Creating *spK* file
 		initiate_spin_files = .TRUE.
@@ -205,46 +190,82 @@
 		call zeroes('repeat')
 
 		acceptance_counting = 0
+
+		! SAMPLING
 		sampling: do repeati = 1, repeat
 
+                        call random_seed(put=seed+itemp+175*rank+666*repeati)
 			call fresh_spins
 			call zeroes('eng_mag')
 
-			do stepi = 1, tmcs
+		swap_count = 0
+		perform_MCS: do stepi = 1, tmcs
 
-			if (ovrr.and.XYZ.and..not.Zeeman.and..not.SIA.and. &
-				(mod(real(stepi, dp), real(ovrr_MCS, dp)) == 0.0_dp)) then
+		total_energy = 0.0_dp
 
-				call overrelaxation
+		if (ovrr.and.XYZ.and.&
+			.not.Zeeman.and.&
+			.not.SIA.and.&
+			(mod(stepi, ovrr_MCS) == 0)) then
+			call overrelaxation
+		end if
 
-			end if
+		! Monte Carlo with Metropolis aLgo
+		call Metropolis(beta, acceptance_count)
+		acceptance_counting = acceptance_count + &
+				acceptance_counting
 
-			call mc(stepi, acceptance_count)
-			acceptance_counting = acceptance_counting + acceptance_count
+		! Calculate Total Energy
+		call get_tot_energy(total_energy)
 
-			end do
+		! Wait for other MPIs to complete
+		call MPI_Barrier(comm_ei, ierr)
 
-			call evaluate_observables('avg_eng')
-			call evaluate_observables('avg_mag')
+		! Monte Carlo with Parallel Tempering (PT) algo
+		PT: if(PTalgo) then
+			if (mod(stepi, exchange_interval) == 0) then
+				swap_count = swap_count + 1
+
+    			call parallel_tempering(ei, ion, total_energy, beta, itemp, &
+        			swap_count, comm_ei)
+
+			end if 
+		end if PT
+
+		! Calculate observable (Total Energy, Magnetisation) after Equilibration
+		call evaluate_observable(beta, stepi)
+
+		end do perform_MCS
+
+		call evaluate_eng_observables(beta, 'avg_eng')
+		call evaluate_mag_observables(beta, 'avg_mag')
 
 		end do sampling
 
-        	call evaluate_observables('observables_per_repeat')
+		! Acceptance_counting per repeat*tmcs
+		acceptance_counting = acceptance_counting/(repeat*tmcs)
+
+        	call evaluate_observables_per_repeat
 
         	! At temperature K
 
         	! Getting magnetic moment vectors
         	call get_moment_vectors
+     print*, acceptance_counting, temp, rank   		
         	! Evaluate all observables
-        	call evaluate_observables('store')
+        	call process_observables('store')
 
         	! Writing spin states into *spK* file
         	call write_spins_at_K(itemp)
 
 		! Writing Job status
-		write(6, "(' Task for temperature ', g11.4, 'is completed.')") temp
+		write(6, "(' Task for temperature '&
+			, g11.4, 'is completed.')") temp
 
-	end do temperature
+    		call MPI_Comm_free(comm_ei, ierr)
+
+1		continue
+	end do temperature_MPI
 
 	! Gather data from all processes to root
 	call MPI_GATHERV(local_obs, tlobs(rank+1), MPI_DOUBLE_PRECISION, &
@@ -260,7 +281,7 @@
 	! Root process will finalize observables and write results after all data has been received
 	if (rank == 0) then
 
-		call evaluate_observables('write')
+		call process_observables('write')
 		call graph
 
 		call system('rm -rf data spins')

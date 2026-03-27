@@ -30,23 +30,24 @@
 		no_of_nbd, j_ID(2), similar_bonds, num_of_threads, total_ions, &
 		lattice_per_unit_cell, nscan, &
 		fromx, fromy, fromz, tox, toy, toz, total_calculations, itemp, &
-		spin_file_ID, gss_ID, acceptance_counting, acceptance_count, &
-		seed_value
-	
+		spin_file_ID, gss_ID, &
+		seed_value, exchange_interval, total_info = 8
+
         real(dp), parameter :: pi = real(4.0, dp)*atan(real(1.0, dp))
 
         real(dp) :: temp, ht, lt, tint, dphi, to_cal, g_factor, J_para, &
-        	exchange_interval, lp(3), abc(3, 3), kb = 8.617333262d-5, &
+        	lp(3), abc(3, 3), kb = 8.617333262d-5, &
         	h(3), anisotropy(3), mb, beta_critria, &
 		nbd_finding_criteria, convert_to_rad = pi/real(180.0, dp), &
 		beta, eng, eng_avg, eng2_avg, eng4_avg, mag_avg, mag2_avg, mag4_avg, &
 		s_eng_avg, s_eng2_avg, e_eng2_avg, s_U_eng, s_cv, &
 		s_mag_avg, s_mag2_avg, e_mag2_avg, s_U_mag, s_chi, &
 		net_mag(3), err_U_mag, err_chi, err_mag_avg, err_U_eng, err_cv, &
-		err_eng_avg, ovrr_para, SCabc(3, 3)
+		err_eng_avg, ovrr_para, SCabc(3, 3), total_energy, total_mag(3), &
+		acceptance_counting, acceptance_count
 
         integer, allocatable :: ions(:), tions(:), nn(:,:,:,:), bblx(:), bbly(:), bblz(:), &
-        	seed(:), included_species_ID(:)
+        	seed(:), included_species_ID(:), total_temperatures(:), temp_range(:, :)
 
         real(dp), allocatable :: x(:), y(:), z(:), s(:), nbd_dis(:), &
         	j_exc(:,:,:,:), sia_vec(:, :), stgg(:), stgg_ion(:), ion(:, :), &
@@ -55,7 +56,7 @@
 		temp_T(:), s_mag_avg_T(:), s_chi_T(:), err_mag_avg_T(:), err_chi_T(:), &
 		s_U_mag_T(:), err_U_mag_T(:), s_eng_avg_T(:), s_cv_T(:), err_eng_avg_T(:), &
 		err_cv_T(:), s_U_eng_T(:), err_U_eng_T(:), mm_vector_avg_T(:, :, :), &
-		acceptance_ratio(:)
+		acceptance_ratio(:), temperature(:)
 
 	character :: bc(3)
 	character(len=2), allocatable :: species_to_include(:), species(:)
@@ -65,7 +66,7 @@
 	character(len=200), allocatable :: input_data(:)
 
 	logical :: staggered, angle, Zeeman, SIA, para, ovrr, &
-		EXalgo, temp_ex, beta_file, initiate_spin_files
+		PTalgo, temp_ex, beta_file, initiate_spin_files
 		
 !	For MPI's
 	integer :: rank, size, ierr, interval, left, tag, local_olen, local_slen, &
@@ -79,6 +80,6 @@
 	real(dp), allocatable :: local_obs(:), local_spn(:), &
 		global_obs(:), global_spn(:), temp_assigned(:)
 
-	logical :: completed, Ising, XYZ
+	logical :: completed, Ising, XYZ, Checkerboard
 	
         end module init

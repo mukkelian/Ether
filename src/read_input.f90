@@ -68,6 +68,13 @@
 			if(model.eq.'xyz') XYZ = .TRUE.
 		case("mcs")
 			read(value, *) tmcs, tmcs_eq
+			if(tmcs.le.tmcs_eq) then
+				write(6, *) ''
+				write(6, *) 'STOPPING now'
+				write(6, *) 'TOTAL MCS  < EQUILIBRATIONS MCS steps'
+				write(6, *) ''
+				stop
+			end if
 		case("temp")
 			read(value, *) ht, lt, tint
 		case("spin")
@@ -120,6 +127,10 @@
 			seed = seed_value
                 case("nbdfc")
                         read(value, *) nbd_finding_criteria
+                case("pt")
+                        read(value, *) PTalgo, exchange_interval
+                case("cb")
+                        read(value, *) Checkerboard
 
                 case default
 				print*, ''

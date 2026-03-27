@@ -17,29 +17,28 @@
 ! You should have received a copy of the GNU General Public License
 ! along with this program; if not, see https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
-	subroutine mc(at_step, acceptance_count_)
+	subroutine evaluate_observable(beta_value, at_step)
 
 		use init
 
 		implicit none
 
 		integer, intent(in) :: at_step
-		integer, intent(out) :: acceptance_count_
-
-		! Perform Monte Carlo
-		call Monte_Carlo(acceptance_count_)
+		
+		real(dp), intent(in) :: beta_value
 
 		after_equilibration_step: if((at_step.gt.tmcs_eq).and.&
 			(mod(real(at_step), real(to_cal)).eq.0))then
 
 			total_calculations = total_calculations + 1
-			eng = real(0.0, dp); net_mag = real(0.0, dp)
+			eng = 0.0_dp; net_mag = 0.0_dp
+
 			call get_tot_energy(eng)
 			call get_tot_magnetisation(net_mag)
 
-	        	call evaluate_observables('eng')
-			call evaluate_observables('mag')
+	        	call evaluate_eng_observables(beta_value, 'eng')
+			call evaluate_mag_observables(beta_value, 'mag')
 
 		end if after_equilibration_step
 
-	end subroutine mc
+	end subroutine evaluate_observable

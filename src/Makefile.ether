@@ -5,10 +5,11 @@ include ../make.sys
 OBJS  = init.o lu.o get_random_num.o get_tot_species.o process_file.o defaults.o count_species.o \
 	read_input.o startup.o frac_to_cart.o read_structure.o generate_supercell.o get_random_indices.o  \
 	j_values.o get_sia_values.o parameters.o write_fetched_lattice_network.o search_nbd.o getting_nbd.o \
-	write_nbd.o allocate_observables.o write_gss.o write_output_files.o \
+	write_nbd.o allocate_observables.o write_temperature_infos.o write_gss.o write_output_files.o \
 	George_Marsaglia.o update_spin_details.o Hamiltonian.o get_tot_energy.o get_tot_magnetisation.o fresh_spins.o \
-	evaluate_observables.o Monte_Carlo.o mc.o get_moment_vectors.o  write_spins_at_K.o zeroes.o \
-	get_ovrr_vec.o overrelaxation.o graph.o get_staggered_info.o
+	evaluate_observable.o evaluate_eng_observables.o evaluate_mag_observables.o evaluate_observables_per_repeat.o \
+	process_observables.o Metropolis.o get_moment_vectors.o  write_spins_at_K.o zeroes.o \
+	get_ovrr_vec.o overrelaxation.o graph.o get_staggered_info.o parallel_tempering.o
 	
 
 ether: ../ether
@@ -82,6 +83,9 @@ write_nbd.o: ../src/write_nbd.f90
 allocate_observables.o: ../src/allocate_observables.f90
 	$(f90comp) -c $(switch) ../src/allocate_observables.f90
 
+write_temperature_infos.o: ../src/write_temperature_infos.f90
+	$(f90comp) -c $(switch) ../src/write_temperature_infos.f90
+
 write_gss.o: ../src/write_gss.f90
 	$(f90comp) -c $(switch) ../src/write_gss.f90
 
@@ -106,14 +110,23 @@ get_tot_magnetisation.o: ../src/get_tot_magnetisation.f90
 fresh_spins.o: ../src/fresh_spins.f90
 	$(f90comp) -c $(switch) ../src/fresh_spins.f90
 
-evaluate_observables.o: ../src/evaluate_observables.f90
-	$(f90comp) -c $(switch) ../src/evaluate_observables.f90
+evaluate_observable.o: ../src/evaluate_observable.f90
+	$(f90comp) -c $(switch) ../src/evaluate_observable.f90
 
-Monte_Carlo.o: ../src/Monte_Carlo.f90
-	$(f90comp) -c $(switch) ../src/Monte_Carlo.f90
+evaluate_eng_observables.o: ../src/evaluate_eng_observables.f90
+	$(f90comp) -c $(switch) ../src/evaluate_eng_observables.f90
 
-mc.o: ../src/mc.f90
-	$(f90comp) -c $(switch) ../src/mc.f90
+evaluate_mag_observables.o: ../src/evaluate_mag_observables.f90
+	$(f90comp) -c $(switch) ../src/evaluate_mag_observables.f90
+
+evaluate_observables_per_repeat.o: ../src/evaluate_observables_per_repeat.f90
+	$(f90comp) -c $(switch) ../src/evaluate_observables_per_repeat.f90
+
+process_observables.o: ../src/process_observables.f90
+	$(f90comp) -c $(switch) ../src/process_observables.f90
+
+Metropolis.o: ../src/Metropolis.f90
+	$(f90comp) -c $(switch) ../src/Metropolis.f90
 
 get_moment_vectors.o: ../src/get_moment_vectors.f90
 	$(f90comp) -c $(switch) ../src/get_moment_vectors.f90
@@ -135,6 +148,9 @@ graph.o: ../src/graph.f90
 
 get_staggered_info.o: ../src/get_staggered_info.f90
 	$(f90comp) -c $(switch) ../src/get_staggered_info.f90
+
+parallel_tempering.o: ../src/parallel_tempering.f90
+	$(f90comp) -c $(switch) ../src/parallel_tempering.f90
 
 
 
