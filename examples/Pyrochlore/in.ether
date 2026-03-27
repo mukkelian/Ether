@@ -15,3 +15,4 @@ sia = .F.               ! SIA logic
 para = .T. 1            ! Parameter logic, value (meV)
 ovrr = .F. 0.40 12      ! Over-relaxed (OVRR) logic, ovrr steps, start after MC interval
 seed = 1992             ! Seed for random number generation
+PT = .F. 11		! Parallel Tempering (logic, exchange interval)
