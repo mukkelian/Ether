@@ -37,3 +37,7 @@ The citation information is available in [citation.bib](./citation.bib).
 | OVRR | Over relaxation method applied after each ovrr_MCS steps *(logic, over_para, ovrr_MCS)* | `.FALSE.` 0 0 |
 | SEED | Seed for random number generation | 1992 |
 | NBDFC | Neighbourhood finding criteria | 10⁻⁵ |
+| PT |  Parallel Tempering (logic, exchange_interval) | .FALSE. 11 |
+| Checkerboard | Choice of STG lists in Checkerboard fashion. (logic) | .FALSE. |
+
+
