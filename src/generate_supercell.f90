@@ -113,6 +113,9 @@
 	fromy = 1; toy = sc(2)
 	fromz = 1; toz = sc(3)
 
+	if(allocated(stgg_ion)) deallocate(stgg_ion)
+	allocate(stgg_ion(product(sc)*lattice_per_unit_cell))
+
 	do k = fromz, toz
 		do j = fromy, toy
 			do i = fromx, tox
@@ -124,6 +127,8 @@
 		ion(6:8, s_count) = abc(1, 1:3)*(i - 1) &	! co-ordinates
 					+ abc(2, 1:3)*(j - 1) + abc(3, 1:3)*(k - 1) &
 					+ ar(l, 6:8)
+
+		if(Checkerboard) stgg_ion(s_count) = (-1)**(i+j+k+l)
 
 				end do
 			end do

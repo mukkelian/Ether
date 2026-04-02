@@ -17,14 +17,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with this program; if not, see https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
-	subroutine get_staggered_info(s_count)
+	subroutine get_staggered_info(tot_ions)
 	
 	use init
 	use omp_lib
 
 	implicit none
 	
-	integer, intent(in) :: s_count
+	integer, intent(in) :: tot_ions
 	integer :: i, k, total_lines
 	
 	real(dp), allocatable :: stg_info(:), stg_IDs(:)
@@ -32,7 +32,11 @@
 	
 	character(len=3) :: atom, ab, out
 
-	allocate(stgg_ion(s_count), stg_IDs(nspecies))
+	if(Checkerboard) goto 11
+
+	if(allocated(stgg_ion)) deallocate(stgg_ion)
+	 
+	allocate(stgg_ion(tot_ions), stg_IDs(nspecies))
 	stg_IDs = 1
 
 	inquire(file='staggered', exist=file_found)
@@ -74,14 +78,12 @@
 	!$OMP PARALLEL DEFAULT(SHARED) PRIVATE(i)
 	!$OMP DO SCHEDULE(DYNAMIC)
 	do i = 1, total_ions
-                if(Checkerboard) then
-                        stgg_ion(i) = (-1)**i
-                else
-		        stgg_ion(i) = stg_IDs(int(ion(4, i)))
-                end if
+		stgg_ion(i) = stg_IDs(int(ion(4, i)))
 	end do
 	!$OMP END DO
 	!$OMP END PARALLEL
+
+11	continue
 
 	if (rank == 0) then
 		write(6, *) ''
