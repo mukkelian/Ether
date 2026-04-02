@@ -32,12 +32,12 @@ The citation information is available in [citation.bib](./citation.bib).
 | COA | Calculate observables at each defined MCS | 10 |
 | ZEEMAN | Zeeman logic with external magnetic field *(logic, Hₓ, Hᵧ, H_z)* | `.FALSE.` 0 0 0 |
 | G_FACTOR | g factor value | 2 |
-| SIA | Single ion anisotropy logic | `.FALSE.` |
+| SIA | Single ion anisotropy <br> (logic) | `.FALSE.` |
 | PARA | Parameter logic with J_para (in meV) | `.FALSE.` 1.0 |
 | OVRR | Over relaxation method applied after each ovrr_MCS steps *(logic, over_para, ovrr_MCS)* | `.FALSE.` 0 0 |
 | SEED | Seed for random number generation | 1992 |
 | NBDFC | Neighbourhood finding criteria | 10⁻⁵ |
-| PT |  Parallel Tempering (logic, exchange_interval) | .FALSE. 11 |
-| Checkerboard | Choice of STG lists in Checkerboard fashion. (logic) | .FALSE. |
+| PT |  Parallel Tempering <br> (logic, exchange_interval) | .FALSE. 11 |
+| Checkerboard | Choice of STG lists in Checkerboard fashion. <br> (logic) | .FALSE. |
 
 
