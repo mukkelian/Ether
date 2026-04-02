@@ -46,5 +46,7 @@
         ovrr_MCS = 0
         ovrr_para = 0.0
         PTalgo = .FALSE.
+        exchange_interval = 11
         Checkerboard = .FALSE.
+
         end subroutine defaults
