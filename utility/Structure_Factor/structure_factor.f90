@@ -1,5 +1,5 @@
 ! Code Ether, based on the Monte Carlo technique, can be used to
-! study the static and dynamics of spin models applied to any lattice geometry.
+! stuqy the static and qynamics of spin models applied to any lattice geometry.
 ! Copyright (C) 2021  Mukesh Kumar Sharma (msharma1@ph.iitr.ac.in)
 
 ! This program is free software; you can redistribute it and/or
@@ -17,24 +17,28 @@
 
         program structure_factor
 
+	use omp_lib
+
 	implicit none
-        integer :: nscan, sc(3), lattice_per_unit_cell, count, &
-		i, j, k, l, ii, jj, kk, ll, nscan_qvec, iscan_qvec, &
+
+        integer :: nscan, sc(3), lattice_per_unit_cell, &
+		i, j, k, l, total_q, ithQ, &
 		p, p_, n_species, fromx, fromy, fromz, tox, toy, toz, total_ions
 
-        real :: dx, dy, dz, lp1(3), lp2(3), vector(3), deg, &
-		qvec, qvec_f, qvec_i, qvec_int, temp, dis(3), a(3, 3), &
+        real :: qx, qy, qz, lp1(3), lp2(3), vector(3), deg, &
+		qvec, q_stop, q_start, dq, temp, dis(3), a(3, 3), &
         	to_angle, pi = 4.0*atan(1.0), light(3), mod_light, mod_vector, &
-		theta, q_vec, r(3), k_vec(3), s_i(3,1), s_j(3,1), volume, &
+		theta, q, r(3), k_vec(3), Sx, Sy, Sz, s_i(3,1), s_j(3,1), volume, &
 		b(3,3), scaling(3), h_t, l_t, t_int
 
         real, allocatable :: ion(:, :)
-	integer, allocatable :: site(:, :), ionn(:)
-	complex :: img = (0,1), c_q
+	integer, allocatable :: ionn(:)
+	complex :: img = (0,1), S_q_x, S_q_y, S_q_z, expo, Cq(3)
 	character (len=80) :: lbl
 	logical :: file_present = .FALSE.
         DOUBLE PRECISION :: start, finish
-        call cpu_time(start)
+
+        start = omp_get_wtime()
 
 	print*, ''
 	inquire(file='in_SF.ether', exist=file_present)
@@ -46,12 +50,31 @@
 	end if
 
 	if(file_present) print*, "'in_SF.ether' file is found, now reading..."
-
         open(unit=0, file='in_SF.ether', status='old', action='read')
-        open(unit=1, file='piller.ether', status='unknown')
-        open(unit=2,file='outputSF.dat', status='unknown',&
-        action='write')
-	open(unit=3, file='plot_sf.sh', status='unknown', action='write')
+        read(0, *) qx, qy, qz   ! q_vec directions
+        read(0, *) deg
+        read(0, *) q_stop, q_start, dq ! q vector
+        read(0, *) scaling
+
+        print*, ''
+        print*, '::::::::::::::: STRUCTURE FACTOR (SF) :::::::::::::::'
+        print*, ''
+        print"(' SF along ',3f7.3 )",qx, qy,qz
+        print"(' with scaling factors (x, y, z) :',3f7.3 )",scaling
+
+	inquire(file='gss.dat', exist=file_present)        
+        if(.not.file_present) then
+        	print*, ''
+        	print*, 'STOPPING now'
+        	print*, "'gss.dat' file is not present"
+        	print*, ''
+        	stop
+        end if
+
+	print*, ''
+        print*, "Calculating SF using given 'gss.dat' file"
+
+	file_present = .FALSE.
         open(unit=4, file='gss.dat', status='old', action='read')
 
         read(4, *) nscan, sc
@@ -69,10 +92,6 @@
 
         allocate(ion(0:6, total_ions))
 
-        read(0, *) dx, dy, dz   ! directions
-        read(0, *) deg
-        read(0, *) qvec_f, qvec_i, qvec_int ! q vector
-        read(0, *) scaling
         a(1, :) = a(1, :)*scaling(1)
         a(2, :) = a(2, :)*scaling(2)
         a(3, :) = a(3, :)*scaling(3)
@@ -96,107 +115,66 @@
 
         k_vec(:) = b(1,:) + b(2,:) + b(3,:)
 
-        to_angle = 180./pi
-        light = (/ dx, dy, dz/)
-
         ! READING LATTICES
         read(4,*)
 	do i = 1, total_ions
                 read(4,*) ion(4:6, i), ion(0, i)
         end do
 
-	print*, 'DONE, now evaluatng structure factors (SF) as per given inputs'
-
-        print*, ''
-        print*, '::::::::::::::: STRUCTURE FACTOR (SF) :::::::::::::::'
-        print*, ''
-        print"(' SF along ',3f7.3 )",dx, dy,dz
-        print"(' with scaling factors (x, y, z) :',3f7.3 )",scaling
-
-        !SEARCHING LATTICE POINTS ALONG GIVEN DIRECTION
-	count = 0; p_ = 0
-	do i = 1, total_ions
-
-        lp1(1:3) = ion(4:6, i)
-	p = 0
-        do ii = 1, total_ions
-
-	        lp2(1:3) = ion(4:6, ii)
-
-	        vector = lp1 - lp2
-	
-	        mod_light = sqrt(dot_product(light, light))
-	        mod_vector = sqrt(dot_product(vector, vector))
-	
-	        theta = acos(sum(light*vector)/(mod_light*mod_vector))*to_angle
-
-	        if((theta .le. deg).or.((180-theta) .le. deg))then
-			p = 1
-                        write(1, '(8I9, 4X, 2I10)') i, ii,&
-                        int(ion(0, i)), int(ion(0, ii))
-			count = count + 1
-		end if
-
-	end do
-
-	if(p.eq.1) p_ = p_ + 1	!for counting same ion within piller
-
-	end do
-
-	close (1)
-
-	open(unit=1, file='piller.ether', status='old', action='read')
-	
-	if(count==0) then
-		print*, ''
-		print*, 'ATTENTION!! no piller found'
-		print*, 'STOPPING NOW'
-		print*,''
-		stop
-	end if
-
-	allocate(site(count,4))
-
-	do i = 1, count
-		read(1, *) site(i, :)
-	end do
-	close (1)
-	call system('rm -rf piller*')
-
         !STRUCTURE FACTOR CORRELATION
         !################################################################
 
-        nscan_qvec = abs(nint((qvec_f - qvec_i)/(qvec_int))) + 1
+        total_q = abs(nint((q_stop - q_start)/(dq))) + 1
 
-        reading_files : do kk = 1, nscan
+        open(unit=2,file='outputSF.dat', status='unknown', action='write')
+        
+        reading_files : do k = 1, nscan
 
         read(4, *) temp
 
 
 	do i = 1, total_ions
+		! Reading Spin vectors for i-th ion
 		read(4,*) ion(1:3, i)
 	end do
 
-	q_vector: do iscan_qvec = 1, nscan_qvec
-		c_q = 0.0
-	        q_vec = qvec_i + (qvec_int*(iscan_qvec-1)) ! for lower to higher
+	q_vector: do ithQ = 1, total_q
 
-	do i = 1, count
+	S_q_x = 0.0
+	S_q_y = 0.0
+	S_q_z = 0.0
 
-		r = &
-		ion(4:6, site(i, 1)) - &
-		ion(4:6, site(i, 2))
+	! for lower to higher
+        q = q_start + (dq*(ithQ-1))
+	
+	!$omp parallel do default(shared) private(i, r, Sx, Sy, Sz, expo) &
+	!$omp reduction(+:S_q_x, S_q_y, S_q_z)
+	calculate_Sq: do i = 1, total_ions
 
-		c_q = c_q + dot_product(&
-		ion(1:3, site(i, 1)), &
-		ion(1:3, site(i, 2)) &
-		)* &
-		exp(img*q_vec* dot_product(k_vec, r))
+		r(1:3) = ion(4:6, i)
+		Sx = ion(1, i)
+		Sy = ion(2, i)
+		Sz = ion(3, i)
 
-	end do
+		expo = exp(img*q*dot_product(k_vec, r))
 
-        !write(2,*)temp, q_vec, (abs(c_q) + p_)/(1.0*count+ p_) !p_ is the total number of sites
-        write(2,*)temp, q_vec, (abs(c_q) + p_)/(1.0*p_) !p_ is the total number of sites
+		S_q_x = S_q_x + &
+		Sx*expo
+
+		S_q_y = S_q_y + &
+		Sy*expo
+
+		S_q_z = S_q_z + &
+		Sz*expo
+
+	end do calculate_Sq
+	!$omp end parallel do
+	
+	Cq = (/S_q_x, S_q_y, S_q_z/)
+
+        write(2,*)temp, q, real(dot_product(Cq, Cq))/total_ions**2, &
+        	real(abs(S_q_x))/total_ions, real(abs(S_q_y))/total_ions, &
+        	real(abs(S_q_z))/total_ions
 
         end do q_vector
 
@@ -208,7 +186,11 @@
 
         !################################################################
 
-	call cpu_time(finish)
+	finish = omp_get_wtime()
+
+	open(unit=3, file='plot_sf.sh', status='unknown', action='write')
+
+	print*, 'Done'
 	print*, ''
         print*, 'Creating polt file'
 	write(3, *) '#set parameters accordingly'
@@ -219,7 +201,7 @@
 	write(3, *) 'set format y "%g"'
         write(3, 100)  l_t-t_int, abs(h_t-l_t+t_int)/5., h_t
 	write(3, *) 'set mxtics 10'
-        write(3, 101) qvec_f
+        write(3, 101) q_stop
 	write(3, *) 'set mytics 5'
 	write(3, *) "set title 'Structure Factor Vs. Temperature'"
 	write(3, *) 'unset surface'
@@ -259,12 +241,14 @@
 	contains
 
         FUNCTION cross_product(v1, v2)
-        real, DIMENSION(3) :: cross_product
-        real, DIMENSION(3), INTENT(IN) :: v1, v2
+ 
+ 	       real, DIMENSION(3) :: cross_product
+ 	       real, DIMENSION(3), INTENT(IN) :: v1, v2
 
-        cross_product(1) = (v1(2) * v2(3)) - v1(3) * v2(2)
-        cross_product(2) = (v1(3) * v2(1)) - v1(1) * v2(3)
-        cross_product(3) = (v1(1) * v2(2)) - v1(2) * v2(1)
+ 	       cross_product(1) = (v1(2) * v2(3)) - v1(3) * v2(2)
+ 	       cross_product(2) = (v1(3) * v2(1)) - v1(1) * v2(3)
+ 	       cross_product(3) = (v1(1) * v2(2)) - v1(2) * v2(1)
+
         END FUNCTION cross_product
 
 	end program structure_factor
