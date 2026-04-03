@@ -17,21 +17,25 @@
 ! You should have received a copy of the GNU General Public License
 ! along with this program; if not, see https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
-	subroutine write_spins_at_K(tempi)
+	subroutine write_spins_at_K(K, T)
 
 		use init
 
 		implicit none
 
-		integer, intent(in) :: tempi
+		integer, intent(in) :: T
 		integer :: i, j
+		
+		real(dp), intent(in) :: K
+
+		character(len=30) :: filename
 
                 if(initiate_spin_files) then
 
 			initiate_spin_files = .FALSE.
 			!FORMATION OF FILES @ temp. K
-			spin_file_ID = 2001 + tempi
-			write(filename, 100) temp
+			spin_file_ID = 2001 + T
+			write(filename, 100) K
 100		   	format( f9.4,'spK.xsf')
 			open(file = adjustl(filename), unit = spin_file_ID)
 			write(spin_file_ID, *) 'CRYSTAL'
@@ -49,18 +53,15 @@
 
 		end if
 
-		! SPINS
 		do i = 1, total_ions
-
 		if (ion(4, i).ne.0) then
-
+			! SPINS
 			write(spin_file_ID, 101) species(int(ion(4, i))), &
 			ion(6:8, i), ion(1:3, i)
-
 		end if
-
 		end do
-101	   	format(A5,7f13.7)
+
+101	   	format(A5,1x, f13.7, 1x, f13.7, 1x, f13.7, 1x, f13.7, 1x, f13.7, 1x, f13.7)
 
 		close(spin_file_ID)
 	

@@ -33,9 +33,7 @@
 	inquire(file='in.ether', exist=file_present)
 	if(.not.file_present) then
 	if (rank == 0) then
-		write(6, *) "==> Required file 'in.ether' is not present"
-		write(6, *) "	 STOPPING now"
-		write(6, *) ""
+		call terminate("Required file 'in.ether' is not present")
 	end if
 		stop
 	end if
@@ -69,11 +67,7 @@
 		case("mcs")
 			read(value, *) tmcs, tmcs_eq
 			if(tmcs.le.tmcs_eq) then
-				write(6, *) ''
-				write(6, *) 'STOPPING now'
-				write(6, *) 'TOTAL MCS  < EQUILIBRATIONS MCS steps'
-				write(6, *) ''
-				stop
+				call terminate('TOTAL MCS  < EQUILIBRATIONS MCS steps')
 			end if
 		case("temp")
 			read(value, *) ht, lt, tint
@@ -133,14 +127,8 @@
                         read(value, *) Checkerboard
 
                 case default
-				print*, ''
-				print*, ">	Found unknown/missing information in the given line"
-				print*, "	      ~~~~~~~~~~~~~~~"
-				print*, "	>> '",trim(adjustl(text)), "'"
-				print*, ''
-				print*, '	STOPPING now'
-				print*, ''
-				stop
+
+			call terminate("Found unknown/missing information: "//trim(adjustl(text)))
 			
 		end select
 
@@ -151,12 +139,8 @@
 	subroutine at_not_equality(remark)
 
 		character(len=*), intent(in) :: remark
-		print*, ''
-		print*, ">	Missing '=' in the given line'"
-		print*, "line: ", trim(adjustl(remark))
-		print*, "	STOPPING now"
-		print*, ""
-		stop
+		
+		call terminate ("Missing '=' in the given line: "//trim(adjustl(remark)))
 
 	end subroutine at_not_equality
 

@@ -62,7 +62,7 @@
 	character(len=2), allocatable :: species_to_include(:), species(:)
 	character(len=5) :: model
 	character(len=20), dimension(50) :: m_head, e_head
-	character(len=30) :: title, coordinate, filename, lbl
+	character(len=30) :: title, coordinate, lbl
 	character(len=200), allocatable :: input_data(:)
 
 	logical :: staggered, angle, Zeeman, SIA, para, ovrr, &

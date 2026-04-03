@@ -27,6 +27,7 @@
 		real(dp) :: mag_value, U_mag, chi, mag_per_site
 		
 		character(len=*), intent(in) :: observable_case
+		character(len=200) :: remark
 		
 		select case(observable_case)
 
@@ -55,11 +56,9 @@
 
 		case default
 
-			write(6, *) ''
-			write(6, "(' ==> Found unknown case tag :',A8 )") observable_case
-			write(6, *) "     in 'evaluate_observables' subroutine"
-			write(6, *) '     STOPPING now'
-			stop
+			remark = "Found unknown case tag '"//observable_case//&
+			"' in evaluate_mag_observables"
+			call terminate(remark)
 
 		end select
 		

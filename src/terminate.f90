@@ -17,46 +17,19 @@
 ! You should have received a copy of the GNU General Public License
 ! along with this program; if not, see https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
-	subroutine zeroes(zero_opt)
+	subroutine terminate(remark)
 	
-		use init
+	implicit none
 
-		implicit none
-		
-		character(len=*), intent(in) :: zero_opt
-		real(dp) :: zero = real(0.0, dp)
+	character(len=*), intent(in):: remark
 
-		character(len=200) :: remark
+		print*, ''
+		print*, '+-------------+'
+		print*, '| TERMINATING |'
+		print*, '+-------------+'
+		print*, ''
+		print*, '       REASON: ', remark
+		print*, ''
+		stop
 
-		select case(zero_opt)
-
-		case('repeat')
-
-			s_eng_avg = zero; e_eng_avg = zero
-			s_eng2_avg = zero; e_eng2_avg = zero
-			s_U_eng = zero; e_U_eng = zero
-			s_cv = zero; e_cv = zero
-
-			s_mag_avg = zero; e_mag_avg = zero
-			s_mag2_avg = zero; e_mag2_avg = zero
-			s_U_mag = zero; e_U_mag = zero
-			s_chi = zero; e_chi = zero
-
-		case('eng_mag')
-
-			eng_avg = zero; eng2_avg = zero; eng4_avg = zero
-			mag_avg = zero; mag2_avg = zero; mag4_avg = zero
-			total_calculations = 0
-
-		case default
-
-		if (rank == 0) then
-			remark = "Found unknown case tag '"//zero_opt//&
-			"' in zeroes subroutine"
-			call terminate(remark)
-		end if
-
-		end select
-
-
-	end subroutine zeroes
+	end subroutine terminate

@@ -9,7 +9,7 @@ OBJS  = init.o lu.o get_random_num.o get_tot_species.o process_file.o defaults.o
 	George_Marsaglia.o update_spin_details.o Hamiltonian.o get_tot_energy.o get_tot_magnetisation.o fresh_spins.o \
 	evaluate_observable.o evaluate_eng_observables.o evaluate_mag_observables.o evaluate_observables_per_repeat.o \
 	process_observables.o Metropolis.o get_moment_vectors.o  write_spins_at_K.o zeroes.o \
-	get_ovrr_vec.o overrelaxation.o graph.o get_staggered_info.o parallel_tempering.o
+	get_ovrr_vec.o overrelaxation.o graph.o get_staggered_info.o parallel_tempering.o terminate.o rw_file.o
 	
 
 ether: ../ether
@@ -152,6 +152,11 @@ get_staggered_info.o: ../src/get_staggered_info.f90
 parallel_tempering.o: ../src/parallel_tempering.f90
 	$(f90comp) -c $(switch) ../src/parallel_tempering.f90
 
+terminate.o: ../src/terminate.f90
+	$(f90comp) -c $(switch) ../src/terminate.f90
+
+rw_file.o: ../src/rw_file.f90
+	$(f90comp) -c $(switch) ../src/rw_file.f90
 
 
 .PHONY: ether clean

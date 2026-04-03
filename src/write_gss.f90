@@ -17,17 +17,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with this program; if not, see https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
-	subroutine write_gss(tempi)
+	subroutine write_gss(T)
 	
 	use init
 		
 	implicit none
 		
-	integer :: i, j, m
-	integer, intent(in) :: tempi
+	integer :: i, j
+	integer, intent(in) :: T
 	gss_ID = 10009
 
-	if(tempi.le.0) then
+	if(T.le.0) then
 
 	open(unit=gss_ID, file='gss.dat', status='replace', action='write')
 
@@ -50,28 +50,29 @@
 	end do
 	write(gss_ID,*) '# lattice points'
 	do i = 1, total_ions
-
 		write(gss_ID,'(f11.6, 1x, f11.6, 1x, f11.6, 1X, i8)') &
 			ion(6:8, i), int(ion(0, i))
-
 	end do
 	return
 
 	end if
 
         !GSS.dat
-        m = 0
-	write(gss_ID, '(f11.5)') temp_T(tempi)
+	write(gss_ID, '(f11.5)') temp_T(T)
+
+	if(allocated(ion)) deallocate(ion)
+	allocate(ion(0:total_info, total_ions))
+
+        ! Reading spin states from ETHER.spn
+        call rw_file('r', 'ETHER.spn', (/0, total_info/), (/1, total_ions/), T, ion)
 
 	do i = 1, total_ions
-
-		write(gss_ID, '(f11.6, 1x, f11.6, 1x, f11.6,1X, i8)') &
-		global_spn(m + 1 + lspn), global_spn(m + 2 + lspn), &
-		global_spn(m + 3 + lspn), int(global_spn(m + 4 + lspn))
-		m = m + 4
-
+		write(gss_ID, '(f11.6, 1x, f11.6, 1x, f11.6, 1X, i8)') &
+		ion(1:3, i), int(ion(4, i))
 	end do
 
-	if(tempi.eq.nscan) close(gss_ID)
+	if(T.eq.nscan) close(gss_ID)
+
+	deallocate(ion)
 
 	end subroutine write_gss

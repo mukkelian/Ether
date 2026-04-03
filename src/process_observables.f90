@@ -17,120 +17,100 @@
 ! You should have received a copy of the GNU General Public License
 ! along with this program; if not, see https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
-	subroutine process_observables(observable_case)
+	subroutine process_observables(observable_case, T)
 
 		use init
 
 		implicit none
 		
-		integer :: i, j, m
+		integer :: i, j, k, n
+		integer, intent(in) :: T
+		
+		real(dp), allocatable :: observables(:)
 		
 		character(len=*), intent(in) :: observable_case
+		character (len=200) :: remark
 		
+		n = total_observables + 3*nspecies
+		allocate(observables(n)) 
 		select case(observable_case)
 		
 		case('store')
 
-			! ENERGY
-			!temp_T(itemp) = temp; s_mag_avg_T(itemp) = s_mag_avg; s_chi_T(itemp) = s_chi
-			!err_mag_avg_T(itemp) = err_mag_avg; err_chi_T(itemp) = err_chi; s_U_mag_T(itemp) = s_U_mag
-			!err_U_mag_T(itemp) = err_U_mag
-
-			local_obs(1 + li_obs) 	= temp
-			local_obs(2 + li_obs) 	= s_mag_avg
-			local_obs(3 + li_obs)	= s_chi
-			local_obs(4 + li_obs) 	= err_mag_avg
-			local_obs(5 + li_obs) 	= err_chi
-			local_obs(6 + li_obs) 	= s_U_mag
-			local_obs(7 + li_obs) 	= err_U_mag
-
-		        ! MAGNETIC
-!		        s_eng_avg_T(itemp) = s_eng_avg; s_cv_T(itemp) = s_cv; err_eng_avg_T(itemp) = err_eng_avg
-!			err_cv_T(itemp) = err_cv; s_U_eng_T(itemp) = s_U_eng; err_U_eng_T(itemp) = err_U_eng
-
-		        local_obs(8 + li_obs) 	= s_eng_avg
-		        local_obs(9 + li_obs) 	= s_cv
-		        local_obs(10 + li_obs) 	= err_eng_avg
-			local_obs(11 + li_obs) 	= err_cv
-			local_obs(12 + li_obs) 	= s_U_eng
-			local_obs(13 + li_obs) 	= err_U_eng
-
-			! ACCEPTANCE RATIOS
-			local_obs(14 + li_obs) = acceptance_counting*100
+			observables(1) = temp
+			observables(2) = s_mag_avg
+			observables(3) = s_chi
+			observables(4) = err_mag_avg
+			observables(5) = err_chi
+			observables(6) = s_U_mag
+			observables(7) = err_U_mag
+			observables(8) = s_eng_avg
+			observables(9) = s_cv
+			observables(10) = err_eng_avg
+			observables(11) = err_cv
+			observables(12) = s_U_eng
+			observables(13) = err_U_eng
+			observables(14) = acceptance_counting*100
 
 			j = 0
 			do i = 1, nspecies
-
 				j = j + 1
-				local_obs(total_observables + (3*(i-1) + 1) + li_obs) = mm_vector(j, 1)
-				local_obs(total_observables + (3*(i-1) + 1) + 1 + li_obs) = mm_vector(j, 2)
-				local_obs(total_observables + (3*(i-1) + 1) + 2 + li_obs) = mm_vector(j, 3)
-
+				observables(total_observables + (3*(i-1) + 1)) = mm_vector(j, 1)
+				observables(total_observables + (3*(i-1) + 1) + 1) = mm_vector(j, 2)
+				observables(total_observables + (3*(i-1) + 1) + 2) = mm_vector(j, 3)
 			end do
-			
-			m = 0
-			do i = 1, total_ions
 
-				local_spn(m + 1 + li_spn) = ion(1, i)*s(int(ion(4, i)))
-				local_spn(m + 2 + li_spn) = ion(2, i)*s(int(ion(4, i)))
-				local_spn(m + 3 + li_spn) = ion(3, i)*s(int(ion(4, i)))
-				local_spn(m + 4 + li_spn) = ion(4, i)
-				m = m + 4
-
-			end do
+				
+			! Writing oservables into ETHER.obs
+        		call rw_file('w', 'ETHER.obs', (/1, n/), (/1, 1/), T, observables)
 
 		case('write')
+		
+		! Loop over all temperature ID
+		do k = 1, nscan
 
-		lobs = 0	! local observable lenght
-		lspn = 0	! local spin length
-		do itemp = 1, nscan
+			! Reading oservables from ETHER.obs
+			call rw_file('r', 'ETHER.obs', (/1, n/), (/1, 1/), k, observables)
 
-			lobs = (itemp -1)*local_olen
-			lspn = (itemp -1)*local_slen
-
-			temp_T(itemp) 		= global_obs(1 + lobs)
-			s_mag_avg_T(itemp) 	= global_obs(2 + lobs)
-			s_chi_T(itemp) 		= global_obs(3 + lobs)
-			err_mag_avg_T(itemp) 	= global_obs(4 + lobs)
-			err_chi_T(itemp) 	= global_obs(5 + lobs)
-			s_U_mag_T(itemp) 	= global_obs(6 + lobs)
-			err_U_mag_T(itemp) 	= global_obs(7 + lobs)
-
-			s_eng_avg_T(itemp) 	= global_obs(8 + lobs)
-			s_cv_T(itemp) 		= global_obs(9 + lobs)
-			err_eng_avg_T(itemp) 	= global_obs(10 + lobs)
-			err_cv_T(itemp) 	= global_obs(11 + lobs)
-			s_U_eng_T(itemp) 	= global_obs(12 + lobs)
-			err_U_eng_T(itemp) 	= global_obs(13 + lobs)
-
-			acceptance_ratio(itemp) = global_obs(14 + lobs)
+			temp_T(k) = observables(1)
+			s_mag_avg_T(k) 	= observables(2)
+			s_chi_T(k) = observables(3)
+			err_mag_avg_T(k) = observables(4)
+			err_chi_T(k) = observables(5)
+			s_U_mag_T(k) = observables(6)
+			err_U_mag_T(k) = observables(7)
+			s_eng_avg_T(k) 	= observables(8)
+			s_cv_T(k) = observables(9)
+			err_eng_avg_T(k) = observables(10)
+			err_cv_T(k) = observables(11)
+			s_U_eng_T(k) = observables(12)
+			err_U_eng_T(k) = observables(13)
+			acceptance_ratio(k) = observables(14)
 
 			j = 0
 
 			do i = 1, nspecies
 
 			j = j + 1
-			mm_vector_avg_T(j, 1, itemp) = global_obs(total_observables + (3*(i-1) + 1) + lobs)
-			mm_vector_avg_T(j, 2, itemp) = global_obs(total_observables + (3*(i-1) + 1) + 1 + lobs)
-			mm_vector_avg_T(j, 3, itemp) = global_obs(total_observables + (3*(i-1) + 1) + 2 + lobs)
+			mm_vector_avg_T(j, 1, k) = observables(total_observables + (3*(i-1) + 1))
+			mm_vector_avg_T(j, 2, k) = observables(total_observables + (3*(i-1) + 1) + 1)
+			mm_vector_avg_T(j, 3, k) = observables(total_observables + (3*(i-1) + 1) + 2)
 
 			end do
 
 			! Writing output files
-			call write_output_files(itemp)
+			call write_output_files(k)
 			! Writing Ground Spin States (GSS) file
-			call write_gss(itemp)
+			call write_gss(k)
 
 		end do
 
 		case default
-
-			write(6, *) ''
-			write(6, "(' ==> Found unknown case tag :',A8 )") observable_case
-			write(6, *) "     in 'evaluate_observables' subroutine"
-			write(6, *) '     STOPPING now'
-			stop
-
+			remark = "Found unknown case tag '"//observable_case//&
+			"' in process_observables"
+			call terminate(remark)
 		end select
+		
+		deallocate(observables)
 		
 	end subroutine process_observables

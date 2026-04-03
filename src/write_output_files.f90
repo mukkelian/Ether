@@ -17,16 +17,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with this program; if not, see https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
-	subroutine write_output_files(tempi)
+	subroutine write_output_files(T)
 
 	use init
 
 	implicit none
 		
 	integer :: i
-	integer, intent(in) :: tempi
+	integer, intent(in) :: T
 
-	if(tempi.lt.1) then
+	if(T.lt.1) then
 
 		open(unit=20001, file='magnetization.dat', status='replace',action='write')
 		open(unit=20002, file='energy.dat', status='replace', action='write')
@@ -63,21 +63,21 @@
 	end if
 
 	!MAGNETIC MOMENT VECTORS
-       	write(20003, 101) temp_T(tempi), (mm_vector_avg_T(included_species_ID(i), 1:3, tempi)&
+       	write(20003, 101) temp_T(T), (mm_vector_avg_T(included_species_ID(i), 1:3, T)&
        		/tions(included_species_ID(i)), i = 1, total_species_to_include), &
-       	(sqrt(dot_product(mm_vector_avg_T(included_species_ID(i), 1:3, tempi), &
-                        mm_vector_avg_T(included_species_ID(i), 1:3, tempi))) &
+       	(sqrt(dot_product(mm_vector_avg_T(included_species_ID(i), 1:3, T), &
+                        mm_vector_avg_T(included_species_ID(i), 1:3, T))) &
        		/tions(included_species_ID(i)), i = 1, total_species_to_include)
        
 	!MAGNETIC
-		write(20001,102) temp_T(tempi), s_mag_avg_T(tempi), &
-			s_chi_T(tempi), err_mag_avg_T(tempi), &
-			err_chi_T(tempi), s_U_mag_T(tempi), err_U_mag_T(tempi)
+	write(20001,102) temp_T(T), s_mag_avg_T(T), &
+			s_chi_T(T), err_mag_avg_T(T), &
+			err_chi_T(T), s_U_mag_T(T), err_U_mag_T(T)
 
-    !ENERGY
-       	write(20002,102) temp_T(tempi), s_eng_avg_T(tempi), &
-			s_cv_T(tempi), err_eng_avg_T(tempi), &
-			err_cv_T(tempi), s_U_eng_T(tempi), err_U_eng_T(tempi), acceptance_ratio(tempi)
+	!ENERGY
+       	write(20002,102) temp_T(T), s_eng_avg_T(T), &
+			s_cv_T(T), err_eng_avg_T(T), &
+			err_cv_T(T), s_U_eng_T(T), err_U_eng_T(T), acceptance_ratio(T)
 
 102	format(f11.5, 1x, es12.5, 1x,es12.5, 1x,es12.5, 1x,es12.5, 1x,es12.5, 1x,es12.5, 1x, f7.2)       
 101	format(f11.5, 2X,500f9.3)

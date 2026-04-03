@@ -33,7 +33,10 @@
         write(6, '(" PROGRAM STARTED on date ",i2,"-",i2,"-",i4)') values(3),values(2), values(1)
 	write(6, "(' at time ',i2,' hrs. ',i2,' min. ',i2,' sec. ')") values(5:7)
 	write(6, *)""
-	
+
+	call system('rm -rf data spins')
+	call system('mkdir spins data')
+
 	if(Ising) then
 		write(6, *) "Based on Ising model"
 	elseif(XYZ) then

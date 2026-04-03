@@ -98,10 +98,7 @@
 	deallocate(atom)
 
 	if (rank.eq.0.and.lattice_per_unit_cell.eq.0) then
-                write(6, *) "==> Selected ions from 'in.ether' are not present in 'structure.vasp' file"
-                write(6, *) "    STOPPING now"
-                write(6, *) ""
-                stop
+		call terminate("Selected ions from 'in.ether' are not present in 'structure.vasp' file")
         end if
 	
 	! EXPANDING INTO SUPERCELL

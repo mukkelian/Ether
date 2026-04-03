@@ -101,10 +101,7 @@
 		close(10001)
 
 	else
-		if (rank == 0) print*, ''
-		if (rank == 0) print*, '    Incorrect structure file'
-		if (rank == 0) print*, ''
-		if (rank == 0) print*, '    STOPPING now'
+		if (rank == 0) call terminate('Incorrect structure file')
 		stop
 	end if
 

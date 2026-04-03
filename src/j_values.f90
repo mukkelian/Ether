@@ -31,9 +31,7 @@
 	inquire(file='j_exchange', exist=file_present)
 	if(.not.file_present) then
 	if (rank == 0) then
-		write(6, *) "==> Required file 'j_exchange' is not present"
-		write(6, *) "	 STOPPING now"
-		write(6, *) ""
+		call terminate("Required file 'j_exchange' is not present")
 	end if
 		stop
 	end if
