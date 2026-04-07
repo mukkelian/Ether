@@ -31,11 +31,10 @@
 		total_eng, eta
 	real(dp), intent(out) :: accept_count
 
-	accept_count = 0.0_dp
-
 	!$OMP PARALLEL DEFAULT(SHARED) PRIVATE(i, &
-	!$OMP& S_vec_previous, S_vec_updated, total_eng, eta)
-
+	!$OMP& S_vec_previous, S_vec_updated, total_eng, eta) &
+	!$OMP REDUCTION(+:accept_count)
+	accept_count = 0.0_dp
 	!$OMP DO SCHEDULE(DYNAMIC) COLLAPSE(1)
 	do i = 1, total_ions
 
@@ -53,12 +52,10 @@
 		call get_random_num(0.0_dp, 1.0_dp, eta)
 
 		! Metropolis acceptance algorithm
-		if (exp(-beta_value*total_eng) .gt. eta) then
+		if (-beta_value*total_eng .gt. log(eta)) then
 		ion(1:5, i) = S_vec_updated(1:5)
 
-		!$OMP ATOMIC
-		accept_count = accept_count + 1_dp
-		!$OMP END ATOMIC
+		accept_count = accept_count + 1
 
 		end if
 

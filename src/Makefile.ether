@@ -7,9 +7,10 @@ OBJS  = init.o lu.o get_random_num.o get_tot_species.o process_file.o defaults.o
 	j_values.o get_sia_values.o parameters.o write_fetched_lattice_network.o search_nbd.o getting_nbd.o \
 	write_nbd.o allocate_observables.o write_temperature_infos.o write_gss.o write_output_files.o \
 	George_Marsaglia.o update_spin_details.o Hamiltonian.o get_tot_energy.o get_tot_magnetisation.o fresh_spins.o \
-	evaluate_observable.o evaluate_eng_observables.o evaluate_mag_observables.o evaluate_observables_per_repeat.o \
+	observable.o get_eng.o get_mag.o observables_per_repeat.o \
 	process_observables.o Metropolis.o get_moment_vectors.o  write_spins_at_K.o zeroes.o \
-	get_ovrr_vec.o overrelaxation.o graph.o get_staggered_info.o parallel_tempering.o terminate.o rw_file.o
+	get_ovrr_vec.o overrelaxation.o graph.o get_staggered_info.o parallel_tempering.o terminate.o rw_file.o \
+	cross_product.o get_spiral_state.o get_status.o
 	
 
 ether: ../ether
@@ -110,17 +111,17 @@ get_tot_magnetisation.o: ../src/get_tot_magnetisation.f90
 fresh_spins.o: ../src/fresh_spins.f90
 	$(f90comp) -c $(switch) ../src/fresh_spins.f90
 
-evaluate_observable.o: ../src/evaluate_observable.f90
-	$(f90comp) -c $(switch) ../src/evaluate_observable.f90
+observable.o: ../src/observable.f90
+	$(f90comp) -c $(switch) ../src/observable.f90
 
-evaluate_eng_observables.o: ../src/evaluate_eng_observables.f90
-	$(f90comp) -c $(switch) ../src/evaluate_eng_observables.f90
+get_eng.o: ../src/get_eng.f90
+	$(f90comp) -c $(switch) ../src/get_eng.f90
 
-evaluate_mag_observables.o: ../src/evaluate_mag_observables.f90
-	$(f90comp) -c $(switch) ../src/evaluate_mag_observables.f90
+get_mag.o: ../src/get_mag.f90
+	$(f90comp) -c $(switch) ../src/get_mag.f90
 
-evaluate_observables_per_repeat.o: ../src/evaluate_observables_per_repeat.f90
-	$(f90comp) -c $(switch) ../src/evaluate_observables_per_repeat.f90
+observables_per_repeat.o: ../src/observables_per_repeat.f90
+	$(f90comp) -c $(switch) ../src/observables_per_repeat.f90
 
 process_observables.o: ../src/process_observables.f90
 	$(f90comp) -c $(switch) ../src/process_observables.f90
@@ -158,5 +159,13 @@ terminate.o: ../src/terminate.f90
 rw_file.o: ../src/rw_file.f90
 	$(f90comp) -c $(switch) ../src/rw_file.f90
 
+cross_product.o: ../src/cross_product.f90
+	$(f90comp) -c $(switch) ../src/cross_product.f90	
+
+get_spiral_state.o: ../src/get_spiral_state.f90
+	$(f90comp) -c $(switch) ../src/get_spiral_state.f90
+
+get_status.o: ../src/get_status.f90
+	$(f90comp) -c $(switch) ../src/get_status.f90
 
 .PHONY: ether clean

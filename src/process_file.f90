@@ -29,7 +29,7 @@
 
 		implicit none
 
-		integer :: line, i, j
+		integer :: line, i
 		integer, intent(in) :: ttl
 		integer, intent(out) :: actl
 		character(len=*), intent(in) :: filename

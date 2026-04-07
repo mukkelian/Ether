@@ -48,5 +48,12 @@
         PTalgo = .FALSE.
         exchange_interval = 11
         Checkerboard = .FALSE.
-
+        ss_latency = 2
+        ssp = .FALSE.
+        ss_direc = (/0, 0, 1/)
+	ss_proj = (/0, 0, 1/)
+	ss_dis = 4.0
+	spiral_capacity = 5
+	nbd_capacity = 20
+	
         end subroutine defaults

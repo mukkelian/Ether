@@ -23,7 +23,7 @@
 
 	implicit none
 
-	integer :: i, j, SIA_ID
+	integer :: j, SIA_ID
 	real(dp) :: sia_vectors(3)
 	character(len=2) :: atom, ab
 

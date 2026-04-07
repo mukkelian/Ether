@@ -42,10 +42,18 @@
 			s_U_mag = zero; e_U_mag = zero
 			s_chi = zero; e_chi = zero
 
-		case('eng_mag')
+			s_spiral_state_avg = zero; e_spiral_state_avg = zero
+			s_spiral_state2_avg = zero; e_spiral_state2_avg = zero
+			s_U_spiral_state = zero; e_U_spiral_state = zero
+			s_spiral_state = zero; e_spiral_state = zero
+
+		case('avg')
 
 			eng_avg = zero; eng2_avg = zero; eng4_avg = zero
 			mag_avg = zero; mag2_avg = zero; mag4_avg = zero
+			spiral_state_avg = zero; spiral_state2_avg = zero
+			spiral_state4_avg = zero
+
 			total_calculations = 0
 
 		case default

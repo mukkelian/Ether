@@ -17,28 +17,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with this program; if not, see https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
-	subroutine evaluate_observable(beta_value, at_step)
+        subroutine cross_product(vec1, vec2, cp)
 
-		use init
+        use init, only: dp
+        
+        implicit none
 
-		implicit none
+        real(dp), dimension(3), intent(in) :: vec1, vec2
+	real(dp), dimension(3), intent(out) :: cp
+	
+		cp(1) = vec1(2)*vec2(3) - vec1(3)*vec2(2)
+		cp(2) = vec1(3)*vec2(1) - vec1(1)*vec2(3)
+		cp(3) = vec1(1)*vec2(2) - vec1(2)*vec2(1)
 
-		integer, intent(in) :: at_step
-		
-		real(dp), intent(in) :: beta_value
-
-		after_equilibration_step: if((at_step.gt.tmcs_eq).and.&
-			(mod(real(at_step), real(to_cal)).eq.0))then
-
-			total_calculations = total_calculations + 1
-			eng = 0.0_dp; net_mag = 0.0_dp
-
-			call get_tot_energy(eng)
-			call get_tot_magnetisation(net_mag)
-
-	        	call evaluate_eng_observables(beta_value, 'eng')
-			call evaluate_mag_observables(beta_value, 'mag')
-
-		end if after_equilibration_step
-
-	end subroutine evaluate_observable
+	end subroutine cross_product

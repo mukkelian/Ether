@@ -17,16 +17,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with this program; if not, see https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
-	subroutine evaluate_observables_per_repeat
+	subroutine observables_per_repeat
 
 		use init
 
 		implicit none
 		
 		integer :: i
-		real(dp) :: mag_value, repeat_1
+		real(dp) :: repeat_1
 
-		repeat_1 = 1/(repeat*(repeat - real(1.0, dp)))
+		repeat_1 = 1/(repeat*(repeat - 1.0_dp))
 	
 		!MAGNETIZATION PER REPEAT
 		s_mag_avg = s_mag_avg/repeat
@@ -34,7 +34,7 @@
 		s_chi = s_chi/repeat
 
 		! ERRORS
-		err_U_mag = real(0, dp); err_chi = real(0, dp); err_mag_avg = real(0, dp)
+		err_U_mag = 0.0_dp; err_chi = 0.0_dp; err_mag_avg = 0.0_dp
 
 		do i = 1, repeat
 
@@ -54,7 +54,7 @@
 		s_cv = s_cv/repeat
 
 		! ERRORS
-		err_U_eng = real(0, dp); err_cv = real(0, dp); err_eng_avg = real(0, dp)
+		err_U_eng = 0.0_dp; err_cv = 0.0_dp; err_eng_avg = 0.0_dp
 
 		do i = 1, repeat
 
@@ -67,5 +67,30 @@
 		err_U_eng = sqrt(repeat_1*err_U_eng)
 		err_cv = sqrt(repeat_1*err_cv)
 		err_eng_avg = sqrt(repeat_1*err_eng_avg)
+
+		!SPIRAL STATE PER REPEAT
+		s_spiral_state_avg = s_spiral_state_avg/repeat
+		s_U_spiral_state = s_U_spiral_state/repeat
+		s_spiral_state_chi = s_spiral_state_chi/repeat
+
+		! ERRORS
+		err_U_spiral_state = 0.0_dp
+		err_spiral_state_chi = 0.0_dp
+		err_spiral_state_avg = 0.0_dp
+
+		do i = 1, repeat
+
+			err_U_spiral_state = err_U_spiral_state + &
+				(e_U_spiral_state(i) - s_U_spiral_state)**2
+			err_spiral_state_chi = err_spiral_state_chi +&
+				(e_spiral_state_chi(i) - s_spiral_state_chi)**2
+			err_spiral_state_avg = err_spiral_state_avg + &
+				(e_spiral_state_avg(i) - s_spiral_state_avg)**2
+
+		end do
+
+		err_U_spiral_state = sqrt(repeat_1*err_U_spiral_state)
+		err_spiral_state_chi = sqrt(repeat_1*err_spiral_state_chi)
+		err_spiral_state_avg = sqrt(repeat_1*err_spiral_state_avg)
 	
-	end subroutine evaluate_observables_per_repeat
+	end subroutine observables_per_repeat

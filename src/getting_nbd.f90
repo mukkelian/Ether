@@ -24,16 +24,13 @@
 
 	implicit none
 
-	integer :: search_nbd_x(2), search_nbd_y(2), search_nbd_z(2), i, j, &
-		nbd_count, nbd_dis_max, central_ion_ID, nbd_ID, ith_bond
+	integer :: i, j, nbd_count, central_ion_ID, nbd_ID, ith_bond
+		
 	
-	real(dp) :: distance, origin(3), nbd_pos(3), R_vec(3)
-
-	integer :: nbd_capacity
+	real(dp) :: origin(3), nbd_pos(3)
 	
 	logical :: captured = .FALSE.
 
-	nbd_capacity = 20
 	allocate(nn(no_of_nbd, total_ions, 0:nbd_capacity, 0:1))
 
 	if (rank == 0) write(6, *) '==> Sensing neighbourhoods'

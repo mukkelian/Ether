@@ -24,7 +24,7 @@
 	implicit none
 
 	integer, intent(in) :: io
-	integer :: ionID, ith_bond, ith_nbr, cell
+	integer :: ionID
 
 	real(dp), intent(inout) :: ovrr_vec(3)
 

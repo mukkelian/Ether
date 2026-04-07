@@ -27,7 +27,6 @@
 
 	real(dp), allocatable :: atom(:, :), ar(:, :)
 	real(dp) :: sx, sy, sz, rnum
-	logical :: file_found
 
 	! SAVING DETAILS OF ATOMS PRESENT IN STRUCTURE FILE
 	allocate(atom(total_ions_per_cell, 0:total_info))

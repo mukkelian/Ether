@@ -27,8 +27,9 @@
 
 	integer, dimension(8) :: start, finish
 	integer :: n_seed, stepi, ei, ej, el, max_temp_count, swap_count
-	integer :: comm_ei, color
-	real(dp) :: beta_before
+	integer :: comm_ei, color, dim1(2), dim2(2)
+	
+	logical :: file_found
 
 	! Initialize MPI
 	call MPI_INIT(ierr)
@@ -59,6 +60,9 @@
 	call read_structure(nspecies, total_ions_per_cell, lp, abc, &
 		x, y, z, ions, species, rank)
 	call generate_supercell
+	deallocate (x, y, z)
+	if(ssp) call get_spiral_state(0.0_dp, 'ions_for_spiral')
+
 	call j_values
 	call get_sia_values
 	call parameters
@@ -93,7 +97,7 @@
 	end do
     
 	! Number of observable (like: temp., energy, Cv, Mag., Chi,..., etc.)
-	total_observables = 14
+	total_observables = 20
 
     	if (rank == 0) call write_temperature_infos
 
@@ -144,7 +148,7 @@
 
                         call random_seed(put=seed+itemp+175*rank+666*repeati)
 			call fresh_spins
-			call zeroes('eng_mag')
+			call zeroes('avg')
 
 		swap_count = 0
 		perform_MCS: do stepi = 1, tmcs
@@ -154,7 +158,8 @@
 		if (ovrr.and.XYZ.and.&
 			.not.Zeeman.and.&
 			.not.SIA.and.&
-			(mod(stepi, ovrr_MCS) == 0)) then
+			(mod(real(stepi), real(ovrr_MCS)) .eq. 0).and.&
+			(mod(real(stepi), real(to_cal)) .ne. 0)) then
 			call overrelaxation
 		end if
 
@@ -166,49 +171,58 @@
 		! Calculate Total Energy
 		call get_tot_energy(total_energy)
 
+		! For getting the status of MCS simulations.
+    		inquire(file='STATUS', exist=file_found)
+    		if (file_found) call get_status(rank, stepi, repeati, temp)
+    		
 		! Wait for other MPIs to complete
 		call MPI_Barrier(comm_ei, ierr)
+
+		if (file_found .and. rank.eq.0) call system('rm -f STATUS')
 
 		! Monte Carlo with Parallel Tempering (PT) algo
 		PT: if(PTalgo) then
 			if (mod(stepi, exchange_interval) == 0) then
 				swap_count = swap_count + 1
 
-    			call parallel_tempering(ei, ion, total_energy, beta, itemp, &
+    			call parallel_tempering(ion, total_energy, beta, itemp, &
         			swap_count, comm_ei)
 
 			end if 
 		end if PT
 
-		! Calculate observable (Total Energy, Magnetisation) after Equilibration
-		call evaluate_observable(beta, stepi)
+		! Calculate observable (Total Energy, Magnetisation, etc.) after Equilibration
+		call observable(beta, stepi)
 
 		end do perform_MCS
 
-		call evaluate_eng_observables(beta, 'avg_eng')
-		call evaluate_mag_observables(beta, 'avg_mag')
+		call get_eng(beta, 'avg_eng')
+		call get_mag(beta, 'avg_mag')
+		if(ssp) call get_spiral_state(beta, 'avg_spiral_state')
 
 		end do sampling
 
 		! Acceptance_counting per repeat*tmcs
 		acceptance_counting = acceptance_counting/(repeat*tmcs)
 
-        	call evaluate_observables_per_repeat
+        	call observables_per_repeat
 
         	! At temperature K
 
         	! Getting magnetic moment vectors
         	call get_moment_vectors
 
-                ! Store all evaluated observables
+                ! Store all calculated observables
         	call process_observables('store', itemp)
 
         	! Writing spin states into *spK* file
         	call write_spins_at_K(temp, itemp)
         	
         	! Writing spin states into ETHER.spn
-        	call rw_file('w', 'ETHER.spn', (/0, total_info/), &
-        		(/1, total_ions/), itemp, ion)
+        	dim1 = (/0, total_info/)
+        	dim2 = (/1, total_ions/)
+        	call rw_file('w', 'ETHER.spn', 502, dim1, &
+        		dim2, itemp, ion)
 
 		! Writing Job status
 		write(6, "(' Task for temperature '&

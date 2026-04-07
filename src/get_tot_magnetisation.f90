@@ -24,7 +24,7 @@
 
 	implicit none
 
-	integer :: i, stg
+	integer :: i
 	real(dp), intent(out) :: magnetisation(3)
 	real(dp) :: temp_magnetisation(3)
 

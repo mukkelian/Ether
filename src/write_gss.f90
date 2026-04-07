@@ -23,7 +23,7 @@
 		
 	implicit none
 		
-	integer :: i, j
+	integer :: i, j, dim1(2), dim2(2)
 	integer, intent(in) :: T
 	gss_ID = 10009
 
@@ -64,7 +64,9 @@
 	allocate(ion(0:total_info, total_ions))
 
         ! Reading spin states from ETHER.spn
-        call rw_file('r', 'ETHER.spn', (/0, total_info/), (/1, total_ions/), T, ion)
+        dim1 = (/0, total_info/)
+        dim2 = (/1, total_ions/)
+        call rw_file('r', 'ETHER.spn', 502, dim1, dim2, T, ion)
 
 	do i = 1, total_ions
 		write(gss_ID, '(f11.6, 1x, f11.6, 1x, f11.6, 1X, i8)') &

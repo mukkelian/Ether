@@ -17,16 +17,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with this program; if not, see https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
-	subroutine parallel_tempering(ei, ion, energy, &
+	subroutine parallel_tempering(ion, energy, &
 		beta, itemp_num, swap_count, comm)
 
-	use init, only: dp, total_ions, temp_range, temperature, kb, total_info
+	use init, only: dp, total_ions, total_info
 	use mpi
 
 	implicit none
 
-	integer, intent(in) :: ei, swap_count, comm, itemp_num
-	integer :: partner, ierr, count, status(MPI_STATUS_SIZE), &
+	integer, intent(in) :: swap_count, comm, itemp_num
+	integer :: partner, ierr, count, &
 		accept_int, local_rank, local_size
 
 	real(dp), intent(inout) :: ion(0:total_info, total_ions)

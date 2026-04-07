@@ -26,7 +26,7 @@
 		integer, intent(in) :: ih
 		integer :: ionID
 		
-		real(dp) :: sia_value(3), S_diff(3), S2_diff(3)
+		real(dp) :: S_diff(3), S2_diff(3)
 		real(dp), intent(in) :: S_trial(3), S_old(3)	! central ion
 		logical, intent(in) :: check_trail_spin
 		real(dp), intent(out) :: total_eng

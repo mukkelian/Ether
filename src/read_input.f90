@@ -23,7 +23,7 @@
 
 	implicit none
 
-	integer :: i, j, k, total_lines, actual_lines, txti
+	integer :: i, j, k, total_lines, actual_lines
 	logical :: file_present
 	character(len=2) :: ab
 	character(len=200) :: text, key, value
@@ -125,6 +125,23 @@
                         read(value, *) PTalgo, exchange_interval
                 case("cb")
                         read(value, *) Checkerboard
+                case("ss_dis")
+                        read(value, *) ss_dis
+                case("ss_lat")
+                        read(value, *) ss_latency
+                case("ss_direc")
+                        read(value, *) ss_direc(1:3)
+                case("ss_proj")
+                        read(value, *) ss_proj(1:3)
+                case("ssp")
+                	! Spiral State Parameter
+                        read(value, *) ssp
+                ! Spiral Capacity
+                case("spiral_capacity")
+                        read(value, *) spiral_capacity
+                ! nbd Capacity
+                case("nbd_capacity")
+                        read(value, *) nbd_capacity
 
                 case default
 

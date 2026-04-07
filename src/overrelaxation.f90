@@ -25,7 +25,7 @@
 
 	integer :: i, m
 
-	real(dp) :: A_ovr(3), Si(3), rn_ovr, on_site_eng
+	real(dp) :: A_ovr(3), Si(3)
 
         overrelaxation_method : do m = 1, ovrr_steps
         

@@ -146,5 +146,12 @@
                 write(6, *) '==> Calculations in terms of parameters is ON!'
                 write(6, '(" ==> Parameters w.r.t. ",f8.3, " meV has been taken")') J_para
 	end if
+	
+	if(ssp) then
+                write(6, *) '==> Spiral State Parameter is TRUE!'
+       		write(6, *) ''
+       		write(6, *) '     >  Physical Review X 8, 011005 (2018).'
+       		write(6, *) ''
+	end if
 
         end subroutine startup

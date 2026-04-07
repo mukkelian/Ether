@@ -17,42 +17,23 @@
 ! You should have received a copy of the GNU General Public License
 ! along with this program; if not, see https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
-	subroutine get_tot_species(n, total_ions_in_cell)
+	subroutine get_status(rankID, step_mcs, step_repeat, T)
+	
+	use init, only : dp, tmcs, repeat
 	
 	implicit none
-		
-	integer :: i
-	integer, intent(out) :: n, total_ions_in_cell
-	integer, allocatable :: totion(:)
+	
+	integer, dimension(8) :: time_stamp	
+	integer, intent(in) :: rankID, step_mcs, step_repeat
+	real(dp), intent(in) :: T
+	
+	write(6, 1) rankID, T, step_repeat, repeat,step_mcs,tmcs, &
+	time_stamp(3),time_stamp(2),time_stamp(1), time_stamp(5:7)
 
-	character(len=200) :: titel
+1	format('Rank ID:',1x, i3, 4x,'STATUS --> Temperature:',1x, g11.4,1x,&
+	'Repeat:',1x, i2, 1x,'/',1x, i2, 1x,&
+	'MSCS:',1x, i7,1x,'/',1x,i7,/,10x,&
+	'on date'1x,i2,'-',i2,'-',i4,4x,&
+	'at time',1x,i2,1x,'hrs.',1x,i2,1x,'min.',1x,i2,1x,'sec.',//)
 
-	logical :: file_found
-
-	inquire(file='structure.vasp', exist=file_found)
-	if(.not.file_found) then
-		write(6, *) "==> 'structure.vasp' is not present"
-		write(6, *) "	  STOPPING now"
-		write(6, *) ""
-		stop
-	end if
-
-	open(unit=0, file='structure.vasp', status='old', action='read')
-
-        n = 0
-
-	do i = 1, 6
-		read(0, *) 	! skipping 6 lines 
-	end do
-
-        read(0, '(a)') titel
-
-        call count_species(titel, n)
-
-	allocate(totion(n))
-	read(titel, *) totion	! total ions
-	total_ions_in_cell = sum(totion)
-
-	close(0)
-
-	end subroutine get_tot_species
+	end subroutine get_status

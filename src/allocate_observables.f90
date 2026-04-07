@@ -28,6 +28,9 @@
 		mm_vector(nspecies, 1:3), temp_T(nscan), s_mag_avg_T(nscan), s_chi_T(nscan), &
 		err_mag_avg_T(nscan), err_chi_T(nscan), s_U_mag_T(nscan), err_U_mag_T(nscan), &
 		s_eng_avg_T(nscan), s_cv_T(nscan), err_eng_avg_T(nscan), err_cv_T(nscan), &
-		s_U_eng_T(nscan), err_U_eng_T(nscan), mm_vector_avg_T(nspecies, 1:3, nscan))
+		s_U_eng_T(nscan), err_U_eng_T(nscan), mm_vector_avg_T(nspecies, 1:3, nscan), &
+		s_spiral_state_avg_T(nscan), s_spiral_state_chi_T(nscan), err_spiral_state_avg_T(nscan), &
+		err_spiral_state_chi_T(nscan), s_U_spiral_state_T(nscan), err_U_spiral_state_T(nscan), &
+		e_spiral_state_avg(repeat), e_U_spiral_state(repeat), e_spiral_state_chi(repeat))
 
 	end subroutine allocate_observables

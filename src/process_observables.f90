@@ -23,7 +23,7 @@
 
 		implicit none
 		
-		integer :: i, j, k, n
+		integer :: i, j, k, n, dim1(2), dim2(2)
 		integer, intent(in) :: T
 		
 		real(dp), allocatable :: observables(:)
@@ -32,25 +32,37 @@
 		character (len=200) :: remark
 		
 		n = total_observables + 3*nspecies
+		dim1 = (/1, n/)
+		dim2 = (/1, 1/)
 		allocate(observables(n)) 
 		select case(observable_case)
 		
 		case('store')
 
 			observables(1) = temp
+
 			observables(2) = s_mag_avg
 			observables(3) = s_chi
 			observables(4) = err_mag_avg
 			observables(5) = err_chi
 			observables(6) = s_U_mag
 			observables(7) = err_U_mag
+			
 			observables(8) = s_eng_avg
 			observables(9) = s_cv
 			observables(10) = err_eng_avg
 			observables(11) = err_cv
 			observables(12) = s_U_eng
 			observables(13) = err_U_eng
+
 			observables(14) = acceptance_counting*100
+
+			observables(15) = s_spiral_state_avg
+			observables(16) = s_spiral_state_chi
+			observables(17) = err_spiral_state_avg
+			observables(18) = err_spiral_state_chi
+			observables(19) = s_U_spiral_state
+			observables(20) = err_U_spiral_state
 
 			j = 0
 			do i = 1, nspecies
@@ -62,7 +74,7 @@
 
 				
 			! Writing oservables into ETHER.obs
-        		call rw_file('w', 'ETHER.obs', (/1, n/), (/1, 1/), T, observables)
+        		call rw_file('w', 'ETHER.obs', 502, dim1, dim2, T, observables)
 
 		case('write')
 		
@@ -70,15 +82,17 @@
 		do k = 1, nscan
 
 			! Reading oservables from ETHER.obs
-			call rw_file('r', 'ETHER.obs', (/1, n/), (/1, 1/), k, observables)
+			call rw_file('r', 'ETHER.obs', 502, dim1, dim2, k, observables)
 
 			temp_T(k) = observables(1)
+
 			s_mag_avg_T(k) 	= observables(2)
 			s_chi_T(k) = observables(3)
 			err_mag_avg_T(k) = observables(4)
 			err_chi_T(k) = observables(5)
 			s_U_mag_T(k) = observables(6)
 			err_U_mag_T(k) = observables(7)
+			
 			s_eng_avg_T(k) 	= observables(8)
 			s_cv_T(k) = observables(9)
 			err_eng_avg_T(k) = observables(10)
@@ -86,6 +100,13 @@
 			s_U_eng_T(k) = observables(12)
 			err_U_eng_T(k) = observables(13)
 			acceptance_ratio(k) = observables(14)
+
+			s_spiral_state_avg_T(k) = observables(15)
+			s_spiral_state_chi_T(k) = observables(16)
+			err_spiral_state_avg_T(k) = observables(17)
+			err_spiral_state_chi_T(k) = observables(18)
+			s_U_spiral_state_T(k) = observables(19)
+			err_U_spiral_state_T(k) = observables(20)
 
 			j = 0
 

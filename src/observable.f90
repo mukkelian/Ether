@@ -17,42 +17,29 @@
 ! You should have received a copy of the GNU General Public License
 ! along with this program; if not, see https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
-	subroutine get_tot_species(n, total_ions_in_cell)
-	
-	implicit none
+	subroutine observable(beta_value, at_step)
+
+		use init
+
+		implicit none
+
+		integer, intent(in) :: at_step
 		
-	integer :: i
-	integer, intent(out) :: n, total_ions_in_cell
-	integer, allocatable :: totion(:)
+		real(dp), intent(in) :: beta_value
 
-	character(len=200) :: titel
+		after_equilibration_step: if((at_step.gt.tmcs_eq).and.&
+			(mod(real(at_step), real(to_cal)).eq.0))then
 
-	logical :: file_found
+			total_calculations = total_calculations + 1
+			eng = 0.0_dp; net_mag = 0.0_dp
 
-	inquire(file='structure.vasp', exist=file_found)
-	if(.not.file_found) then
-		write(6, *) "==> 'structure.vasp' is not present"
-		write(6, *) "	  STOPPING now"
-		write(6, *) ""
-		stop
-	end if
+			call get_tot_energy(eng)
+			call get_tot_magnetisation(net_mag)
 
-	open(unit=0, file='structure.vasp', status='old', action='read')
+	        	call get_eng(beta_value, 'eng')
+			call get_mag(beta_value, 'mag')
+			if(ssp) call get_spiral_state(beta_value, 'spiral_state')
 
-        n = 0
+		end if after_equilibration_step
 
-	do i = 1, 6
-		read(0, *) 	! skipping 6 lines 
-	end do
-
-        read(0, '(a)') titel
-
-        call count_species(titel, n)
-
-	allocate(totion(n))
-	read(titel, *) totion	! total ions
-	total_ions_in_cell = sum(totion)
-
-	close(0)
-
-	end subroutine get_tot_species
+	end subroutine observable
