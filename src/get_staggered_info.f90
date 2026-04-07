@@ -85,7 +85,7 @@
 
 11	continue
 
-	if (rank == 0) then
+	if (root) then
 		write(6, *) ''
 		write(6, *) '    :::::::::::::::::::::::::: &
         	                        STG list ::::::::::::::::::::::::'

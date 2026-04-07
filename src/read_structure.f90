@@ -20,7 +20,7 @@
 	subroutine read_structure(nsp, nions, lp, abc, &
 		coordx, coordy, coordz, ions, species_name, rank)
 
-	use init, only: dp
+	use init, only: dp, root
 
 	implicit none
 
@@ -40,7 +40,7 @@
 
 	inquire(file='structure.vasp', exist=file_present)
 	if(.not.file_present) then
-	if (rank == 0) then
+	if (root) then
 		write(6, *) "==> Required file 'structure.vasp' is not present"
 		write(6, *) "	 STOPPING now"
 		write(6, *) ""
@@ -101,10 +101,10 @@
 		close(10001)
 
 	else
-		if (rank == 0) call terminate('Incorrect structure file')
+		if (root) call terminate('Incorrect structure file')
 		stop
 	end if
 
-    	if (rank == 0) write(6, *) '==> Reading structure is completed!'
+    	if (root) write(6, *) '==> Reading structure is completed!'
 		
 	end subroutine read_structure

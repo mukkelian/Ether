@@ -58,7 +58,7 @@
 
 		case default
 
-		if (rank == 0) then
+		if (root) then
 			remark = "Found unknown case tag '"//zero_opt//&
 			"' in zeroes subroutine"
 			call terminate(remark)

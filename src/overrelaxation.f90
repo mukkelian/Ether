@@ -35,10 +35,10 @@
 
                 !##################################################################################
 		! check energy before applying overrelaxation algorithm (uncomment the gieven lines)
-		!if (rank == 0) call Hamiltonian(.FALSE., i, Si, Si, on_site_eng)
-		!if (rank == 0) print*, 'BEFORE OVRR:'
-		!if (rank == 0) print*, 'Eng:',on_site_eng
-		!if (rank == 0) print*, 'Central ION vec:', Si(1:3)
+		!if (root) call Hamiltonian(.FALSE., i, Si, Si, on_site_eng)
+		!if (root) print*, 'BEFORE OVRR:'
+		!if (root) print*, 'Eng:',on_site_eng
+		!if (root) print*, 'Central ION vec:', Si(1:3)
                 !##################################################################################
 
                 A_ovr = 0.0_dp
@@ -51,11 +51,11 @@
                 !#################################################################################
 		! check energy after applying overrelaxation algorithm (uncomment the given lines)
                 !Si(1:3) = ion(1:3, i)
-		!if (rank == 0) call Hamiltonian(.FALSE., i, Si, Si, on_site_eng)
-		!if (rank == 0) print*, 'AFTER OVRR:'
-		!if (rank == 0) print*, ' Eng:', on_site_eng
-		!if (rank == 0) print*, 'Central ION vec:', Si(1:3)
-                !if (rank == 0) print*, ''
+		!if (root) call Hamiltonian(.FALSE., i, Si, Si, on_site_eng)
+		!if (root) print*, 'AFTER OVRR:'
+		!if (root) print*, ' Eng:', on_site_eng
+		!if (root) print*, 'Central ION vec:', Si(1:3)
+                !if (root) print*, ''
 	        !#################################################################################
 
 	end do overrelaxation_method

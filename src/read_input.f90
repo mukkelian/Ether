@@ -32,7 +32,7 @@
 
 	inquire(file='in.ether', exist=file_present)
 	if(.not.file_present) then
-	if (rank == 0) then
+	if (root) then
 		call terminate("Required file 'in.ether' is not present")
 	end if
 		stop
@@ -106,7 +106,7 @@
 		case("para")
 			read(value, *) para, J_para
                         J_para = abs(J_para)
-		if((J_para.eq.0).and.para.and.rank == 0) then
+		if((J_para.eq.0).and.para.and.root) then
 			write(6, *) ""
 			write(6, *) "ERROR:: parameter value is set ON and value &
        				cannot be zero. Kindly have a look into the input file"

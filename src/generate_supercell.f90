@@ -148,7 +148,7 @@
 	end do
 
 	if (ovrr.and.XYZ.and..not.Zeeman.and..not.SIA) ovrr_steps = nint(total_ions*ovrr_para)
-	if (rank == 0) then
+	if (root) then
 		write(6, *) '==> Supercells are generated'
 		if (ovrr.and.XYZ.and..not.Zeeman.and..not.SIA) &
                         write(6, "(' ==> Total number of OVRR steps: ',I6)") ovrr_steps

@@ -46,7 +46,10 @@
     
 	call date_and_time(VALUES=start)
 
-	if (rank == 0) call system('rm -f *.dat *.xsf')
+	root = .FALSE.
+	if (rank == 0) root = .TRUE.
+
+	if(root) call system('rm -f *.dat *.xsf')
 
 	call get_tot_species(nspecies, total_ions_per_cell)
 
@@ -58,7 +61,7 @@
 
 	call read_input
 	call random_seed(put=seed+rank)
-	if (rank == 0) call startup(start)
+	if (root) call startup(start)
 	call read_structure(nspecies, total_ions_per_cell, lp, abc, &
 		x, y, z, ions, species, rank)
 	call generate_supercell
@@ -68,9 +71,9 @@
 	call j_values
 	call get_sia_values
 	call parameters
-	if (rank == 0) call write_fetched_lattice_network
+	if (root) call write_fetched_lattice_network
 	call getting_nbd
-	if (rank == 0) call write_nbd
+	if (root) call write_nbd
 
 	! Total temperature count
 	nscan = nint((ht - lt) / (tint)) + 1
@@ -83,9 +86,9 @@
 	call allocate_observables
 
 	! For initiating Ground Spin State (GSS) file
-	if (rank == 0) call write_gss(0)
+	if (root) call write_gss(0)
 	! For creating output files
-	if (rank == 0) call write_output_files(0)
+	if (root) call write_output_files(0)
 
 	! Calculate the starting and end points of distributed temperature index
 	allocate(total_temperatures(nprocs), istart(0:nprocs))
@@ -101,7 +104,7 @@
 	! Number of observable (like: temp., energy, Cv, Mag., Chi,..., etc.)
 	total_observables = 20
 
-    	if (rank == 0) call write_temperature_infos
+    	if (root) call write_temperature_infos
 
 	max_temp_count = maxval(total_temperatures)
 	allocate(temp_range(nprocs, max_temp_count))
@@ -180,7 +183,7 @@
 		! Wait for other MPIs to complete
 		call MPI_Barrier(comm_ei, ierr)
 
-		if (file_found .and. rank.eq.0) call system('rm -f STATUS')
+		if (file_found.and.root) call system('rm -f STATUS')
 
 		! Monte Carlo with Parallel Tempering (PT) algo
 		PT: if(PTalgo) then
@@ -240,7 +243,7 @@
 	write(6, "(' Process ID', i3, ' is free now, assigned work is completed.')") rank
 
 	! Root process will finalize observables and write results after all data has been received
-	if (rank == 0) then
+	if (root) then
 
 		! Write all collected observables
 		call process_observables('write', 0)

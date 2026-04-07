@@ -33,7 +33,7 @@
 
 	allocate(nn(no_of_nbd, total_ions, 0:nbd_capacity, 0:1))
 
-	if (rank == 0) write(6, *) '==> Sensing neighbourhoods'
+	if (root) write(6, *) '==> Sensing neighbourhoods'
 	nn = 0
 
 	SCabc(1, :) =  sc(1)*abc(1, :)
@@ -83,6 +83,6 @@
         !$OMP END DO
 	!$OMP END PARALLEL
 
-	if (rank == 0) write(6, *) '==> Neighbourhood informations are created now'
+	if (root) write(6, *) '==> Neighbourhood informations are created now'
 	
 	end subroutine getting_nbd

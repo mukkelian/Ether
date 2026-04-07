@@ -36,7 +36,7 @@
 	write(6, 1) rankID, T, trim(step3), trim(step4), &
             trim(step1), trim(step2)
 	
-1	format('STATUS: Rank ID:',1x, i3, 4x,'Temperature:',1x, g11.4,1x,&
+1	format('STATUS >> Rank ID:',1x, i3, 4x,'Temperature:',1x, g11.4,1x,&
 	'Repeat:',1x, A,'/', A, 1x,&
 	'MSCS:',1x, A,'/',A)
 

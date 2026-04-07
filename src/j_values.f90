@@ -30,7 +30,7 @@
 		
 	inquire(file='j_exchange', exist=file_present)
 	if(.not.file_present) then
-	if (rank == 0) then
+	if (root) then
 		call terminate("Required file 'j_exchange' is not present")
 	end if
 		stop
@@ -44,7 +44,7 @@
 	allocate(j_exc(no_of_nbd, nspecies, nspecies, 1:3))    	! j_exc(:,:,xx-yy-zz)
 	j_exc = real(0.0, dp); j_ID = 0
 
-	if (rank == 0) then
+	if (root) then
 		write(6, *) '==> J-values are recieved'
 		write(6, *) ''
 		write(6, *) '  ::::::::: J values (meV) ::::::::::::'
@@ -77,7 +77,7 @@
 					end if
 				end do
 			end do
-			if (rank == 0) write(6, 501) species(j_ID(1)), species(j_ID(2)), anisotropy, &
+			if (root) write(6, 501) species(j_ID(1)), species(j_ID(2)), anisotropy, &
 			nbd_dis(i)
 501			format(5X,A2,X,'<--->',X,A2,4X,f8.3,1x,f8.3,1x,f8.3,f9.5)
 			j_exc(i, j_ID(1), j_ID(2), 1:3) = anisotropy*s(j_ID(1))*s(j_ID(2))
@@ -89,7 +89,7 @@
 	!closing of j_exchange file
 	close(2)
 
-	if (rank == 0) then
+	if (root) then
 	
 		write(6, *) ''
 		write(6, *) '    Note: Kindly check the above listed J values'

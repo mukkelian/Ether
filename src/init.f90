@@ -93,6 +93,6 @@
 
 	real(dp), allocatable, dimension(:) :: temp_assigned
 
-	logical :: completed, Ising, XYZ, Checkerboard, ssp
+	logical :: completed, Ising, XYZ, Checkerboard, ssp, root
 	
         end module init

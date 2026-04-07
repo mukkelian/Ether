@@ -38,8 +38,8 @@
 	inquire(file='single_ion_anisotropy', exist=file_found)
 	if(file_found) then
 		open(10011, file='single_ion_anisotropy', status='old', action='read')
-		if (rank == 0) write(6, '(3X,":::::::::: SIA list (meV) ::::::::::")')
-		if (rank == 0) write(6, *) ''
+		if (root) write(6, '(3X,":::::::::: SIA list (meV) ::::::::::")')
+		if (root) write(6, *) ''
   		sia_vec = 0.0_dp
 		do
 			! Single Ion Anisotropy (SIA) vector in the unit of meV
@@ -56,13 +56,13 @@
 			end do
                         sia_vec(1:3, SIA_ID) = sia_vectors(1:3)
 			sia_vec(1:3, SIA_ID) = sia_vec(1:3, SIA_ID)*s(SIA_ID)**2
-                        if (rank == 0) write(6, "(4X,A4,f10.3,1x,f10.3,1x,f10.3)")& 
+                        if (root) write(6, "(4X,A4,f10.3,1x,f10.3,1x,f10.3)")& 
                                 atom, sia_vec(1:3, SIA_ID)/s(SIA_ID)**2
 		end do
 10		close(10011)
-                if (rank == 0) write(6, *) ''
+                if (root) write(6, *) ''
 	else
-		if (rank == 0) then
+		if (root) then
 			write(6, *) "	 SIA is .TRUE. but file 'single_ion_anisotropy'"
 			write(6, *) "	 is not found so, stopping now"
 			write(6, *) ''
