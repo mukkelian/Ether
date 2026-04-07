@@ -3,7 +3,8 @@
 
 #--- gnu
  f90comp = mpif90
- switch = -O3 -fopenmp
+ switch = -O3 -fopenmp -march=native -funroll-loops -finline-functions \
+       -fno-math-errno -fno-trapping-math
 
 #--- for gnu debug
 # switch = -O0 -fopenmp -g -fcheck=all
@@ -13,5 +14,4 @@
 #switch = -O3 -qopenmp
 
 #--- for intel debug
-# switch = -O0 -qopenmp -check all -warn unused -debug extended \
-	-check bounds -check uninit -check arg_temp_created
+# switch = -O0 -qopenmp -check all -traceback -g -warn unused -debug
