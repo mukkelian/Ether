@@ -30,6 +30,8 @@
 	integer :: comm_ei, color, dim1(2), dim2(2)
 	
 	logical :: file_found
+	
+	character(len=10) :: Date, Month
 
 	! Initialize MPI
 	call MPI_INIT(ierr)
@@ -252,16 +254,20 @@
 		write(6, *) ''
 		write(6, *) 'SUMMARY :::::::::::::::::::::::::::::::::::::'
 		write(6, *) ''
-		write(6, '("        PROGRAM STARTED on date ",i2,"-",i2,"-",i4)') &
-			start(3), start(2), start(1)
+		write(Date, '(i0)') start(3)
+		write(Month, '(i0)') start(2)
+		write(6, '("        PROGRAM STARTED on date ",A,"-",A,"-",i4)') &
+			trim(Date), trim(Month), start(1)
 		write(6, "('        at time ',i2,' hrs. ',i2,' min. ',i2,' sec. ')") &
 			start(5:7)
 			
 		call date_and_time(VALUES=finish)
 
 		write(6, *) ''
-		write(6, '("        PROGRAM ENDED on date ",i2,"-",i2,"-",i4)') &
-			finish(3), finish(2), finish(1)
+		write(Date, '(i0)') finish(3)
+		write(Month, '(i0)') finish(2)
+		write(6, '("        PROGRAM ENDED on date ",A,"-",A,"-",i4)') &
+			trim(Date), trim(Month), finish(1)
 		write(6, "('        at time ',i2,' hrs. ',i2,' min. ',i2,' sec. ')") &
 			finish(5:7)
 		write(6, *) ''
