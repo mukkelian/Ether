@@ -35,8 +35,6 @@
 	character(len=*), intent(in) :: observable_case
 	character (len=200) :: remark
 	
-	complex(dp) :: ss_local(3)
-	
 	dim1 = (/1, spiral_capacity/)
 	dim2 = (/1, 1/)
 		
@@ -47,16 +45,21 @@
 	if(allocated(ifs))deallocate(ifs)
 	allocate(ifs(spiral_capacity, total_ions))
 	
+	ifs = 0
 	!$OMP PARALLEL DEFAULT(shared) PRIVATE(i,found_ion,vector1,j,vector2,&
-	!$OMP dis,r21,uni_vec,ions_for_spiral)
-	ions_for_spiral = 0
+	!$OMP r21,dis,uni_vec,ss_angle,ions_for_spiral)
 	!$OMP DO SCHEDULE(DYNAMIC)
 	site_i: do i = 1, total_ions
+		ions_for_spiral = 0
 		found_ion = 0
-		vector1 = ion(6:8, i)
+		vector1(1) = ion(6, i)
+		vector1(2) = ion(7, i)
+		vector1(3) = ion(8, i)
 		site_j: do j = 1, total_ions
 		if(j.ne.i) then
-			vector2 = ion(6:8, j)
+			vector2(1) = ion(6, j)
+			vector2(2) = ion(7, j)
+			vector2(3) = ion(8, j)
 
 			r21 = vector2 - vector1
 			dis = sqrt(dot_product(r21, r21))
@@ -72,26 +75,31 @@
 		 end do site_j
 
 		ifs(:, i) = ions_for_spiral
+
 	end do site_i
 	!$OMP END DO
 	!$OMP END PARALLEL
 			
 	case('spiral_state')
 
+		! Spiral State (SS)
+		ss = 0.0_dp
 		!$OMP PARALLEL DEFAULT(shared) PRIVATE(i,j,vector1,vector2,&
 		!$OMP ions_for_spiral, cp) &
 		!$OMP REDUCTION(+:ss)
-		! Spiral State (SS)
-		ss = 0.0_dp
 		!$OMP DO SCHEDULE(DYNAMIC)
 		calculate_ss: do i = 1, total_ions
 
 			ions_for_spiral = ifs(:, i)
-			vector1 = ion(1:3, i)
+			vector1(1) = ion(1, i)
+			vector1(2) = ion(2, i)
+			vector1(3) = ion(3, i)
 
 			get_ss_state: do j = 1, spiral_capacity
 				if (ions_for_spiral(j) /= 0) then
-					vector2 = ion(1:3, ions_for_spiral(j))
+					vector2(1) = ion(1, ions_for_spiral(j))
+					vector2(2) = ion(2, ions_for_spiral(j))
+					vector2(3) = ion(3, ions_for_spiral(j))
 					call cross_product(vector1, vector2, cp)
 					ss = ss + cp
 				else
@@ -121,7 +129,7 @@
 		s_spiral_state_avg = spiral_state_avg + s_spiral_state_avg
 		e_spiral_state_avg(repeati) = spiral_state_avg
 
-		U_spiral_state = 1.0_dp - (1.0_dp/3.0_dp)*(spiral_state4_avg/(spiral_state2_avg**2))
+		U_spiral_state = 1.5_dp - (0.5_dp)*(spiral_state4_avg/(spiral_state2_avg**2))
 		s_U_spiral_state = U_spiral_state + s_U_spiral_state
 		e_U_spiral_state(repeati) = U_spiral_state
 
