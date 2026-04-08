@@ -26,27 +26,17 @@
 
 	integer :: i
 	real(dp), intent(out) :: magnetisation(3)
-	real(dp) :: temp_magnetisation(3)
 
-	magnetisation = real(0, dp)
+	magnetisation = 0.0_dp
 
-	!$OMP PARALLEL DEFAULT(SHARED) PRIVATE(i, temp_magnetisation) &
+	!$OMP PARALLEL DEFAULT(SHARED) PRIVATE(i) &
 	!$OMP& REDUCTION(+:magnetisation)
-
-	temp_magnetisation = real(0, dp)
-
-	!$OMP DO SCHEDULE(DYNAMIC) COLLAPSE(1)
+	!$OMP DO SCHEDULE(DYNAMIC)
 	do i = 1, total_ions
-
-		temp_magnetisation(1:3) = temp_magnetisation(1:3) + &
+		magnetisation(1:3) = magnetisation(1:3) + &
 			stgg_ion(i)*ion(1:3, i)*s(int(ion(4, i)))
-
 	end do
 	!$OMP END DO
-
-	! Accumulating net magnetisation
-	magnetisation(1:3) = magnetisation(1:3) + temp_magnetisation(1:3)
-
 	!$OMP END PARALLEL
 
 	end subroutine get_tot_magnetisation
