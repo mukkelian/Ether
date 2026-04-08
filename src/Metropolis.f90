@@ -31,10 +31,10 @@
 		total_eng, eta
 	real(dp), intent(out) :: accept_count
 
+	accept_count = 0.0_dp
 	!$OMP PARALLEL DEFAULT(SHARED) PRIVATE(i, &
 	!$OMP& S_vec_previous, S_vec_updated, total_eng, eta) &
 	!$OMP REDUCTION(+:accept_count)
-	accept_count = 0.0_dp
 	!$OMP DO SCHEDULE(DYNAMIC) COLLAPSE(1)
 	do i = 1, total_ions
 
