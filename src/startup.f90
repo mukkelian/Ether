@@ -147,10 +147,11 @@
                 write(6, '(" ==> Parameters w.r.t. ",f8.3, " meV has been taken")') J_para
 	end if
 	
-	if(ssp) then
+	if(ssp.and..not.ISING) then
                 write(6, *) '==> Spiral State Parameter is TRUE!'
        		write(6, *) ''
-       		write(6, *) '     >  Physical Review X 8, 011005 (2018).'
+       		write(6, "('     >  sum(Si X Sj) will be calculated along the &
+                        direction of [',f4.1,1x,f4.1,1x,f4.1']')") ss_direc
        		write(6, *) ''
 	end if
 
