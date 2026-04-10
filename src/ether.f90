@@ -66,7 +66,7 @@
 		x, y, z, ions, species, rank)
 	call generate_supercell
 	deallocate (x, y, z)
-	if(ssp) call get_spiral_state(0.0_dp, 'ions_for_spiral')
+	if(ssp.and..not.ISING) call get_spiral_state(0.0_dp, 'ions_for_spiral')
 
 	call j_values
 	call get_sia_values
@@ -187,7 +187,8 @@
 
 		! Monte Carlo with Parallel Tempering (PT) algo
 		PT: if(PTalgo) then
-			if (mod(stepi, exchange_interval) == 0) then
+			if (mod(stepi, exchange_interval) == 0 .and.&
+			mod(real(stepi), real(to_cal)) /= 0) then
 				swap_count = swap_count + 1
 
     			call parallel_tempering(ion, total_energy, beta, itemp, &
@@ -203,7 +204,7 @@
 
 		call get_eng(beta, 'avg_eng')
 		call get_mag(beta, 'avg_mag')
-		if(ssp) call get_spiral_state(beta, 'avg_spiral_state')
+		if(ssp.and..not.ISING) call get_spiral_state(beta, 'avg_spiral_state')
 
 		end do sampling
 

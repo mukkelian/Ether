@@ -46,8 +46,10 @@
 	allocate(ifs(spiral_capacity, total_ions))
 	
 	ifs = 0
+	! Total ion count in spiral direction
+	spiral_count = 0
 	!$OMP PARALLEL DEFAULT(shared) PRIVATE(i,found_ion,vector1,j,vector2,&
-	!$OMP r21,dis,uni_vec,ss_angle,ions_for_spiral)
+	!$OMP r21,dis,uni_vec,ss_angle,ions_for_spiral) REDUCTION(+:spiral_count)
 	!$OMP DO SCHEDULE(DYNAMIC)
 	site_i: do i = 1, total_ions
 		ions_for_spiral = 0
@@ -69,6 +71,7 @@
 				if(ss_angle .le. ss_latency) then
 				found_ion = found_ion + 1
 				ions_for_spiral(found_ion) = j
+				spiral_count = spiral_count + 1
 				end if
 			end if
 		 end if
@@ -79,7 +82,7 @@
 	end do site_i
 	!$OMP END DO
 	!$OMP END PARALLEL
-			
+
 	case('spiral_state')
 
 		! Spiral State (SS)
@@ -109,13 +112,12 @@
 
 		end do calculate_ss
 		!$OMP END DO
-
 		!$OMP END PARALLEL
 
 		! Get spiral state w.r.t. projection vector ss_proj
-		spiral_state = sqrt(abs(dot_product(ss, ss_proj)))
+		spiral_state = sqrt(dot_product(ss, ss))
 			
-		spiral_state_per_site = spiral_state/total_ions
+		spiral_state_per_site = spiral_state/spiral_count
 		spiral_state_avg = spiral_state_avg + spiral_state_per_site
 		spiral_state2_avg = spiral_state2_avg + spiral_state_per_site**2
 		spiral_state4_avg = spiral_state4_avg + spiral_state_per_site**4
@@ -133,7 +135,7 @@
 		s_U_spiral_state = U_spiral_state + s_U_spiral_state
 		e_U_spiral_state(repeati) = U_spiral_state
 
-		spiral_state_chi = (beta_value)*(spiral_state2_avg - spiral_state_avg**2)*total_ions
+		spiral_state_chi = (beta_value)*(spiral_state2_avg - spiral_state_avg**2)*spiral_count
 		s_spiral_state_chi = spiral_state_chi + s_spiral_state_chi
 		e_spiral_state_chi(repeati) = spiral_state_chi
 

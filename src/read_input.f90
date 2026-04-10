@@ -131,8 +131,6 @@
                         read(value, *) ss_latency
                 case("ss_direc")
                         read(value, *) ss_direc(1:3)
-                case("ss_proj")
-                        read(value, *) ss_proj(1:3)
                 case("ssp")
                 	! Spiral State Parameter
                         read(value, *) ssp

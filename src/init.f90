@@ -32,7 +32,7 @@
 		fromx, fromy, fromz, tox, toy, toz, total_calculations, itemp, &
 		spin_file_ID, gss_ID, &
 		seed_value, exchange_interval, total_info = 8, nbd_capacity, &
-		spiral_capacity
+		spiral_capacity, spiral_count
 
         integer, allocatable, dimension(:) :: ions, tions, bblx, bbly, bblz, &
         	seed, included_species_ID, total_temperatures
@@ -53,7 +53,7 @@
 		net_mag(3), err_U_mag, err_chi, err_mag_avg, err_U_eng, err_cv, &
 		err_eng_avg, ovrr_para, SCabc(3, 3), total_energy, total_mag(3), &
 		acceptance_counting, acceptance_count, to_angle = 180.0_dp/pi, &
-		ss_dis, ss_direc(3), ss_latency, ss_proj(3), e_spiral_state, &
+		ss_dis, ss_direc(3), ss_latency, e_spiral_state, &
 		spiral_state_avg, spiral_state2_avg, spiral_state4_avg, &
 		s_spiral_state_avg, s_spiral_state2_avg, e_spiral_state2_avg, &
 		s_U_spiral_state, s_spiral_state, err_U_spiral_state, err_spiral_state, & 
