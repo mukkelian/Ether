@@ -46,8 +46,8 @@
 
 		if(ssp.and..not.ISING) then
 		ss_head(1) ='# 1 Temp.'
-		ss_head(2) ='2 |ψ|'; ss_head(3)='3 ψ'
-		ss_head(4) ='4 Δ|ψ|'; ss_head(5) ='5 Δψ'
+		ss_head(2) ='2 |ψ|'; ss_head(3)='3 χ(ψ)'
+		ss_head(4) ='4 Δ|ψ|'; ss_head(5) ='5 χ(Δψ)'
 		ss_head(6) ='6 U(|ψ|)'; ss_head(7) ='7 ΔU(|ψ|)'
 		end if
 
