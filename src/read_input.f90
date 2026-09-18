@@ -105,6 +105,7 @@
 			read(value, *) SIA
 		case("para")
 			read(value, *) para, J_para
+                        J_para = abs(J_para)
 		if((J_para.eq.0).and.para.and.root) then
 			write(6, *) ""
 			write(6, *) "ERROR:: parameter value is set ON and value &
