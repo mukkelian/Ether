@@ -151,9 +151,9 @@
 		! SAMPLING
 		sampling: do repeati = 1, repeat
 
-                        call random_seed(put=seed+itemp+175*rank+666*repeati)
-			call fresh_spins
-			call zeroes('avg')
+		call random_seed(put=seed+itemp+175*rank+666*repeati)
+		call fresh_spins
+		call zeroes('avg')
 
 		swap_count = 0
 		perform_MCS: do stepi = 1, tmcs
@@ -211,30 +211,29 @@
 		! Acceptance_counting per repeat*tmcs
 		acceptance_counting = acceptance_counting/(repeat*tmcs)
 
-        	call observables_per_repeat
+		call observables_per_repeat
 
-        	! At temperature K
+		! At temperature K
 
-        	! Getting magnetic moment vectors
-        	call get_moment_vectors
+		! Getting magnetic moment vectors
+		call get_moment_vectors
 
-                ! Store all calculated observables
-        	call process_observables('store', itemp)
+		! Store all calculated observables
+		call process_observables('store', itemp)
 
-        	! Writing spin states into *spK* file
-        	call write_spins_at_K(temp, itemp)
-        	
-        	! Writing spin states into ETHER.spn
-        	dim1 = (/0, total_info/)
-        	dim2 = (/1, total_ions/)
-        	call rw_file('w', 'ETHER.spn', 502, dim1, &
-        		dim2, itemp, ion)
+		! Writing spin states into *spK* file
+		call write_spins_at_K(temp, itemp)
+
+		! Writing spin states into ETHER.spn
+		dim1 = (/0, total_info/)
+		dim2 = (/1, total_ions/)
+		call rw_file('w', 'ETHER.spn', 502, dim1, &
+		dim2, itemp, ion)
 
 		! Writing Job status
 		write(6, "(' Task for temperature '&
 			, g11.4, 'is completed.')") temp
-    		call MPI_Comm_free(comm_ei, ierr)
-    		
+			call MPI_Comm_free(comm_ei, ierr)
 1		continue
 
 	end do temperature_MPI

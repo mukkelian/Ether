@@ -17,7 +17,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with this program; if not, see https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
-        subroutine read_input
+    subroutine read_input
 
 	use init
 
@@ -73,6 +73,9 @@
 			read(value, *) ht, lt, tint
 		case("spin")
 			read(value, *) (s(k), k = 1, nspecies)
+			if(allocated(ScaledSpin)) deallocate(ScaledSpin)
+			allocate(ScaledSpin(nspecies))
+			call scaled2Quantum(nspecies, s, ScaledSpin)
 		case("species")
 			call count_species(value, total_species_to_include)
 			allocate(species_to_include(total_species_to_include), &
@@ -119,32 +122,31 @@
 		case("seed")
 			read(value, *) seed_value
 			seed = seed_value
-                case("nbdfc")
-                        read(value, *) nbd_finding_criteria
-                case("pt")
-                        read(value, *) PTalgo, exchange_interval
-                case("cb")
-                        read(value, *) Checkerboard
-                case("ss_dis")
-                        read(value, *) ss_dis
-                case("ss_lat")
-                        read(value, *) ss_latency
-                case("ss_direc")
-                        read(value, *) ss_direc(1:3)
-                case("ssp")
-                	! Spiral State Parameter
-                        read(value, *) ssp
-                ! Spiral Capacity
-                case("spiral_capacity")
-                        read(value, *) spiral_capacity
-                ! nbd Capacity
-                case("nbd_capacity")
-                        read(value, *) nbd_capacity
-
-                case default
-
+        case("nbdfc")
+		    read(value, *) nbd_finding_criteria
+        case("pt")
+		    read(value, *) PTalgo, exchange_interval
+        case("cb")
+		    read(value, *) Checkerboard
+        case("ss_dis")
+		    read(value, *) ss_dis
+        case("ss_lat")
+		    read(value, *) ss_latency
+        case("ss_direc")
+		    read(value, *) ss_direc(1:3)
+        case("ssp")
+        ! Spiral State Parameter
+		    read(value, *) ssp
+        ! Spiral Capacity
+        case("spiral_capacity")
+		    read(value, *) spiral_capacity
+        ! nbd Capacity
+        case("nbd_capacity")
+		    read(value, *) nbd_capacity
+		case("scaled")
+		    read(value, *) scaled
+		case default
 			call terminate("Found unknown/missing information: "//trim(adjustl(text)))
-			
 		end select
 
 	end do
@@ -158,5 +160,14 @@
 		call terminate ("Missing '=' in the given line: "//trim(adjustl(remark)))
 
 	end subroutine at_not_equality
+	
+	!Scaled the spins (Sc) from classical (S) to qauntum level sqrt(S(S+1))
+	subroutine scaled2Quantum(n, S, Sc)
+	    implicit none
+	    integer, intent(in) :: n
+	    real(dp), intent(in) :: S(n)
+	    real(dp), intent(out) :: Sc(n)
+	    Sc = sqrt(S*(S+1))
+	end subroutine scaled2Quantum
 
-        end subroutine read_input
+    end subroutine read_input

@@ -59,7 +59,7 @@
 	write(6, *) ''
         write(6, '(I4,1x,I4,1x,I4,"  :: Lx, Ly, Lz <==> Supercell (SC) size")') sc
         write(6, *)''
-        write(6, '(2X,A2,3x,A2,3x,A2,2x"(boundary conditions along x,y, and z-axis, respectively)")') bc(1:3)
+        write(6, '(2X,A2,3x,A2,3x,A2,2x,"(boundary conditions along x,y, and z-axis, respectively)")') bc(1:3)
         write(6, *)"                    'o' => open; 'c' => closed"
         write(6, *)''
 	write(6, *)'==> Spins are set in random configurations'
@@ -151,8 +151,12 @@
                 write(6, *) '==> Spiral State Parameter is TRUE!'
        		write(6, *) ''
        		write(6, "('     >  sum(Si X Sj) will be calculated along the &
-                        direction of [',f4.1,1x,f4.1,1x,f4.1']')") ss_direc
+                        direction of [',f4.1,1x,f4.1,1x,f4.1,']')") ss_direc
        		write(6, *) ''
 	end if
 
-        end subroutine startup
+	if(scaled)then
+                write(6, *) '==> Spins are scaled from S to sqrt(S(S+1))'
+	end if
+
+	end subroutine startup

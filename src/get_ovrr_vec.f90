@@ -20,7 +20,6 @@
 	subroutine get_ovrr_vec(io, ovrr_vec)
 
 	use init
-
 	implicit none
 
 	integer, intent(in) :: io

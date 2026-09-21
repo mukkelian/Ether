@@ -68,7 +68,7 @@
 		acceptance_ratio, temperature, s_spiral_state_avg_T, &
 		s_spiral_state_chi_T, err_spiral_state_avg_T, &
 		err_spiral_state_chi_T, s_U_spiral_state_T, err_U_spiral_state_T, &
-		e_spiral_state_avg, e_U_spiral_state, e_spiral_state_chi
+		e_spiral_state_avg, e_U_spiral_state, e_spiral_state_chi, ScaledSpin
 
         real(dp), allocatable, dimension(:,:) :: sia_vec, mm_vector, ion
         
@@ -84,7 +84,7 @@
 	character(len=200), allocatable, dimension(:) :: input_data
 
 	logical :: staggered, angle, Zeeman, SIA, para, ovrr, &
-		PTalgo, temp_ex, beta_file, initiate_spin_files
+		PTalgo, temp_ex, beta_file, initiate_spin_files, scaled
 		
 !	For MPI's
 	integer :: rank, size, ierr, total_observables, status(MPI_STATUS_SIZE), nprocs

@@ -27,36 +27,35 @@
 
 	real(dp) :: A_ovr(3), Si(3)
 
-        overrelaxation_method : do m = 1, ovrr_steps
-        
-        	call get_random_indices(total_ions, i)
+	overrelaxation_method : do m = 1, ovrr_steps
+	call get_random_indices(total_ions, i)
 
-		Si(1:3) = ion(1:3, i)
+	Si(1:3) = ion(1:3, i)
 
-                !##################################################################################
+		!##################################################################################
 		! check energy before applying overrelaxation algorithm (uncomment the gieven lines)
 		!if (root) call Hamiltonian(.FALSE., i, Si, Si, on_site_eng)
 		!if (root) print*, 'BEFORE OVRR:'
 		!if (root) print*, 'Eng:',on_site_eng
 		!if (root) print*, 'Central ION vec:', Si(1:3)
-                !##################################################################################
+		!##################################################################################
 
-                A_ovr = 0.0_dp
-                call get_ovrr_vec(i, A_ovr)
-	        Si(1:3) = (2* &
-	        (dot_product(A_ovr(1:3), Si(1:3))/dot_product(A_ovr(1:3), A_ovr(1:3)) )* &
-                A_ovr(1:3)) - Si(1:3)
+		A_ovr = 0.0_dp
+		call get_ovrr_vec(i, A_ovr)
+		Si(1:3) = (2* &
+		(dot_product(A_ovr(1:3), Si(1:3))/dot_product(A_ovr(1:3), A_ovr(1:3)) )* &
+		A_ovr(1:3)) - Si(1:3)
 		ion(1:3, i) = Si(1:3)/sqrt(dot_product(Si(1:3), Si(1:3)))
 
-                !#################################################################################
+		!#################################################################################
 		! check energy after applying overrelaxation algorithm (uncomment the given lines)
-                !Si(1:3) = ion(1:3, i)
+		!Si(1:3) = ion(1:3, i)
 		!if (root) call Hamiltonian(.FALSE., i, Si, Si, on_site_eng)
 		!if (root) print*, 'AFTER OVRR:'
 		!if (root) print*, ' Eng:', on_site_eng
 		!if (root) print*, 'Central ION vec:', Si(1:3)
-                !if (root) print*, ''
-	        !#################################################################################
+		!if (root) print*, ''
+		!#################################################################################
 
 	end do overrelaxation_method
 

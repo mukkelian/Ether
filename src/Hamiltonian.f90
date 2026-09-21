@@ -18,9 +18,7 @@
 ! along with this program; if not, see https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
 	subroutine Hamiltonian(check_trail_spin, ih, S_trial, S_old, total_eng)
-	
 		use init
-
 		implicit none
 
 		integer, intent(in) :: ih
@@ -55,9 +53,7 @@
 
 	! JSiSj	
 	subroutine JSiSj(i, Si, central_ion_ID, total_energy)
-
-                use init, only: dp, ion, nn, j_exc, no_of_nbd
-        
+		use init, only: dp, ion, nn, j_exc, no_of_nbd
 		implicit none
 
 		integer, intent(in) :: i, central_ion_ID
@@ -106,36 +102,35 @@
 	
 	!gmbSH	
 	subroutine gmbSH(Si, central_Ion, total_energy)
-
-                use init, only: dp, mb, g_factor, H, s
-
+		use init, only: dp, mb, g_factor, H, s, scaled, &
+			ScaledSpin
 		implicit none
 
-                integer, intent(in) :: central_Ion
+		integer, intent(in) :: central_Ion
 		real(dp) :: eout
 		real(dp), intent(in) :: Si(3)
 		real(dp), intent(inout) :: total_energy
 
 		! energy due to magnetic field
-		eout = -g_factor*mb*s(central_Ion)*dot_product(Si, H)
-		
+		if(.not.scaled) then
+			eout = -g_factor*mb*s(central_Ion)*dot_product(Si, H)
+		else
+			eout = -g_factor*mb*ScaledSpin(central_Ion)*dot_product(Si, H)
+		end if
 		total_energy = total_energy + eout
-	
 	end subroutine gmbSH
 
 	!SINGLE ION ANISOTRPY (SIA)
 	subroutine siaS2(Si2, central_Ion, total_energy)
-
-                use init, only: dp, sia_vec
-
+		use init, only: dp, sia_vec
 		implicit none
 
-                integer, intent(in) :: central_Ion
+		integer, intent(in) :: central_Ion
 		real(dp) :: sia(3)
 		real(dp), intent(in) :: Si2(3)
 		real(dp), intent(inout) :: total_energy
 
-                sia(1:3) = sia_vec(1:3, central_Ion)
+		sia(1:3) = sia_vec(1:3, central_Ion)
 
 		! energy due to single ion anisiatropy
 		total_energy = total_energy + dot_product(sia, Si2)

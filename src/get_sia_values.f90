@@ -54,13 +54,17 @@
 					SIA_ID = j
 				end if
 			end do
-                        sia_vec(1:3, SIA_ID) = sia_vectors(1:3)
-			sia_vec(1:3, SIA_ID) = sia_vec(1:3, SIA_ID)*s(SIA_ID)**2
-                        if (root) write(6, "(4X,A4,f10.3,1x,f10.3,1x,f10.3)")& 
-                                atom, sia_vec(1:3, SIA_ID)/s(SIA_ID)**2
+			if (root) write(6, "(4X,A4,f10.3,1x,f10.3,1x,f10.3)")& 
+				atom, sia_vectors(1:3)
+			sia_vec(1:3, SIA_ID) = sia_vectors(1:3)
+			if(.not.scaled) then
+				sia_vec(1:3, SIA_ID) = sia_vec(1:3, SIA_ID)*s(SIA_ID)**2
+			else
+				sia_vec(1:3, SIA_ID) = sia_vec(1:3, SIA_ID)*ScaledSpin(SIA_ID)**2
+			end if
 		end do
 10		close(10011)
-                if (root) write(6, *) ''
+		if (root) write(6, *) ''
 	else
 		if (root) then
 			write(6, *) "	 SIA is .TRUE. but file 'single_ion_anisotropy'"
