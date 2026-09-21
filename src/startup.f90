@@ -156,7 +156,9 @@
 	end if
 
 	if(scaled)then
-                write(6, *) '==> Spins are scaled from S to sqrt(S(S+1))'
+		write(6, *) '==> Spins are scaled from S to sqrt(S(S+1))'
+	else
+		write(6, *) '==> Spins (S) are not scaled'
 	end if
 
 	end subroutine startup

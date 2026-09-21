@@ -17,42 +17,42 @@
 ! You should have received a copy of the GNU General Public License
 ! along with this program; if not, see https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
-        subroutine defaults
-        use init
+	subroutine defaults
+	use init
 
-        implicit none
+	implicit none
 
-        model = "Ising"
-        Ising = .TRUE.
-        tmcs = 5000
-        tmcs_eq = 3000
-        bc = 'c'
-        ht = 100
-        lt = 10
-        tint = 5
-        sc = (/2, 2, 2/)
-        repeat = 10
-        angle = .FALSE.
-        to_cal = 10
-        Zeeman = .FALSE.
-        h = 0
-        g_factor = 2
-        SIA = .FALSE.
-        para = .FALSE.
-        J_para = 1.0
-        ovrr = .FALSE.
-        seed = 1992
-        nbd_finding_criteria = 0.00001
-        ovrr_MCS = 0
-        ovrr_para = 0.0
-        PTalgo = .FALSE.
-        exchange_interval = 11
-        Checkerboard = .FALSE.
-        ss_latency = 2
-        ssp = .FALSE.
-        ss_direc = (/0, 0, 1/)
+	model = "Ising"
+	Ising = .TRUE.
+	tmcs = 5000
+	tmcs_eq = 3000
+	bc = 'c'
+	ht = 100
+	lt = 10
+	tint = 5
+	sc = (/2, 2, 2/)
+	repeat = 10
+	angle = .FALSE.
+	to_cal = 10
+	Zeeman = .FALSE.
+	h = 0
+	g_factor = 2
+	SIA = .FALSE.
+	para = .FALSE.
+	J_para = 1.0
+	ovrr = .FALSE.
+	seed = 1992
+	nbd_finding_criteria = 0.00001
+	ovrr_MCS = 0
+	ovrr_para = 0.0
+	PTalgo = .FALSE.
+	exchange_interval = 11
+	Checkerboard = .FALSE.
+	ss_latency = 2
+	ssp = .FALSE.
+	ss_direc = (/0, 0, 1/)
 	ss_dis = 4.0
 	spiral_capacity = 5
 	nbd_capacity = 20
-	
-        end subroutine defaults
+	scaled = .True.
+	end subroutine defaults
