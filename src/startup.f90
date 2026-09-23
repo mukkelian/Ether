@@ -161,4 +161,15 @@
 		write(6, *) '==> Spins (S) are not scaled'
 	end if
 
+	if(trim(adjustl(random_algo))=='mt19937')then
+		write(6, *) '==> Random Algo: mt19937'
+		write(6, *) '	> Matsumoto, M. and Nishimura, T. (1998). "Mersenne Twister: A'
+		write(6, *) '	  623-Dimensionally Equidistributed Uniform Pseudo-Random Number'
+		write(6, *) '	  Generator." ACM Transactions on Modeling and Computer Simulation'
+		write(6, *) '	  (TOMACS), 8(1), 3-30.'
+	else
+		write(6, *) '==> Random Algo: xoshiro256'
+		write(6, *) '	>  https://gcc.gnu.org/onlinedocs/gfortran/RANDOM_005fNUMBER.html'
+	end if
+
 	end subroutine startup

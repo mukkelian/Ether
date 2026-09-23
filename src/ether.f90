@@ -22,6 +22,7 @@
 	use init
 	use omp_lib
 	use mpi
+	use mt19937
 
 	implicit none
 
@@ -60,7 +61,7 @@
 		species(0:nspecies), ions(0:nspecies))
 
 	call read_input
-	call random_seed(put=seed+rank)
+	call set_seed(rank)
 	if (root) call startup(start)
 	call read_structure(nspecies, total_ions_per_cell, lp, abc, &
 		x, y, z, ions, species, rank)
@@ -151,7 +152,7 @@
 		! SAMPLING
 		sampling: do repeati = 1, repeat
 
-		call random_seed(put=seed+itemp+175*rank+666*repeati)
+		call set_seed(itemp+175*rank+666*repeati)
 		call fresh_spins
 		call zeroes('avg')
 

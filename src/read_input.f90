@@ -145,6 +145,8 @@
 		    read(value, *) nbd_capacity
 		case("scaled")
 		    read(value, *) scaled
+		case("random_algo")
+		    read(value, *) random_algo
 		case default
 			call terminate("Found unknown/missing information: "//trim(adjustl(text)))
 		end select

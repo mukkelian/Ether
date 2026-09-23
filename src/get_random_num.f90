@@ -19,14 +19,44 @@
 
 	subroutine get_random_num(from, to, rn)
 
-		use init	! for using seed variable
+		use init, only : dp, random_algo
+		use mt19937
 
-           	implicit none
+		implicit none
 
-           	real(dp), intent(in) :: from, to
-           	real(dp), intent(out) :: rn
+		real(dp), intent(in) :: from, to
+		real(dp), intent(out) :: rn
 
-           	call random_number(rn)
-           	rn = (to-from)*rn + from
+		select case(trim(adjustl(random_algo)))
+		
+		case('xoshiro256')
+			call random_number(rn)
+		case('mt19937')
+			rn = mt_rand()
+		case default
+			call terminate("Found unknown/missing information: "//trim(adjustl(random_algo)))
+		end select
+		rn = (to-from)*rn + from
 
-           end subroutine
+	end subroutine
+
+	subroutine set_seed(offset)
+
+		use init, only : seed, random_algo
+		use mt19937
+
+		implicit none
+
+		integer, intent(in) :: offset
+
+		select case(trim(adjustl(random_algo)))
+
+		case('xoshiro256')
+			call random_seed(put = seed + offset)
+		case('mt19937')
+			call mt_init(seed(1) + offset)
+		case default
+			call terminate("Found unknown/missing information: "//trim(adjustl(random_algo)))
+		end select
+
+	end subroutine

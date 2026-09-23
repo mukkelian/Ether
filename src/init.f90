@@ -80,7 +80,7 @@
 	character(len=2), allocatable, dimension(:) :: species_to_include, species
 	character(len=5) :: model
 	character(len=20), dimension(50) :: m_head, e_head, ss_head
-	character(len=30) :: title, coordinate, lbl
+	character(len=30) :: title, coordinate, lbl, random_algo
 	character(len=200), allocatable, dimension(:) :: input_data
 
 	logical :: staggered, angle, Zeeman, SIA, para, ovrr, &

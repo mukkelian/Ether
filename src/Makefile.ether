@@ -2,7 +2,7 @@
 
 include ../make.sys
 
-OBJS  = init.o lu.o get_random_num.o get_tot_species.o process_file.o defaults.o count_species.o \
+OBJS  = init.o lu.o mt19937.o get_random_num.o get_tot_species.o process_file.o defaults.o count_species.o \
 	read_input.o startup.o frac_to_cart.o read_structure.o generate_supercell.o get_random_indices.o  \
 	j_values.o get_sia_values.o parameters.o write_fetched_lattice_network.o search_nbd.o getting_nbd.o \
 	write_nbd.o allocate_observables.o write_temperature_infos.o write_gss.o write_output_files.o \
@@ -26,6 +26,9 @@ init.o: ../src/init.f90
 
 lu.o: ../src/lu.f90
 	$(f90comp) -c $(switch) ../src/lu.f90
+
+mt19937.o: ../src/mt19937.f90
+	$(f90comp) -c $(switch) ../src/mt19937.f90
 
 get_random_num.o: ../src/get_random_num.f90
 	$(f90comp) -c $(switch) ../src/get_random_num.f90
