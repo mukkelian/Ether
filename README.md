@@ -39,7 +39,7 @@ The citation information is available in [citation.bib](./citation.bib).
 | NBDFC | Neighbourhood finding criteria | 10⁻⁵ |
 | PT |  Parallel Tempering <br> (logic, exchange_interval) | .FALSE. 11 |
 | Checkerboard | Choice of STG lists in Checkerboard fashion. <br> (logic) | .FALSE. |
-| Random_Algo | Choice of Random number generator algorithms. <br> (mt19937, xoshiro256) | mt19937 |
+| Random_Algo | Choice of Random number generator algorithms. <br> (Random_Algo = mt19937/xoshiro256) | mt19937 |
 | Scaled | Scaled the spins from classical (S) to qauntum level √S(S + 1)  <br> (logic) | .True. |
 
 
