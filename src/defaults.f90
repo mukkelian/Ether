@@ -54,6 +54,6 @@
 	ss_dis = 4.0
 	spiral_capacity = 5
 	nbd_capacity = 20
-	scaled = .True.
+	scaled = .False.
 	random_algo = 'mt19937'
 	end subroutine defaults
