@@ -40,7 +40,6 @@ The citation information is available in [citation.bib](./citation.bib).
 | PT |  Parallel Tempering <br> (logic, exchange_interval) | .FALSE. 11 |
 | Checkerboard | Choice of STG lists in Checkerboard fashion. <br> (logic) | .FALSE. |
 | Random_Algo | Choice of Random number generator algorithms. <br> (Random_Algo = mt19937/xoshiro256) | mt19937 |
-| Scaled | Scaled the spins from classical (S) to qauntum level √S(S + 1) <br> _see:_ [arXiv:2602.16501](https://doi.org/10.48550/arXiv.2602.16501 "Click to Read")
-<br> (logic) | .False. |
+| Scaled | Scaled the spins from classical (S) to qauntum level √S(S + 1) <br> _see:_ [arXiv:2602.16501](https://doi.org/10.48550/arXiv.2602.16501 "Click to Read") <br> (logic) | .False. |
 
 
