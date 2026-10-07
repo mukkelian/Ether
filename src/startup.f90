@@ -155,7 +155,7 @@
        		write(6, *) ''
 	end if
 
-	if(scaled)then
+	if(scaled.and.XYZ)then
 		write(6, *) '==> Spins are scaled from S to sqrt(S(S+1))'
 	else
 		write(6, *) '==> Spins (S) are not scaled'

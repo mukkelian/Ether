@@ -80,12 +80,12 @@
 			if (root) write(6, 501) species(j_ID(1)), species(j_ID(2)), anisotropy, &
 			nbd_dis(i)
 501			format(5X,A2,X,'<--->',X,A2,4X,f8.3,1x,f8.3,1x,f8.3,f9.5)
-            if(.not.scaled) then
-				j_exc(i, j_ID(1), j_ID(2), 1:3) = &
-				anisotropy*s(j_ID(1))*s(j_ID(2))
-			else
+			if(scaled.and.XYZ) then
 				j_exc(i, j_ID(1), j_ID(2), 1:3) = &
 				anisotropy*ScaledSpin(j_ID(1))*ScaledSpin(j_ID(2))
+			else
+				j_exc(i, j_ID(1), j_ID(2), 1:3) = &
+				anisotropy*s(j_ID(1))*s(j_ID(2))
 			end if
 			j_exc(i, j_ID(2), j_ID(1), 1:3) = j_exc(i, j_ID(1), j_ID(2), 1:3)
 
