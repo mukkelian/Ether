@@ -33,7 +33,7 @@
 		
 		case('eng')
 			
-			eng_per_site = eng/(2*total_ions)
+			eng_per_site = eng/total_ions
 			eng_avg = eng_avg + eng_per_site
 			eng2_avg = eng2_avg + eng_per_site**2
 			eng4_avg = eng4_avg + eng_per_site**4

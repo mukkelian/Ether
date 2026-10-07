@@ -17,8 +17,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with this program; if not, see https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
-	subroutine Hamiltonian(check_trail_spin, ih, S_trial, S_old, total_eng)
-		use init
+	subroutine Hamiltonian(trial, ih, S_trial, S_old, total_eng)
+
+		use init, only: dp, ion, zeeman, SIA, XYZ
 		implicit none
 
 		integer, intent(in) :: ih
@@ -26,11 +27,11 @@
 		
 		real(dp) :: S_diff(3), S2_diff(3)
 		real(dp), intent(in) :: S_trial(3), S_old(3)	! central ion
-		logical, intent(in) :: check_trail_spin
+		logical, intent(in) :: trial
 		real(dp), intent(out) :: total_eng
 
 		total_eng = 0.0_dp
-		if(check_trail_spin) then
+		if(trial) then
 			S_diff = S_trial - S_old
 			S2_diff = S_trial**2 - S_old**2
 		else
@@ -41,7 +42,7 @@
 		! Central ion's species ID
 		ionID = int(ion(4, ih))
 
-		call JSiSj(ih, S_diff, ionID, total_eng)
+		call JSiSj(trial, ih, S_diff, ionID, total_eng)
 
 		if(Zeeman) call gmbSH(S_diff, ionID, total_eng)
 
@@ -52,7 +53,7 @@
         end subroutine Hamiltonian
 
 	! JSiSj	
-	subroutine JSiSj(i, Si, central_ion_ID, total_energy)
+	subroutine JSiSj(on, i, Si, central_ion_ID, total_energy)
 		use init, only: dp, ion, nn, j_exc, no_of_nbd
 		implicit none
 
@@ -62,6 +63,8 @@
 		real(dp), intent(in) :: Si(3)
 		real(dp) :: Sj(3), SiSj(3), Jij(3), eout
 		real(dp), intent(inout) :: total_energy
+
+		logical, intent(in) :: on	! to calculate the energy on i-th lattice site
 
 		ion_ID = int(ion(0, i))
 		! Over distinct bonds
@@ -89,8 +92,13 @@
 				!Jij term
 				Jij = j_exc(nbdi, central_ion_ID, ID_num, 1:3)
 
-				!Jij.Si.Sj term
-				eout = dot_product(SiSj, Jij)
+				if(on) then
+					!Jij.Si.Sj term, for on site energy, no double counting
+					eout = dot_product(SiSj, Jij)
+				else
+					!(1/2)*Jij.Si.Sj term, double counting is considered in calculating total energy
+					eout = 0.5_dp*dot_product(SiSj, Jij)
+				end if
 
 				total_energy = total_energy + eout
 
@@ -103,7 +111,7 @@
 	!gmbSH	
 	subroutine gmbSH(Si, central_Ion, total_energy)
 		use init, only: dp, mb, g_factor, H, s, scaled, &
-			ScaledSpin
+			ScaledSpin, xyz
 		implicit none
 
 		integer, intent(in) :: central_Ion
@@ -112,10 +120,10 @@
 		real(dp), intent(inout) :: total_energy
 
 		! energy due to magnetic field
-		if(.not.scaled) then
-			eout = -g_factor*mb*s(central_Ion)*dot_product(Si, H)
-		else
+		if(scaled.and.xyz) then
 			eout = -g_factor*mb*ScaledSpin(central_Ion)*dot_product(Si, H)
+		else
+			eout = -g_factor*mb*s(central_Ion)*dot_product(Si, H)
 		end if
 		total_energy = total_energy + eout
 	end subroutine gmbSH
