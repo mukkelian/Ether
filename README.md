@@ -47,7 +47,7 @@ The citation information is available in [citation.bib](./citation.bib).
 
 ## Monte Carlo with the TB2J Hamiltonian
 
-Parameters $J_{ij}$, $\mathbf{J}^{ani}_{ij}$ and $\vec{D}_{ij}$ are taken directly from TB2J (`exchange.out`, in meV), without any conversion. Spins are unit vectors, $|\vec{S}_i| = 1$.
+Parameters $J_{ij}$, $J^{ani}_{ij}$ and $\vec{D}_{ij}$ are taken directly from TB2J (`exchange.out`, in meV), without any conversion. Spins are unit vectors, $|\vec{S}_i| = 1$.
 
 TB2J Hamiltonian (sum over all ordered pairs, so each bond appears twice, as $(i,j)$ and $(j,i)$):
 
@@ -56,6 +56,11 @@ $$ E = -\sum_i K_i \left(\vec{S}_i \cdot \vec{e}_i\right)^2 - \sum_{i,j} \left[ 
 ### 1. Site energy of spin at $i$ (for MC updates)
 
 $$ E_i = -K_i \left(\vec{S}_i \cdot \vec{e}_i\right)^2 - \sum_{j} \left[ 2J_{ij} \vec{S}_i \cdot \vec{S}_j + 2 \vec{S}_i \mathbf{J}^{ani}_{ij} \vec{S}_j + 2 \vec{D}_{ij} \cdot \left( \vec{S}_i \times \vec{S}_j \right) \right] $$
+
+
+- The sum over $j$ runs over all neighbours of $i$, including periodic images.
+- The factor 2 appears because $\vec{S}_i$ enters both the $(i,j)$ and the $(j,i)$ terms. It applies equally to $J$, $J^{ani}$ and $\vec{D}$, since $\vec{D}_{ji} = -\vec{D}_{ij}$ and $J^{ani}$ is symmetric.
+- The single-ion anisotropy $K_i$ (currently can be given from input file 'single\_ion\_anisotropy') has no factor 2.
 
 ### 2. Total energy
 
