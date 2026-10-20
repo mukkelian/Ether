@@ -1,174 +1,48 @@
-# Avoid making changes below this line
+# Makefile for Ether
 
+# Avoid making changes below this line
 include ../make.sys
 
-OBJS  = init.o lu.o mt19937.o get_random_num.o get_tot_species.o process_file.o defaults.o count_species.o \
-	read_input.o startup.o frac_to_cart.o read_structure.o generate_supercell.o get_random_indices.o  \
-	j_values.o get_sia_values.o parameters.o write_fetched_lattice_network.o search_nbd.o getting_nbd.o \
-	write_nbd.o allocate_observables.o write_temperature_infos.o write_gss.o write_output_files.o \
-	George_Marsaglia.o update_spin_details.o Hamiltonian.o get_tot_energy.o get_tot_magnetisation.o fresh_spins.o \
-	observable.o get_eng.o get_mag.o observables_per_repeat.o \
-	process_observables.o Metropolis.o get_moment_vectors.o  write_spins_at_K.o zeroes.o \
-	get_ovrr_vec.o overrelaxation.o graph.o get_staggered_info.o parallel_tempering.o terminate.o rw_file.o \
-	cross_product.o get_spiral_state.o get_status.o
-	
+SRCDIR := ../src
+MAIN   := ether.f90
+EXE    := ../ether
 
-ether: ../ether
+# All Fortran sources except the main program
+SRCS := $(filter-out $(SRCDIR)/$(MAIN), $(wildcard $(SRCDIR)/*.f90))
+OBJS := $(notdir $(SRCS:.f90=.o))
 
-../ether: $(OBJS) ../src/ether.f90
-	$(f90comp) $(switch) $(OBJS) ../src/ether.f90 -o ../ether
+vpath %.f90 $(SRCDIR)
+
+ether: $(EXE)
+
+# $(SRCDIR) as a prerequisite: relink when a file is added or removed in src/
+$(EXE): $(OBJS) $(SRCDIR)/$(MAIN) $(SRCDIR)
+	$(f90comp) $(switch) $(OBJS) $(SRCDIR)/$(MAIN) -o $@
+
+%.o: %.f90
+	$(f90comp) -c $(switch) $<
+
+# ---- automatic module dependencies -----------------------------------
+# Scans the sources for "module X" and "use X" and writes rules like
+#   Metropolis.o: my_module.o
+# Regenerated whenever a source changes or a file is added/removed in src/.
+deps.mk: $(SRCS) $(SRCDIR)
+	@echo "Updating module dependencies"
+	@awk ' \
+	FNR==1 { obj=FILENAME; sub(/.*\//,"",obj); sub(/\.f90$$/,".o",obj) } \
+	{ line=tolower($$0); sub(/!.*/,"",line); n=split(line,w,/[ \t,]+/); \
+	  i=1; if (w[1]=="") i=2; \
+	  if (w[i]=="module" && w[i+1]!="" && w[i+1]!~/^(procedure|function|subroutine)$$/) def[w[i+1]]=obj; \
+	  if (w[i]=="use") { m=w[i+1]; if (m=="::") m=w[i+2]; if (m!="") use[obj SUBSEP m]=1 } } \
+	END { for (k in use) { split(k,p,SUBSEP); \
+	        if ((p[2] in def) && def[p[2]]!=p[1]) print p[1] ": " def[p[2]] } }' \
+	$(SRCS) /dev/null > $@
+
+ifneq ($(MAKECMDGOALS),clean)
+-include deps.mk
+endif
 
 clean:
-	rm -f *.o *.mod *.MOD *.obj
-
-init.o: ../src/init.f90
-	$(f90comp) -c $(switch) ../src/init.f90
-
-lu.o: ../src/lu.f90
-	$(f90comp) -c $(switch) ../src/lu.f90
-
-mt19937.o: ../src/mt19937.f90
-	$(f90comp) -c $(switch) ../src/mt19937.f90
-
-get_random_num.o: ../src/get_random_num.f90
-	$(f90comp) -c $(switch) ../src/get_random_num.f90
-
-get_tot_species.o: ../src/get_tot_species.f90
-	$(f90comp) -c $(switch) ../src/get_tot_species.f90
-
-process_file.o: ../src/process_file.f90
-	$(f90comp) -c $(switch) ../src/process_file.f90
-
-defaults.o: ../src/defaults.f90
-	$(f90comp) -c $(switch) ../src/defaults.f90
-
-count_species.o: ../src/count_species.f90
-	$(f90comp) -c $(switch) ../src/count_species.f90
-
-read_input.o: ../src/read_input.f90
-	$(f90comp) -c $(switch) ../src/read_input.f90
-
-startup.o: ../src/startup.f90
-	$(f90comp) -c $(switch) ../src/startup.f90
-
-frac_to_cart.o: ../src/frac_to_cart.f90
-	$(f90comp) -c $(switch) ../src/frac_to_cart.f90
-
-read_structure.o: ../src/read_structure.f90
-	$(f90comp) -c $(switch) ../src/read_structure.f90
-
-generate_supercell.o: ../src/generate_supercell.f90
-	$(f90comp) -c $(switch) ../src/generate_supercell.f90
-
-get_random_indices.o: ../src/get_random_indices.f90
-	$(f90comp) -c $(switch) ../src/get_random_indices.f90
-
-j_values.o: ../src/j_values.f90
-	$(f90comp) -c $(switch) ../src/j_values.f90
-
-get_sia_values.o: ../src/get_sia_values.f90
-	$(f90comp) -c $(switch) ../src/get_sia_values.f90
-
-parameters.o: ../src/parameters.f90
-	$(f90comp) -c $(switch) ../src/parameters.f90
-
-write_fetched_lattice_network.o: ../src/write_fetched_lattice_network.f90
-	$(f90comp) -c $(switch) ../src/write_fetched_lattice_network.f90
-
-search_nbd.o: ../src/search_nbd.f90
-	$(f90comp) -c $(switch) ../src/search_nbd.f90
-
-getting_nbd.o: ../src/getting_nbd.f90
-	$(f90comp) -c $(switch) ../src/getting_nbd.f90
-
-write_nbd.o: ../src/write_nbd.f90
-	$(f90comp) -c $(switch) ../src/write_nbd.f90
-
-allocate_observables.o: ../src/allocate_observables.f90
-	$(f90comp) -c $(switch) ../src/allocate_observables.f90
-
-write_temperature_infos.o: ../src/write_temperature_infos.f90
-	$(f90comp) -c $(switch) ../src/write_temperature_infos.f90
-
-write_gss.o: ../src/write_gss.f90
-	$(f90comp) -c $(switch) ../src/write_gss.f90
-
-write_output_files.o: ../src/write_output_files.f90
-	$(f90comp) -c $(switch) ../src/write_output_files.f90
-
-George_Marsaglia.o: ../src/George_Marsaglia.f90
-	$(f90comp) -c $(switch) ../src/George_Marsaglia.f90
-
-update_spin_details.o: ../src/update_spin_details.f90
-	$(f90comp) -c $(switch) ../src/update_spin_details.f90
-
-Hamiltonian.o: ../src/Hamiltonian.f90
-	$(f90comp) -c $(switch) ../src/Hamiltonian.f90
-
-get_tot_energy.o: ../src/get_tot_energy.f90
-	$(f90comp) -c $(switch) ../src/get_tot_energy.f90
-
-get_tot_magnetisation.o: ../src/get_tot_magnetisation.f90
-	$(f90comp) -c $(switch) ../src/get_tot_magnetisation.f90
-
-fresh_spins.o: ../src/fresh_spins.f90
-	$(f90comp) -c $(switch) ../src/fresh_spins.f90
-
-observable.o: ../src/observable.f90
-	$(f90comp) -c $(switch) ../src/observable.f90
-
-get_eng.o: ../src/get_eng.f90
-	$(f90comp) -c $(switch) ../src/get_eng.f90
-
-get_mag.o: ../src/get_mag.f90
-	$(f90comp) -c $(switch) ../src/get_mag.f90
-
-observables_per_repeat.o: ../src/observables_per_repeat.f90
-	$(f90comp) -c $(switch) ../src/observables_per_repeat.f90
-
-process_observables.o: ../src/process_observables.f90
-	$(f90comp) -c $(switch) ../src/process_observables.f90
-
-Metropolis.o: ../src/Metropolis.f90
-	$(f90comp) -c $(switch) ../src/Metropolis.f90
-
-get_moment_vectors.o: ../src/get_moment_vectors.f90
-	$(f90comp) -c $(switch) ../src/get_moment_vectors.f90
-
-write_spins_at_K.o: ../src/write_spins_at_K.f90
-	$(f90comp) -c $(switch) ../src/write_spins_at_K.f90
-
-zeroes.o: ../src/zeroes.f90
-	$(f90comp) -c $(switch) ../src/zeroes.f90
-
-get_ovrr_vec.o: ../src/get_ovrr_vec.f90
-	$(f90comp) -c $(switch) ../src/get_ovrr_vec.f90
-
-overrelaxation.o: ../src/overrelaxation.f90
-	$(f90comp) -c $(switch) ../src/overrelaxation.f90
-
-graph.o: ../src/graph.f90
-	$(f90comp) -c $(switch) ../src/graph.f90
-
-get_staggered_info.o: ../src/get_staggered_info.f90
-	$(f90comp) -c $(switch) ../src/get_staggered_info.f90
-
-parallel_tempering.o: ../src/parallel_tempering.f90
-	$(f90comp) -c $(switch) ../src/parallel_tempering.f90
-
-terminate.o: ../src/terminate.f90
-	$(f90comp) -c $(switch) ../src/terminate.f90
-
-rw_file.o: ../src/rw_file.f90
-	$(f90comp) -c $(switch) ../src/rw_file.f90
-
-cross_product.o: ../src/cross_product.f90
-	$(f90comp) -c $(switch) ../src/cross_product.f90	
-
-get_spiral_state.o: ../src/get_spiral_state.f90
-	$(f90comp) -c $(switch) ../src/get_spiral_state.f90
-
-get_status.o: ../src/get_status.f90
-	$(f90comp) -c $(switch) ../src/get_status.f90
+	rm -f *.o *.mod *.MOD *.obj deps.mk
 
 .PHONY: ether clean
