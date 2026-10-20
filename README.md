@@ -47,7 +47,7 @@ The citation information is available in [citation.bib](./citation.bib).
 
 ## Monte Carlo with the TB2J Hamiltonian
 
-Parameters $`J_{ij}`$, $`\mathbf{J}^{ani}_{ij}`$ and $`\vec{D}_{ij}`$ are taken directly from TB2J (`exchange.out`, in meV), without any conversion. Spins are unit vectors, $`\lvert \vec{S}_i \rvert = 1`$.
+Parameters $`J_{ij}`$, $`\mathbf{J}^{ani}_{ij}`$ and $`\vec{D}_{ij}`$ are taken directly from TB2J (`exchange.out`, in meV), without any conversion. Spins are unit vectors, $`\vec{S}_i = 1`$.
 
 TB2J Hamiltonian (sum over all ordered pairs, so each bond appears twice, as $`(i,j)`$ and $`(j,i)`$):
 
@@ -59,12 +59,6 @@ E = -\sum_i K_i \left(\vec{S}_i \cdot \vec{e}_i\right)^2 - \sum_{i,j} \left[ J_{
 
 ```math
 E_i = -K_i \left(\vec{S}_i \cdot \vec{e}_i\right)^2 - \sum_{j} \left[ 2J_{ij} \vec{S}_i \cdot \vec{S}_j + 2 \vec{S}_i \mathbf{J}^{ani}_{ij} \vec{S}_j + 2 \vec{D}_{ij} \cdot \left( \vec{S}_i \times \vec{S}_j \right) \right]
-```
-
-Metropolis update $`\vec{S}_i \rightarrow \vec{S}_i'`$:
-
-```math
-\Delta E = E_i(\vec{S}_i') - E_i(\vec{S}_i), \qquad P_{acc} = \min\left(1, e^{-\Delta E / k_B T}\right)
 ```
 
 ### 2. Total energy
