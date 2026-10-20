@@ -45,3 +45,34 @@ The citation information is available in [citation.bib](./citation.bib).
 | Home | Restricting the extractions (_from TB2J output file: exchange.out_) of J and other interaction parameters for the ion pairs present only in the Home cell (R: [0, 0, 0])  <br> (logic) | .True. |
 
 
+## Monte Carlo with the TB2J Hamiltonian
+
+Parameters $J_{ij}$, $\mathbf{J}^{ani}_{ij}$ and $\vec{D}_{ij}$ are taken directly from TB2J (`exchange.out`, in meV), without any conversion. Spins are unit vectors, $|\vec{S}_i| = 1$.
+
+TB2J Hamiltonian (sum over all ordered pairs, so each bond appears twice, as $(i,j)$ and $(j,i)$):
+
+$$
+E = -\sum_i K_i \left(\vec{S}_i \cdot \vec{e}_i\right)^2 - \sum_{i,j} \left[ J_{ij}\, \vec{S}_i \cdot \vec{S}_j + \vec{S}_i\, \mathbf{J}^{ani}_{ij}\, \vec{S}_j + \vec{D}_{ij} \cdot \left( \vec{S}_i \times \vec{S}_j \right) \right]
+$$
+
+### 1. Site energy of spin $i$ (for MC updates)
+
+$$
+E_i = -K_i \left(\vec{S}_i \cdot \vec{e}_i\right)^2 - \sum_{j} \left[ 2J_{ij}\, \vec{S}_i \cdot \vec{S}_j + 2\, \vec{S}_i\, \mathbf{J}^{ani}_{ij}\, \vec{S}_j + 2\, \vec{D}_{ij} \cdot \left( \vec{S}_i \times \vec{S}_j \right) \right]
+$$
+
+Metropolis update $\vec{S}_i \rightarrow \vec{S}_i'$:
+
+$$
+\Delta E = E_i(\vec{S}_i') - E_i(\vec{S}_i), \qquad P_{acc} = \min\left(1,\; e^{-\Delta E / k_B T}\right)
+$$
+
+### 2. Total energy
+
+Sum over all ordered pairs (each bond appears twice, as $(i,j)$ and $(j,i)$):
+
+$$
+E_{tot} = -\sum_i K_i \left(\vec{S}_i \cdot \vec{e}_i\right)^2 - \sum_i \sum_{j} \left[ J_{ij}\, \vec{S}_i \cdot \vec{S}_j + \vec{S}_i\, \mathbf{J}^{ani}_{ij}\, \vec{S}_j + \vec{D}_{ij} \cdot \left( \vec{S}_i \times \vec{S}_j \right) \right]
+$$
+
+
