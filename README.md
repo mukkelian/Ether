@@ -47,15 +47,19 @@ The citation information is available in [citation.bib](./citation.bib).
 
 ## Monte Carlo with the TB2J Hamiltonian
 
-Parameters $J_{ij}$, $J^{ani}_{ij}$ and $\vec{D}_{ij}$ are taken directly from TB2J (`exchange.out`, in meV), without any conversion. Spins are unit vectors, $|\vec{S}_i| = 1$.
+Parameters $J_{ij}$, $J^{ani}_{ij}$ and $\vec{D}_{ij}$ are taken directly from TB2J (`exchange.out`, in meV), without any conversion. Spins are unit vectors, $|\vec{S}_i|=1$.
 
 TB2J Hamiltonian (sum over all ordered pairs, so each bond appears twice, as $(i,j)$ and $(j,i)$):
 
-$$ E = -\sum_i K_i \left(\vec{S}_i \cdot \vec{e}_i\right)^2 - \sum_{i,j} \left[ J_{ij} \vec{S}_i \cdot \vec{S}_j + \vec{S}_i \mathbf{J}^{ani}_{ij} \vec{S}_j + \vec{D}_{ij} \cdot \left( \vec{S}_i \times \vec{S}_j \right) \right] $$
+$$
+E = -\sum_i K_i \left(\vec{S}_i \cdot \vec{e}_i\right)^2 - \sum_{i,j} \left[ J_{ij} \vec{S}_i \cdot \vec{S}_j + \vec{S}_i \mathbf{J}^{ani}_{ij} \vec{S}_j + \vec{D}_{ij} \cdot \left( \vec{S}_i \times \vec{S}_j \right) \right]
+$$
 
 ### 1. Site energy of spin at $i$ (for MC updates)
 
-$$ E_i = -K_i \left(\vec{S}_i \cdot \vec{e}_i\right)^2 - \sum_{j} \left[ 2J_{ij} \vec{S}_i \cdot \vec{S}_j + 2 \vec{S}_i \mathbf{J}^{ani}_{ij} \vec{S}_j + 2 \vec{D}_{ij} \cdot \left( \vec{S}_i \times \vec{S}_j \right) \right] $$
+$$
+E_i = -K_i \left(\vec{S}_i \cdot \vec{e}_i\right)^2 - \sum_{j} \left[ 2J_{ij} \vec{S}_i \cdot \vec{S}_j + 2 \vec{S}_i \mathbf{J}^{ani}_{ij} \vec{S}_j + 2 \vec{D}_{ij} \cdot \left( \vec{S}_i \times \vec{S}_j \right) \right]
+$$
 
 
 - The sum over $j$ runs over all neighbours of $i$, including periodic images.
@@ -66,4 +70,6 @@ $$ E_i = -K_i \left(\vec{S}_i \cdot \vec{e}_i\right)^2 - \sum_{j} \left[ 2J_{ij}
 
 Sum over all ordered pairs (each bond appears twice, as $(i,j)$ and $(j,i)$):
 
-$$ E_{tot} = -\sum_i K_i \left(\vec{S}_i \cdot \vec{e}_i\right)^2 - \sum_i \sum_{j} \left[ J_{ij} \vec{S}_i \cdot \vec{S}_j + \vec{S}_i \mathbf{J}^{ani}_{ij} \vec{S}_j + \vec{D}_{ij} \cdot \left( \vec{S}_i \times \vec{S}_j \right) \right] $$
+$$
+E_{tot} = -\sum_i K_i \left(\vec{S}_i \cdot \vec{e}_i\right)^2 - \sum_i \sum_{j} \left[ J_{ij} \vec{S}_i \cdot \vec{S}_j + \vec{S}_i \mathbf{J}^{ani}_{ij} \vec{S}_j + \vec{D}_{ij} \cdot \left( \vec{S}_i \times \vec{S}_j \right) \right]
+$$
