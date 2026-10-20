@@ -16,3 +16,4 @@ spins/
 backup/
 out
 *DS_Store*
+.ipynb*
