@@ -56,4 +56,10 @@
 	nbd_capacity = 20
 	scaled = .False.
 	random_algo = 'mt19937'
+	home = .TRUE.
+	TB2J = .FALSE.
+	J_iso = .FALSE.
+	J_prime = .FALSE.
+	J_ani = .FALSE.
+	DMI = .FALSE.
 	end subroutine defaults

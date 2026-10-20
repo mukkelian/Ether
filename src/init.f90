@@ -17,12 +17,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with this program; if not, see https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
-        module init
+	module init
 
-        use mpi
+	use mpi
+	implicit none
 
-        implicit none
-        
 	integer, parameter :: dp = 8
 
 	integer :: tmcs, tmcs_eq, total_species_to_include, sc(3), repeat, repeati, &
@@ -34,18 +33,20 @@
 		seed_value, exchange_interval, total_info = 8, nbd_capacity, &
 		spiral_capacity, spiral_count
 
-        integer, allocatable, dimension(:) :: ions, tions, bblx, bbly, bblz, &
-        	seed, included_species_ID, total_temperatures
+	integer, allocatable, dimension(:) :: ions, tions, bblx, bbly, bblz, &
+		seed, included_species_ID, total_temperatures
 
-        integer, allocatable, dimension(:,:) :: temp_range, ifs(:, :)
+	integer, allocatable, dimension(:,:) :: temp_range, ifs(:, :)
 
-        integer, allocatable, dimension(:,:,:,:) :: nn
+	integer, allocatable, dimension(:,:,:) :: vd
 
-        real(dp), parameter :: pi = 4.0_dp*atan(1.0_dp)
+	integer, allocatable, dimension(:,:,:,:) :: nn
 
-        real(dp) :: temp, ht, lt, tint, dphi, to_cal, g_factor, J_para, &
-        	lp(3), abc(3, 3), kb = 8.617333262d-5, &
-        	h(3), anisotropy(3), mb, beta_critria, &
+	real(dp), parameter :: pi = 4.0_dp*atan(1.0_dp)
+
+	real(dp) :: temp, ht, lt, tint, dphi, to_cal, g_factor, J_para, &
+		lp(3), abc(3, 3), kb = 8.617333262d-5, &
+		h(3), anisotropy(3), mb, beta_critria, &
 		nbd_finding_criteria, convert_to_rad = pi/180.0_dp, &
 		beta, eng, eng_avg, eng2_avg, eng4_avg, mag_avg, mag2_avg, mag4_avg, &
 		s_eng_avg, s_eng2_avg, e_eng2_avg, s_U_eng, s_cv, &
@@ -57,11 +58,12 @@
 		spiral_state_avg, spiral_state2_avg, spiral_state4_avg, &
 		s_spiral_state_avg, s_spiral_state2_avg, e_spiral_state2_avg, &
 		s_U_spiral_state, s_spiral_state, err_U_spiral_state, err_spiral_state, & 
-		err_spiral_state_avg, err_spiral_state_chi, s_spiral_state_chi
+		err_spiral_state_avg, err_spiral_state_chi, s_spiral_state_chi, &
+		maxbond
 
-        real(dp), allocatable, dimension(:) :: x, y, z, s, nbd_dis, &
-        	stgg, stgg_ion, &
-        	e_mag_avg, e_U_mag, e_chi, e_eng_avg, e_U_eng, e_cv, &
+	real(dp), allocatable, dimension(:) :: x, y, z, s, nbd_dis, &
+		stgg, stgg_ion, &
+		e_mag_avg, e_U_mag, e_chi, e_eng_avg, e_U_eng, e_cv, &
 		temp_T, s_mag_avg_T, s_chi_T, err_mag_avg_T, err_chi_T, &
 		s_U_mag_T, err_U_mag_T, s_eng_avg_T, s_cv_T, err_eng_avg_T, &
 		err_cv_T, s_U_eng_T, err_U_eng_T, &
@@ -70,11 +72,17 @@
 		err_spiral_state_chi_T, s_U_spiral_state_T, err_U_spiral_state_T, &
 		e_spiral_state_avg, e_U_spiral_state, e_spiral_state_chi, ScaledSpin
 
-        real(dp), allocatable, dimension(:,:) :: sia_vec, mm_vector, ion
-        
-        real(dp), allocatable, dimension(:,:,:) :: mm_vector_avg_T
+	real(dp), allocatable, dimension(:,:) :: sia_vec, mm_vector, ion
 
-        real(dp), allocatable, dimension(:,:,:,:) :: j_exc
+	real(dp), allocatable, dimension(:,:,:) :: mm_vector_avg_T
+
+	real(dp), allocatable, dimension(:,:,:,:) :: j_exc
+
+	real(dp), allocatable, dimension(:,:,:,:,:,:) :: Jiso, Jprime
+
+	real(dp), allocatable, dimension(:,:,:,:,:,:,:) :: DMvec
+
+	real(dp), allocatable, dimension(:,:,:,:,:,:,:,:) :: Jani
 
 	character :: bc(3)
 	character(len=2), allocatable, dimension(:) :: species_to_include, species
@@ -84,8 +92,9 @@
 	character(len=200), allocatable, dimension(:) :: input_data
 
 	logical :: staggered, angle, Zeeman, SIA, para, ovrr, &
-		PTalgo, temp_ex, beta_file, initiate_spin_files, scaled
-		
+		PTalgo, temp_ex, beta_file, initiate_spin_files, scaled, home, TB2J, &
+		J_iso, J_prime, J_ani, DMI
+
 !	For MPI's
 	integer :: rank, size, ierr, total_observables, status(MPI_STATUS_SIZE), nprocs
 
@@ -95,4 +104,4 @@
 
 	logical :: completed, Ising, XYZ, Checkerboard, ssp, root
 	
-        end module init
+	end module init

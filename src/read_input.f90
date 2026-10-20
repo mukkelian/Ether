@@ -147,6 +147,10 @@
 		    read(value, *) scaled
 		case("random_algo")
 		    read(value, *) random_algo
+		case("TB2J")	! read parameters from TB2J output file (exchange.out)
+			read(value, *) TB2J, maxbond
+		case("home")	! TB2J: J from Home cell (0, 0, 0)
+			read(value, *) home
 		case default
 			call terminate("Found unknown/missing information: "//trim(adjustl(text)))
 		end select

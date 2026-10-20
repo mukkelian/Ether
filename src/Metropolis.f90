@@ -45,8 +45,13 @@
 		call update_spin_details(S_vec_previous, S_vec_updated)
 
 		! Calculate energy from Hamiltonian
-		call Hamiltonian(.TRUE., i, S_vec_updated(1:3), &
+		if(TB2J) then
+			call TB2J_Hamiltonian(.TRUE., i, S_vec_updated(1:3), &
 				S_vec_previous(1:3), total_eng)
+		else
+			call Hamiltonian(.TRUE., i, S_vec_updated(1:3), &
+				S_vec_previous(1:3), total_eng)
+		end if
 
 		! Get random number for Metropolis criterion
 		call get_random_num(0.0_dp, 1.0_dp, eta)

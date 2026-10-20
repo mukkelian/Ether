@@ -43,7 +43,7 @@
 	!$OMP PARALLEL DEFAULT(PRIVATE) SHARED(sc, lattice_per_unit_cell, no_of_nbd, ion, nn, nbd_dis, &
 	!$OMP& total_ions, nbd_finding_criteria, SCabc)
 	!$OMP DO SCHEDULE(dynamic)
-	central_atom :	do i = 1, total_ions
+	central_atom:do i = 1, total_ions
 
 		central_ion_ID = int(ion(0, i))
 		origin = ion(6:8, i)
@@ -58,18 +58,18 @@
 		nbd_ID = int(ion(0, j))
 
 		if(central_ion_ID.ne.nbd_ID)then
-			call search_nbd(origin, nbd_pos, nbd_dis(ith_bond), captured)						
+			call search_nbd(origin, nbd_pos, nbd_dis(ith_bond), captured)
 			if(captured)then
 
 				nbd_count = nbd_count + 1
-				! Storing nbd's ID				
+				! Storing nbd's ID
 				nn(ith_bond, central_ion_ID, nbd_count, 0) = nbd_ID
 
 				! Storing nbd's indices
 				nn(ith_bond, central_ion_ID, nbd_count, 1) = j
 			
-			end if        
-       		end if
+			end if
+		end if
 
 		end do
 
@@ -80,9 +80,9 @@
 		end do nbd
 
 	end do central_atom
-        !$OMP END DO
+	!$OMP END DO
 	!$OMP END PARALLEL
 
 	if (root) write(6, *) '==> Neighbourhood informations are created now'
-	
+
 	end subroutine getting_nbd

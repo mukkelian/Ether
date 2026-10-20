@@ -37,7 +37,11 @@
 			Spin_vec(1:3) = ion(1:3, i)
 
 			! Calculate partial energy for this spin
-			call Hamiltonian(.FALSE., i, Spin_vec, Spin_vec, partial_toten)
+			if(TB2J) then
+				call TB2J_Hamiltonian(.FALSE., i, Spin_vec, Spin_vec, partial_toten)
+			else
+				call Hamiltonian(.FALSE., i, Spin_vec, Spin_vec, partial_toten)
+			end if
 
 			! Accumulate the total energy
 			toten = toten + partial_toten

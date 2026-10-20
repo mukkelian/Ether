@@ -172,4 +172,6 @@
 		write(6, *) '	>  https://gcc.gnu.org/onlinedocs/gfortran/RANDOM_005fNUMBER.html'
 	end if
 
+	if(TB2J) write(6, *) '==> Interactions (only J_iso, J_ani, DMI) using TB2J are considered'
+
 	end subroutine startup

@@ -69,7 +69,12 @@
 	deallocate (x, y, z)
 	if(ssp.and..not.ISING) call get_spiral_state(0.0_dp, 'ions_for_spiral')
 
-	call j_values
+	if (TB2J) then
+		call get_TB2J()
+	else
+		call j_values
+	end if
+
 	call get_sia_values
 	call parameters
 	if (root) call write_fetched_lattice_network
@@ -121,7 +126,7 @@
 	el = 0
 
 	temperature_MPI: do ei = 1, max_temp_count
-	
+
 		itemp = temp_range(rank + 1, ei)
 
 		! Create dynamic communicator for this iteration
@@ -178,9 +183,9 @@
 		call get_tot_energy(total_energy)
 
 		! For getting the status of MCS simulations.
-    		inquire(file='STATUS', exist=file_found)
-    		if (file_found) call get_status(rank, stepi, repeati, temp)
-    		
+			inquire(file='STATUS', exist=file_found)
+			if (file_found) call get_status(rank, stepi, repeati, temp)
+
 		! Wait for other MPIs to complete
 		call MPI_Barrier(comm_ei, ierr)
 
@@ -192,8 +197,8 @@
 			mod(real(stepi), real(to_cal)) /= 0) then
 				swap_count = swap_count + 1
 
-    			call parallel_tempering(ion, total_energy, beta, itemp, &
-        			swap_count, comm_ei)
+				call parallel_tempering(ion, total_energy, beta, itemp, &
+					swap_count, comm_ei)
 
 			end if 
 		end if PT
