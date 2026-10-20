@@ -19,7 +19,7 @@ $$
 
 Classical spin vector: $\vec S$ [$S_x$, $S_y$, $S_z$]
 
-Exchange interaction: $J$ [$J_{xx}^{}$, $J_{yy}^{}$, $J_{zz}^{}$]; (Ferromagnetic if J<0)
+Exchange interaction: $J$ [$J_{xx}$, $J_{yy}$, $J_{zz}$]; (Ferromagnetic if J<0)
 
 Magnetic field: $\vec H$ [$H_x$, $H_y$, $H_z$]
 
@@ -67,6 +67,8 @@ The citation information is available in [citation.bib](./citation.bib).
 
 
 ## Monte Carlo with the TB2J Hamiltonian
+
+_see:_ [TB2J’s documentation!](https://tb2j.readthedocs.io/en/stable/index.html "Click to Read")
 
 Parameters $J_{ij}$, $J^{ani}_{ij}$ and $\vec{D}_{ij}$ are taken directly from TB2J ('exchange.out', in meV), without any conversion. Spins are unit vectors, $|\vec{S}_i|=1$.
 
