@@ -25,7 +25,14 @@
 
 	if (para) then
 		lbl = ' kBT/J'
-		j_exc = j_exc/J_para
+		if(TB2J)then
+			if(J_iso) Jiso = Jiso/J_para
+			if(J_ani) Jani = Jani/J_para
+			if(J_prime) Jprime = Jprime/J_para
+			if(DMI) DMvec = DMvec/J_para
+		else
+			j_exc = j_exc/J_para
+		end if
 		if(SIA.and.XYZ) sia_vec = sia_vec/J_para
 		kb = real(1.0, dp)
 		mb = real(1.0, dp)
@@ -34,23 +41,29 @@
 		if(Zeeman) h = h/J_para
 	else
 		lbl = " K"
-		! Converting 'j_exc' from meV into eV
-		j_exc = j_exc/real(1000.0, dp)
+		! Converting from meV into eV
+		if(TB2J) then
+			if(J_iso) Jiso = Jiso/real(1000.0, dp)
+			if(J_ani) Jani = Jani/real(1000.0, dp)
+			if(J_prime) Jprime = Jprime/real(1000.0, dp)
+			if(DMI) DMvec = DMvec/real(1000.0, dp)
+		else
+			j_exc = j_exc/real(1000.0, dp)
+		end if
 		if(SIA.and.XYZ) sia_vec = sia_vec/real(1000.0, dp)
 		! Bhor magneton
 		mb = 5.7883818060d-5
 		if(root) then
-                write(6, *) ''
-                write(6, *) "REMEMBER! 	For 'J in meV' case."
-                write(6, *) '		ALL variables should be provided in terms of milli orders (meV), '
-                write(6, *) "		in the 'input' file. e.g., for 1meV, put only 1, not 0.001"
-                write(6, *) ''
-                write(6, *) '		~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
-                write(6, *) "		KINDLY CHECK THE 'input' FILE"
-                write(6, *) '		(IGNORE, if it is already DONE!)'
-                write(6, *) '		~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
-                write(6, *) ''
-                end if
+			write(6, *) ''
+			write(6, *) "REMEMBER! 	For 'J in meV' case."
+			write(6, *) '		All parameters should be provided in terms of milli orders (meV), '
+			write(6, *) "		e.g., for 1meV, put only 1, not 0.001"
+			write(6, *) ''
+			write(6, *) '		~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
+			write(6, *) '		(IGNORE, if it is already DONE!)'
+			write(6, *) '		~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
+			write(6, *) ''
+		end if
 	end if
 
 	end subroutine parameters

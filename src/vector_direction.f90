@@ -31,21 +31,21 @@
 !   dir  (out) : integer array of size n, the direction (-1, 0 or 1)
 !=======================================================================
 	subroutine vector_direction(n, vec, dir)
+
+	use init, only: nbd_finding_criteria
 	implicit none
 
 	integer, parameter :: dp = kind(1.0d0)
+	real(dp), intent(in)  :: vec(n)
 
 	integer,  intent(in)  :: n
-	real(dp), intent(in)  :: vec(n)
 	integer,  intent(out) :: dir(n)
-
-	real(dp), parameter :: tol = 0.0_dp
 	integer :: i
 
 	do i = 1, n
-		if (vec(i) > tol) then
+		if (vec(i) > nbd_finding_criteria) then
 			dir(i) = 1
-		else if (vec(i) < -tol) then
+		else if (vec(i) < -nbd_finding_criteria) then
 			dir(i) = -1
 		else
 			dir(i) = 0

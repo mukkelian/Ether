@@ -57,7 +57,7 @@
 		if(j.le.0) call at_not_equality(text)
 		key = text(:j-1)
 		value = text(j+1:)
-!print*, "Key: ", trim(adjustl(key)), ", value: ", trim(adjustl(value))
+!write(6, *) "Key: ", trim(adjustl(key)), ", value: ", trim(adjustl(value))
 		select case(trim(adjustl(key)))
 		case("model")
 			read(value, *) model
@@ -147,7 +147,7 @@
 		    read(value, *) scaled
 		case("random_algo")
 		    read(value, *) random_algo
-		case("TB2J")	! read parameters from TB2J output file (exchange.out)
+		case("tb2j")	! read parameters from TB2J output file (exchange.out)
 			read(value, *) TB2J, maxbond
 		case("home")	! TB2J: J from Home cell (0, 0, 0)
 			read(value, *) home

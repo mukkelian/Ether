@@ -70,7 +70,9 @@
 	if(ssp.and..not.ISING) call get_spiral_state(0.0_dp, 'ions_for_spiral')
 
 	if (TB2J) then
-		call get_TB2J()
+		if (root) call extract_TB2J(maxbond, home)
+		call MPI_Barrier(MPI_COMM_WORLD, ierr)
+		call get_TB2J
 	else
 		call j_values
 	end if
@@ -80,6 +82,8 @@
 	if (root) call write_fetched_lattice_network
 	call getting_nbd
 	if (root) call write_nbd
+
+	if(TB2J) call get_vector_direction
 
 	! Total temperature count
 	nscan = nint((ht - lt) / (tint)) + 1
@@ -110,7 +114,7 @@
 	! Number of observable (like: temp., energy, Cv, Mag., Chi,..., etc.)
 	total_observables = 20
 
-    	if (root) call write_temperature_infos
+	if (root) call write_temperature_infos
 
 	max_temp_count = maxval(total_temperatures)
 	allocate(temp_range(nprocs, max_temp_count))

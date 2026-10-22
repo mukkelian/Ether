@@ -21,7 +21,7 @@
 !  Reads the TB2J output file "exchange.out" and writes:
 !
 !     J_iso    : isotropic exchange J_iso      (scalar, meV)  - always
-!     J_aniso  : anisotropic exchange J_ani    (3x3,    meV)  - only if
+!     J_ani  : anisotropic exchange J_ani    (3x3,    meV)  - only if
 !				"J_ani:" is present in exchange.out
 !     DMI      : Dzyaloshinskii-Moriya vector  (3x1,    meV)  - only if
 !				"DMI:" is present in exchange.out
@@ -36,10 +36,9 @@
 !				      .true.  -> only ion pairs with R = (0, 0, 0)
 !								 (both ions in the home cell)
 !				      .false. -> ion pairs from any cell
-!	nshell		(out) : Integer. Total distinct bonds
 !=======================================================================
 
-	subroutine extract_TB2J(bond_length, home, nshell)
+	subroutine extract_TB2J(bond_length, home)
 	implicit none
 
 	integer, parameter :: dp = kind(1.0d0)
@@ -63,7 +62,7 @@
 	integer,  allocatable :: bond_id(:)	! index of the bond length
 
 	logical :: found_jprime, found_dmi, found_jani
-	integer, intent(out) :: nshell
+	integer :: nshell
 	real(dp), allocatable :: shell(:)
 	character(len=maxlen) :: line
 	logical  :: exists
@@ -122,10 +121,10 @@
 	write(6,'(a)') '	> written : J_iso'
 
 	if (found_jani) then
-		call write_file('J_aniso', 2)
-		write(6,'(a)') '	> written : J_aniso'
+		call write_file('J_ani', 2)
+		write(6,'(a)') '	> written : J_ani'
 	else
-		write(6,'(a)') '	> J_ani  not present in exchange.out -> J_aniso not created'
+		write(6,'(a)') '	> J_ani not present in exchange.out -> J_ani not created'
 	end if
 
 	if (found_dmi) then

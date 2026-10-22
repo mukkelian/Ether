@@ -48,25 +48,25 @@
 	if(mode.eq.'w') then
 		write(file_unit, rec=at, iostat=io_status) content
 		if (io_status /= 0) then
-			print *, "	Error: ", io_status
+			write(6, *) "	Error: ", io_status
 			call terminate ('Error in writing data')
 		end if
 		close(file_unit)
 	elseif(mode.eq.'r') then
 	
 		if(size.eq.0) then
-			print *,"	'",trim(adjustl(filename)), "' file is empty"
+			write(6, *)"	'",trim(adjustl(filename)), "' file is empty"
 		end if
 		
 		read(file_unit, rec=at, iostat=io_status) content
 		if (io_status /= 0) then
-			print *, "	Error: ", io_status
+			write(6, *) "	Error: ", io_status
 			call terminate ('Error in reading data')
 		end if
 		close(file_unit)
 	else
-		print*, ''
-		print*, "Detected unknown input argument '", trim(adjustl(mode)), "' on rw_file subroutine"
+		write(6, *) ''
+		write(6, *) "Detected unknown input argument '", trim(adjustl(mode)), "' on rw_file subroutine"
 		call terminate (mode)
 	end if
 

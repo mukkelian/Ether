@@ -17,13 +17,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with this program; if not, see https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
-	subroutine get_vector_direction()
+	subroutine get_vector_direction
 
 	use init, only: dp, ion, no_of_nbd, nn, nbd_capacity, total_ions, vd
 	implicit none
 
 	integer :: i
-	integer :: total_nbr, ID_num, ion_ID, cell, inbr, nbdi
+	integer :: total_nbr, ID_num, ion_ID, cell, inbr, nbdi, dir(3)
 
 	real(dp) :: rj(3), ri(3), rij(3)
 
@@ -34,7 +34,7 @@
 	vd = 0
 	do i = 1, total_ions
 	ion_ID = int(ion(0, i))
-	ri = ion(1:3, i)
+	ri = ion(6:8, i)
 	! Over distinct bonds
 	do nbdi = 1, no_of_nbd
 		! For nbdi bond total connecting neighbours to the central ion [ID = ion(0, i)] is
@@ -46,18 +46,17 @@
 			! nbr's ID in the cell
 			cell = nn(nbdi, ion_ID, inbr, 1)
 			ID_num = int(ion(4, cell))
-			
 
 			if(ID_num.eq.0) then
 				go to 4
 			end if
 			! Rj
-			rj(1:3) = ion(1:3, cell)
+			rj(1:3) = ion(6:8, cell)
 
 			!Rij vector
 			rij = rj - ri
-			call vector_direction(3, rij, rij)
-			vd(1:3, nbdi, i) = rij(1:3)
+			call vector_direction(3, rij, dir)
+			vd(1:3, nbdi, i) = dir(1:3)
 
 4			continue
 		end do

@@ -39,12 +39,13 @@
 	! JSiSj	
 	subroutine JSiSj_ovrr(i, central_ion_ID, ovrr_vec)
 
-	use init, only: dp, nn, ion, j_exc, no_of_nbd
+	use init, only: dp, nn, ion, j_exc, no_of_nbd, Jiso, vd, &
+			TB2J
 
 	implicit none
 
 	integer, intent(in) :: i, central_ion_ID
-	integer :: total_nbr, ion_ID, cell, ith_bond, ith_nbr
+	integer :: total_nbr, ion_ID, cell, ith_bond, ith_nbr, vec(3), ID_num
 
 	real(dp) :: Sj(3), Jij(3), JSj(3)
 	real(dp), intent(inout) :: ovrr_vec(3)
@@ -62,15 +63,22 @@
 
 			! nbr's ID in the cell
 			cell = nn(ith_bond, ion_ID, ith_nbr, 1)
-
+			ID_num = int(ion(4, cell))
 			if(ion(4, cell).eq.0) then
 				go to 4
 			end if
 
 			Sj(1:3) = ion(1:3, cell)
 
-			!Jij term
-			Jij = j_exc(ith_bond, central_ion_ID, int(ion(4, cell)), 1:3)
+			if(TB2J) then
+				!Fetch vector direction
+				vec(1:3) = vd(1:3, ith_nbr, i)
+				!Jij term
+				Jij = Jiso(ith_bond, central_ion_ID, ID_num, vec(1), vec(2), vec(3))
+			else
+				!Jij term
+				Jij = j_exc(ith_bond, central_ion_ID, ID_num, 1:3)
+			end if
 
 			!Jij.Sj term
 			JSj = Jij*Sj

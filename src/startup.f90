@@ -23,7 +23,7 @@
 
 	implicit none
 
-        integer,dimension(8), intent(in) :: values
+	integer,dimension(8), intent(in) :: values
 
 	write(6, *) ""
 	write(6, *) "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"      

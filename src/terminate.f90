@@ -23,13 +23,13 @@
 
 	character(len=*), intent(in):: remark
 
-		print*, ''
-		print*, '+-------------+'
-		print*, '| TERMINATING |'
-		print*, '+-------------+'
-		print*, ''
-		print*, '       REASON: ', remark
-		print*, ''
+		write(6, *) ''
+		write(6, *) '+-------------+'
+		write(6, *) '| TERMINATING |'
+		write(6, *) '+-------------+'
+		write(6, *) ''
+		write(6, *) '       REASON: ', remark
+		write(6, *) ''
 		stop
 
 	end subroutine terminate

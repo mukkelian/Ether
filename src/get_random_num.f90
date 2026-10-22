@@ -44,6 +44,7 @@
 
 		use init, only : seed, random_algo
 		use mt19937
+		use omp_lib
 
 		implicit none
 
@@ -54,7 +55,9 @@
 		case('xoshiro256')
 			call random_seed(put = seed + offset)
 		case('mt19937')
-			call mt_init(seed(1) + offset)
+			!$omp parallel
+			call mt_init(seed(1) + offset + 100003*omp_get_thread_num())
+			!$omp end parallel
 		case default
 			call terminate("Found unknown/missing information: "//trim(adjustl(random_algo)))
 		end select

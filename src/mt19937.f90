@@ -31,6 +31,7 @@
 		integer(i8), parameter :: full_mask  = int(z'ffffffff', i8)
 		integer(i8), save :: mt(0:nn-1)
 		integer, save :: mti = nn + 1
+		!$omp threadprivate(mt, mti)
 		public :: mt_init, mt_rand
 
 	contains

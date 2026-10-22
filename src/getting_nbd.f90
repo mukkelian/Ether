@@ -67,7 +67,7 @@
 
 				! Storing nbd's indices
 				nn(ith_bond, central_ion_ID, nbd_count, 1) = j
-			
+
 			end if
 		end if
 
