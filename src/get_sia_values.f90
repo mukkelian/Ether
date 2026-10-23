@@ -40,7 +40,7 @@
 		open(10011, file='single_ion_anisotropy', status='old', action='read')
 		if (root) write(6, '(3X,":::::::::: SIA list (meV) ::::::::::")')
 		if (root) write(6, *) ''
-  		sia_vec = 0.0_dp
+		sia_vec = 0.0_dp
 		do
 			! Single Ion Anisotropy (SIA) vector in the unit of meV
 			read(10011, *, end=10) atom, sia_vectors(1:3)
@@ -64,6 +64,7 @@
 			end if
 		end do
 10		close(10011)
+		if(TB2J) sia_vec = -sia_vec
 		if (root) write(6, *) ''
 	else
 		if (root) then
