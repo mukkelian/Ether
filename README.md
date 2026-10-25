@@ -63,7 +63,7 @@ The citation information is available in [citation.bib](./citation.bib).
 | Random_Algo | Choice of Random number generator algorithms. <br> (Random_Algo = mt19937/xoshiro256) | mt19937 |
 | Scaled | Scaled the spins from classical (S) to qauntum level √S(S + 1) <br> _see:_ [arXiv:2602.16501](https://doi.org/10.48550/arXiv.2602.16501 "Click to Read") <br> (logic) |`.FALSE.`|
 | TB2J | Logic to allow ETHER to read TB2J (_see:_ [TB2J’s documentation!](https://tb2j.readthedocs.io/en/stable/index.html "Click to Read"))  output file 'exchange.out' (must be present in the working directory) to extract the interactios (J_iso, J_ani, DMI) for the ion pairs with bond length ≤ maxbond. <br> _Note: Currently Hamiltonian part containing J_iso, J_ani, and DMI are considered directly from TB2J documentation. ALong with these, one can also add Hamiltonian terms such as SIA and Zeemans terms by providing the details into the input files._ <br> (logic, maxbond) | `.FALSE.` 0 |
-| Home | Restricting the extractions (_from TB2J output file: exchange.out_) of J and other interaction parameters for the ion pairs present only in the Home cell (R: [0, 0, 0])  <br> (logic) | `.TRUE.` |
+| Home | Restricting the extractions (_from TB2J output file: exchange.out_) of J and other interaction parameters for the ion pairs present only in the Home cell (R: [0, 0, 0])  <br> (logic) | `.FALSE.` |
 
 
 ## Monte Carlo with the TB2J Hamiltonian
