@@ -57,13 +57,13 @@
 				vec(1:3) = vd(1:3, inbr, nbdi, i)
 				!Jij term
 				Jij = Jiso(nbdi, central_ion_ID, ID_num, vec(1), vec(2), vec(3))
-if(Jij==0) print*, 'yes', sqrt(dot_product(ion(6:8, i), ion(6:8, cell))), vec(1), vec(2), vec(3)
+
 				if(on) then
-					!Jij.Si.Sj term, for on site energy, no double counting
-					eout = 2*Jij*SiSj
+					!-Jij.Si.Sj term, for on site energy, no double counting
+					eout = -2*Jij*SiSj
 				else
 					!Jij.Si.Sj term
-					eout = Jij*SiSj
+					eout = -Jij*SiSj
 				end if
 
 				total_energy = total_energy + eout

@@ -58,11 +58,11 @@
 					vec(2), vec(3))
 
 				if(on) then
-					!Si.Jij.Sj term, for on site energy, no double counting
-					eout = 2*dot_product(Si, matmul(Jij, Sj))
+					!-Si.Jij.Sj term, for on site energy, no double counting
+					eout = -2*dot_product(Si, matmul(Jij, Sj))
 				else
-					!Si.Jij.Sj term
-					eout = dot_product(Si, matmul(Jij, Sj))
+					!-Si.Jij.Sj term
+					eout = -dot_product(Si, matmul(Jij, Sj))
 				end if
 
 				total_energy = total_energy + eout

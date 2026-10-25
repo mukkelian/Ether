@@ -60,11 +60,11 @@
 				! Cross product (SixSj)
 				call cross_product(Si, Sj, cp)
 				if(on) then
-					!Dij.SixSj term, for on site energy, no double counting
-					eout = 2*dot_product(DMvector, cp)
+					!-Dij.SixSj term, for on site energy, no double counting
+					eout = -2*dot_product(DMvector, cp)
 				else
 					!Dij.SixSj term
-					eout = dot_product(DMvector, cp)
+					eout = -dot_product(DMvector, cp)
 				end if
 
 				total_energy = total_energy + eout

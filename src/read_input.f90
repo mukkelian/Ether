@@ -151,6 +151,7 @@
 			read(value, *) TB2J, maxbond
 		case("home")	! TB2J: J from Home cell (0, 0, 0)
 			read(value, *) home
+
 		case default
 			call terminate("Found unknown/missing information: "//trim(adjustl(text)))
 		end select
