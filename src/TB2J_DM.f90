@@ -52,7 +52,7 @@
 				Sj(1:3) = ion(1:3, cell)
 
 				!Fetch vector direction
-				vec(1:3) = vd(1:3, inbr, i)
+				vec(1:3) = vd(1:3, inbr, nbdi, i)
 				!Jij term
 				DMvector(1:3) = DMvec(1:3, nbdi, central_ion_ID, ID_num, vec(1), &
 					vec(2), vec(3))

@@ -27,7 +27,7 @@
 	integer :: i, j, nbd_count, central_ion_ID, nbd_ID, ith_bond
 		
 	
-	real(dp) :: origin(3), nbd_pos(3)
+	real(dp) :: origin(3), nbd_pos(3), Rvec(3)
 	
 	logical :: captured = .FALSE.
 
@@ -58,7 +58,7 @@
 		nbd_ID = int(ion(0, j))
 
 		if(central_ion_ID.ne.nbd_ID)then
-			call search_nbd(origin, nbd_pos, nbd_dis(ith_bond), captured)
+			call search_nbd(origin, nbd_pos, nbd_dis(ith_bond), Rvec, captured)
 			if(captured)then
 
 				nbd_count = nbd_count + 1

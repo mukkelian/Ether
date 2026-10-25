@@ -19,22 +19,23 @@
 
 	subroutine get_vector_direction
 
-	use init, only: dp, ion, no_of_nbd, nn, nbd_capacity, total_ions, vd
+	use init, only: dp, ion, no_of_nbd, nn, nbd_capacity, total_ions, vd, &
+			nbd_dis
 	implicit none
 
 	integer :: i
 	integer :: total_nbr, ID_num, ion_ID, cell, inbr, nbdi, dir(3)
 
 	real(dp) :: rj(3), ri(3), rij(3)
-
+	logical :: captured = .FALSE.
 
 	if(allocated(vd)) deallocate(vd)
 	if(total_ions == 0) call terminate ('Zero magnetic ions')
-	allocate(vd(1:3, nbd_capacity, total_ions))
+	allocate(vd(1:3, nbd_capacity, no_of_nbd, total_ions))
 	vd = 0
 	do i = 1, total_ions
-	ion_ID = int(ion(0, i))
 	ri = ion(6:8, i)
+	ion_ID = int(ion(0, i))
 	! Over distinct bonds
 	do nbdi = 1, no_of_nbd
 		! For nbdi bond total connecting neighbours to the central ion [ID = ion(0, i)] is
@@ -54,9 +55,9 @@
 			rj(1:3) = ion(6:8, cell)
 
 			!Rij vector
-			rij = rj - ri
+			call search_nbd(rj, ri, nbd_dis(nbdi), rij, captured)
 			call vector_direction(3, rij, dir)
-			vd(1:3, nbdi, i) = dir(1:3)
+			vd(1:3, inbr, nbdi, i) = dir(1:3)
 
 4			continue
 		end do

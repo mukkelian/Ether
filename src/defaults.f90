@@ -56,7 +56,7 @@
 	nbd_capacity = 20
 	scaled = .False.
 	random_algo = 'mt19937'
-	home = .TRUE.
+	home = .FALSE.
 	TB2J = .FALSE.
 	J_iso = .FALSE.
 	J_prime = .FALSE.

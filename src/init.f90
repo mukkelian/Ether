@@ -38,9 +38,7 @@
 
 	integer, allocatable, dimension(:,:) :: temp_range, ifs(:, :)
 
-	integer, allocatable, dimension(:,:,:) :: vd
-
-	integer, allocatable, dimension(:,:,:,:) :: nn
+	integer, allocatable, dimension(:,:,:,:) :: nn, vd
 
 	real(dp), parameter :: pi = 4.0_dp*atan(1.0_dp)
 

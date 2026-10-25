@@ -72,7 +72,7 @@
 
 			if(TB2J) then
 				!Fetch vector direction
-				vec(1:3) = vd(1:3, ith_nbr, i)
+				vec(1:3) = vd(1:3, ith_nbr, ith_bond, i)
 				!Jij term
 				Jij = Jiso(ith_bond, central_ion_ID, ID_num, vec(1), vec(2), vec(3))
 			else

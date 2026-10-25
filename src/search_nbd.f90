@@ -17,7 +17,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with this program; if not, see https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
-	subroutine search_nbd(pos0, pos1, nbd_range, captured)
+	subroutine search_nbd(pos0, pos1, nbd_range, R_vec, captured)
 
 	use init
 
@@ -25,10 +25,11 @@
 
 	real(dp), intent (in), dimension(3) :: pos0, pos1
 	real(dp), intent(in) :: nbd_range
-	real(dp) :: R_vec(3), distance, ion_pos(3)
+	real(dp) :: distance, ion_pos(3)
 	integer :: shift(3), i, j, k, ii, jj, kk, &
 		to_x, to_y, to_z
 	logical, intent (out) :: captured
+	real(dp) :: R_vec(3)
 
 	captured = .FALSE.
 	to_x = 3; to_y = 3; to_z = 3 
