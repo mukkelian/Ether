@@ -1,29 +1,23 @@
 #!/bin/bash
 loc="$PWD/ether"
-mpirun="nohup mpirun -np"
+mpirun="setsid nohup mpirun -np"
 out="out"
 
+number_of_processor=8i		# MPI (mpirun)
+export OMP_NUM_THREADS=2	# OpenMP (threads)
+export OMP_STACKSIZE=512M
 
-export OMP_NUM_THREADS=2
-number_of_processor=6
+mpi_opts="--use-hwthread-cpus --map-by slot:PE=$OMP_NUM_THREADS --bind-to hwthread"
 ulimit -v unlimited
 ulimit -s unlimited
 
 
-echo "$mpirun $number_of_processor \"$loc\" < /dev/null > $out &" > run.sh
+echo "$mpirun $number_of_processor $mpi_opts \"$loc\" < /dev/null > $out 2>&1 &" > run.sh
+echo 'echo $! > job.pid' >> run.sh
 chmod +x run.sh
-echo 'Job is RUNNING'
 ./run.sh
-sleep 1
+sleep 0
 rm -f run.sh
+echo "Job is RUNNING (PID $(cat job.pid))"
+echo "To stop the whole job:  kill -- -\$(cat job.pid)"
 
-# For runnning the Ether, executable ./ether should be present in the woring directory
-
-# Please note: Ether can also run via simple set of lines. Just remove the commented sign '#' 
-# and paste into the other file [say 'run_job.sh'] and make it executable by typing chmod +x run_job.sh in the terminal and execute it by ./run_job.sh
-
-
-#export OMP_NUM_THREADS=2
-# ulimit -v unlimited
-# ulimit -s unlimited
-# mpirun -np 6 ./ether
