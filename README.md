@@ -43,7 +43,7 @@ The citation information is available in [citation.bib](./citation.bib).
 | MODEL | Defines the choice of model considered during MC simulation. <br> *(Ising / XYZ)* | Ising |
 | MCS | Monte Carlo steps per spins (MCS). <br> *[Total MCS (TMCS) steps for MC simulation, Total MCS steps for equilibration (TMCS_EQ) ]* | 5000 3000 |
 | TEMP | Sets the temperature range. <br> *Note: Simulation will start from higher temperature.* <br> (T_start, T_end, T_interval) | 100 10 5 |
-| SPIN | Spin values of each ion present in the `structure.vasp` file. <br> *Note: For non-magnetic ions, assign 0.0* |  |
+| SPIN | Spin values of each ion present in the `structure.vasp` file. <br> *Note: For non-magnetic ions, assign 0.0. <br> For example if in 'structure.vasp' you have three ions A, B, C and out of it only B is magnetic ion with spin moment 1.5 then provide SPIN = 0 1.5 0 in _in.ether_<br>* |  |
 | SPECIES | Symbol of species for which MC simulation is intended |  |
 | SC | Size of supercell along x, y, z direction *(X, Y, Z)* | 2 2 2 |
 | STG | Logic for staggered magnetization. If `.TRUE.` then `ETHER` requires the mandatory `staggered` file. <br> (Logic) | `.FALSE.` <br> cᵢ = 1 |
