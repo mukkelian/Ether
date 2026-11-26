@@ -21,7 +21,7 @@
 	
 	use init, only: dp, nspecies, J_iso, J_prime, J_ani, DMI, &
 				no_of_nbd, nbd_dis, species, Jiso, Jprime, DMvec, Jani, &
-				nbd_finding_criteria
+				nbd_finding_criteria, ScaledSpin, scaled, xyz, s
 	use mpi
 	implicit none
 
@@ -111,6 +111,11 @@
 			if (j_ID(j) == 0) call terminate('species not found')
 		end do
 		read(20, *) Jiso(i, j_ID(1), J_ID(2), l, m, n)
+		if(scaled.and.XYZ) then
+			Jiso(i, j_ID(1), J_ID(2), l, m, n) = &
+			(Jiso(i, j_ID(1), J_ID(2), l, m, n)/(s(j_ID(1))*s(j_ID(2))))&
+				*ScaledSpin(j_ID(1))*ScaledSpin(j_ID(2))
+		end if
 		end do
 10	close(20)
 	end if
@@ -136,6 +141,11 @@
 			read(21, *) Jani(1, 1:3, i, j_ID(1), J_ID(2), l, m, n)
 			read(21, *) Jani(2, 1:3, i, j_ID(1), J_ID(2), l, m, n)
 			read(21, *, end=11) Jani(3, 1:3, i, j_ID(1), J_ID(2), l, m, n)
+			if(scaled.and.XYZ) then
+				Jani(:, :, i, j_ID(1), J_ID(2), l, m, n) = &
+				(Jani(:, :, i, j_ID(1), J_ID(2), l, m, n)/(s(j_ID(1))*s(j_ID(2))))&
+					*ScaledSpin(j_ID(1))*ScaledSpin(j_ID(2))
+			end if
 		end do
 11	continue
 	close(21)
@@ -160,6 +170,11 @@
 				end do
 			end do
 			read(22, *, end=12) Jprime(i, j_ID(1), J_ID(2), l, m, n)
+			if(scaled.and.XYZ) then
+				Jprime(i, j_ID(1), J_ID(2), l, m, n) = &
+				(Jprime(i, j_ID(1), J_ID(2), l, m, n)/(s(j_ID(1))*s(j_ID(2))))&
+					*ScaledSpin(j_ID(1))*ScaledSpin(j_ID(2))
+			end if
 		end do
 12	continue
 	close(22)
@@ -184,6 +199,11 @@
 				end do
 			end do
 			read(23, *, end=13) DMvec(1:3, i, j_ID(1), J_ID(2), l, m, n)
+			if(scaled.and.XYZ) then
+				DMvec(1:3, i, j_ID(1), J_ID(2), l, m, n) = &
+				(DMvec(1:3, i, j_ID(1), J_ID(2), l, m, n)/(s(j_ID(1))*s(j_ID(2))))&
+					*ScaledSpin(j_ID(1))*ScaledSpin(j_ID(2))
+			end if
 		end do
 13	continue
 	close(23)

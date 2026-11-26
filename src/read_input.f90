@@ -136,10 +136,10 @@
 		    read(value, *) ss_direc(1:3)
         case("ssp")
         ! Spiral State Parameter
-		    read(value, *) ssp
+		read(value, *) ssp
         ! Spiral Capacity
         case("spiral_capacity")
-		    read(value, *) spiral_capacity
+		read(value, *) spiral_capacity
         ! nbd Capacity
         case("nbd_capacity")
 		    read(value, *) nbd_capacity
