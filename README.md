@@ -43,7 +43,7 @@ $in.ether$ file contains the necessary input information based on which `ETHER` 
 | MODEL | Defines the choice of model considered during MC simulation. <br> *(Ising / XYZ)* | Ising |
 | MCS | Monte Carlo steps per spins (MCS). <br> *[Total MCS (TMCS) steps for MC simulation, Total MCS steps for equilibration (TMCS_EQ) ]* | 5000 3000 |
 | TEMP | Sets the temperature range. <br> *Note: Simulation will start from higher temperature.* <br> (T_start, T_end, T_interval) | 100 10 5 |
-| SPIN | Spin values of each ion present in the `structure.vasp` file. <br> *Note: For non-magnetic ions, assign 0.0. <br> For example if in 'structure.vasp' you have three ions A, B, C and out of it only B is magnetic ion with spin moment 1.5 then provide SPIN = 0 1.5 0 in _in.ether_<br>* |  |
+| SPIN | Spin values of each ion present in the $structure.vasp$ file. <br> *Note: For non-magnetic ions, assign 0.0 and for magnetic ions provide in terms of half-integers e.g. for 1 electron system spin value is 0.5 <br> (_if in 'structure.vasp' you have three ions A, B, C and out of it only B is magnetic ion with spin moment 1.5 then provide SPIN = 0 1.5 0 in _in.ether__)<br>* |  |
 | SPECIES | Symbol of species for which MC simulation is intended |  |
 | SC | Size of supercell along x, y, z direction *(X, Y, Z)* | 2 2 2 |
 | STG | Logic for staggered magnetization. If `.TRUE.` then `ETHER` requires the mandatory `staggered` file. <br> (Logic) | `.FALSE.` <br> cᵢ = 1 |
@@ -62,7 +62,7 @@ $in.ether$ file contains the necessary input information based on which `ETHER` 
 | CB | Choice of STG lists in Checkerboard fashion. <br> (logic) | `.FALSE.` |
 | Random_Algo | Choice of Random number generator algorithms. <br> (Random_Algo = mt19937/xoshiro256) | mt19937 |
 | Scaled | Scaled the spins from classical (S) to qauntum level √S(S + 1)<br> Note: _Works only when MODEL parameter set ot 'xyz', i.e. 'MODEL = xyz'_<br> <br> _see:_ [arXiv:2602.16501](https://doi.org/10.48550/arXiv.2602.16501 "Click to Read") <br> (logic) |`.FALSE.`|
-| TB2J | Logic to allow ETHER to read TB2J (_see:_ [TB2J’s documentation!](https://tb2j.readthedocs.io/en/stable/index.html "Click to Read"))  output file 'exchange.out' (must be present in the working directory) to extract the interactios (J_iso, J_ani, DMI) for the ion pairs with bond length ≤ maxbond. <br> _Note: Currently Hamiltonian part containing J_iso, J_ani, and DMI are considered directly from TB2J documentation. ALong with these, one can also add Hamiltonian terms such as SIA and Zeemans terms by providing the details into the input files._ <br> Note: For scaled [scaled = .True.] case $J_{ij}$ (same for $D_{ij}$ or $J^{ani}_{ij}$ or $J^{'}_{ij}$) = $J_{ij}\sqrt{S_i(S_i + 1)}\sqrt{S_j(S_j + 1)}/(\|S_i\|\|S_j\|)$  <br> (logic, maxbond) | `.FALSE.` 0 |
+| TB2J | Logic to allow ETHER to read TB2J (_see:_ [TB2J’s documentation!](https://tb2j.readthedocs.io/en/stable/index.html "Click to Read"))  output file 'exchange.out' (must be present in the working directory) to extract the interactios (J_iso, J_ani, DMI) for the ion pairs with bond length ≤ maxbond. <br><br> _Note: Currently Hamiltonian part containing J_iso, J_ani, and DMI are considered directly from TB2J documentation. ALong with these, one can also add Hamiltonian terms such as SIA and Zeemans terms by providing the details into the input files._ <br> <br>Note: For scaled case [scaled = .True.], the $J$ or other parameters are first unnormalised  <br> e.g. $J_{ij}$ (same for $D_{ij}$ or $J^{ani}_{ij}$ or $J^{'}_{ij}$) $\rightarrow$ $J_{ij}/(\|S_i\|\|S_j\|)$ = $J_{ij} (unnormalised)$ <br> and then again normalised by multiplying these with scaled spin pairs <br> e.g. $J_{ij} (unnormalised) \rightarrow J_{ij}\sqrt{S_i(S_i + 1)}\sqrt{S_j(S_j + 1)}$ <br> _(User must provide the SPIN tag along with spin values)_ <br> (logic, maxbond) | `.FALSE.` 0 |
 | Home | Restricting the extractions (_from TB2J output file: exchange.out_) of J and other interaction parameters for the ion pairs present only in the Home cell (R: [0, 0, 0])  <br> (logic) | `.FALSE.` |
 
 
@@ -96,4 +96,5 @@ Sum over all ordered pairs (each bond appears twice, as $(i,j)$ and $(j,i)$):
 $$
 E_{tot} = -\sum_i K_i \left(\vec{S}_i \cdot \vec{e}_i\right)^2 - \sum_i \sum_{j} \left[ J_{ij} \vec{S}_i \cdot \vec{S}_j + \vec{S}_i \mathbf{J}^{ani}_{ij} \vec{S}_j + \vec{D}_{ij} \cdot \left( \vec{S}_i \times \vec{S}_j \right) \right]
 $$
+
 
