@@ -151,6 +151,8 @@
 			read(value, *) TB2J, maxbond
 		case("home")	! TB2J: J from Home cell (0, 0, 0)
 			read(value, *) home
+		case("wss")	! To write spin states files at each K
+			read(value, *) write_spins
 
 		case default
 			call terminate("Found unknown/missing information: "//trim(adjustl(text)))

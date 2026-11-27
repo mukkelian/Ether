@@ -91,7 +91,7 @@
 
 	logical :: staggered, angle, Zeeman, SIA, para, ovrr, &
 		PTalgo, temp_ex, beta_file, initiate_spin_files, scaled, home, TB2J, &
-		J_iso, J_prime, J_ani, DMI
+		J_iso, J_prime, J_ani, DMI, write_spins
 
 !	For MPI's
 	integer :: rank, size, ierr, total_observables, status(MPI_STATUS_SIZE), nprocs

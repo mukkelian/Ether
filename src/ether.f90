@@ -151,7 +151,7 @@
 
 		! Creating *spK* file
 		initiate_spin_files = .TRUE.
-		call write_spins_at_K(temp, itemp)
+		if(write_spins) call write_spins_at_K(temp, itemp)
 
 		! Setting zero to repeat variables
 		call zeroes('repeat')
@@ -232,7 +232,7 @@
 		call process_observables('store', itemp)
 
 		! Writing spin states into *spK* file
-		call write_spins_at_K(temp, itemp)
+		if(write_spins) call write_spins_at_K(temp, itemp)
 
 		! Writing spin states into ETHER.spn
 		dim1 = (/0, total_info/)
