@@ -62,5 +62,5 @@
 	J_prime = .FALSE.
 	J_ani = .FALSE.
 	DMI = .FALSE.
-	write_spins = .FALSE.
+	wss = .FALSE.
 	end subroutine defaults

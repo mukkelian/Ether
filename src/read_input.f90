@@ -152,7 +152,7 @@
 		case("home")	! TB2J: J from Home cell (0, 0, 0)
 			read(value, *) home
 		case("wss")	! To write spin state files at each K
-			read(value, *) write_spins
+			read(value, *) wss
 
 		case default
 			call terminate("Found unknown/missing information: "//trim(adjustl(text)))

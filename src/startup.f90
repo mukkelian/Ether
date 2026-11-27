@@ -173,5 +173,6 @@
 	end if
 
 	if(TB2J) write(6, *) '==> Interactions (only J_iso, J_ani, DMI) using TB2J are considered'
-
+	if(.not.wss) write(6, *) '==> Writing spin files at each temperature is SWITCHED OFF'
+	
 	end subroutine startup
