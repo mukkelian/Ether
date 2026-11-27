@@ -53,7 +53,7 @@
 				 0)
 
 10	      	format(" ION no. ",i5)
-11      	format(" For bond length: ",f12.8,", nbds are ==> "20i7)
+11      	format(" For bond length: ",f12.8,", nbds are ==> ",20i7)
 			end do nbd_write
 
 			write(2,*)''
