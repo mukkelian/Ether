@@ -12,7 +12,6 @@ data/
 spins/
 *.dat
 *.xsf
-*.png
 backup/
 out
 *DS_Store*
