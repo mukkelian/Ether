@@ -30,12 +30,13 @@
 	write(6, *) "~~~~~                      ETHER                        ~~~~~"
 	write(6, *) "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 	write(6, *) ""
-        write(6, '(" PROGRAM STARTED on date ",i2,"-",i2,"-",i4)') values(3),values(2), values(1)
+	write(6, '(" PROGRAM STARTED on date ",i2,"-",i2,"-",i4)') values(3),values(2), values(1)
 	write(6, "(' at time ',i2,' hrs. ',i2,' min. ',i2,' sec. ')") values(5:7)
 	write(6, *)""
 
 	call system('rm -rf data spins')
-	call system('mkdir spins data')
+	call system('mkdir data')
+	if(wss) call system('mkdir spins')
 
 	if(Ising) then
 		write(6, *) "Based on Ising model"
@@ -148,7 +149,7 @@
 	end if
 	
 	if(ssp.and..not.ISING) then
-                write(6, *) '==> Spiral State Parameter is TRUE!'
+			write(6, *) '==> Spiral State Parameter is TRUE!'
        		write(6, *) ''
        		write(6, "('     >  sum(Si X Sj) will be calculated along the &
                         direction of [',f4.1,1x,f4.1,1x,f4.1,']')") ss_direc

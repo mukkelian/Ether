@@ -259,7 +259,7 @@
 		call process_observables('write', 0)
 		call graph
 
-		call system('mv *spK* spins')
+		if(wss) call system('mv *spK* spins')
 		call system('mv *network.xsf *.dat data')
 		call system('mv graph* data')
 
