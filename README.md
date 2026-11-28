@@ -46,26 +46,26 @@ $in.ether$ file contains the necessary input information based on which `ETHER` 
 | SPIN | Spin values of each ion present in the $structure.vasp$ file. <br> *Note: For non-magnetic ions, assign 0.0 and for magnetic ions provide in terms of half-integers e.g. for 1 electron system spin value is 0.5 <br> (_if in 'structure.vasp' you have three ions A, B, C and out of it only B is magnetic ion with spin moment 1.5 then provide SPIN = 0 1.5 0 in _in.ether__)<br>* |  |
 | SPECIES | Symbol of species for which MC simulation is intended |  |
 | SC | Size of supercell along x, y, z direction *(X, Y, Z)* | 2 2 2 |
-| STG | Logic for staggered magnetization. If `.TRUE.` then `ETHER` requires the mandatory `staggered` file. <br> (Logic) | `.FALSE.` <br> cᵢ = 1 |
+| STG | Logic for staggered magnetization. If `.TRUE.` then `ETHER` requires the mandatory `staggered` file. <br> Type: logical | `.FALSE.` <br> cᵢ = 1 |
 | BC | Boundary conditions (c: Closed, o: Open) along x, y, z direction *(X, Y, Z)* | c c c |
 | REPEAT | Repeat MC simulations *m* times for better averaging results | 10 |
 | ANGLE | Updates direction of spin vector. <br><br> If `.TRUE.`: <br> Sₓ = √(1 − S_z²) cosφ <br> Sᵧ = √(1 − S_z²) sinφ <br> −1 ≤ S_z ≤ +1 <br> φ = φ_old + φ'δ (0 ≤ δ ≤ 1) <br><br> Otherwise, spins follow George Marsaglia rule. | `.FALSE.` 5 |
 | COA | Calculate observables at each defined MCS | 10 |
 | ZEEMAN | Zeeman logic with external magnetic field <br> *(logic, Hₓ, Hᵧ, H_z)* | `.FALSE.` 0 0 0 |
 | G_FACTOR | g factor value | 2 |
-| SIA | Single ion anisotropy <br> (logic) | `.FALSE.` |
+| SIA | Single ion anisotropy <br> Type: logical | `.FALSE.` |
 | PARA | Parameter logic with J_para (in meV) | `.FALSE.` 1.0 |
 | OVRR | Over relaxation method applied after each ovrr_MCS steps <br> *(logic, over_para, ovrr_MCS)* | `.FALSE.` 0 0 |
 | SEED | Seed for random number generation | 1992 |
 | NBDFC | Neighbourhood finding criteria | 10⁻⁵ |
 | PT |  Parallel Tempering <br> (logic, exchange_interval) | `.FALSE.` 11 |
-| CB | Choice of STG lists in Checkerboard fashion. <br> (logic) | `.FALSE.` |
+| CB | Choice of STG lists in Checkerboard fashion. <br> Type: logical | `.FALSE.` |
 | Random_Algo | Choice of Random number generator algorithms. <br> (Random_Algo = mt19937/xoshiro256) | mt19937 |
-| Scaled | Scaled the spins from classical (S) to qauntum level √S(S + 1)<br> Note: _Works only when MODEL parameter set ot 'xyz', i.e. 'MODEL = xyz'_<br> <br> _see:_ [arXiv:2602.16501](https://doi.org/10.48550/arXiv.2602.16501 "Click to Read") <br> (logic) |`.FALSE.`|
+| Scaled | Scaled the spins from classical (S) to qauntum level √S(S + 1)<br> Note: _Works only when MODEL parameter set ot 'xyz', i.e. 'MODEL = xyz'_<br> <br> _see:_ [arXiv:2602.16501](https://doi.org/10.48550/arXiv.2602.16501 "Click to Read") <br> Type: logical |`.FALSE.`|
 | TB2J | Logic to allow ETHER to read TB2J (_see:_ [TB2J’s documentation!](https://tb2j.readthedocs.io/en/stable/index.html "Click to Read"))  output file 'exchange.out' (must be present in the working directory) to extract the interactios (J_iso, J_ani, DMI) for the ion pairs with bond length ≤ maxbond. <br><br> _Note: Currently Hamiltonian part containing J_iso, J_ani, and DMI are considered directly from TB2J documentation. ALong with these, one can also add Hamiltonian terms such as SIA and Zeemans terms by providing the details into the input files._ <br> <br>Note: For scaled case [scaled = .True.], the $J$ or other parameters are first unnormalised  <br> e.g. $J_{ij}$ (same for $D_{ij}$ or $J^{ani}_{ij}$ or $J^{'}_{ij}$) $\rightarrow$ $J_{ij}/(\|S_i\|\|S_j\|)$ = $J_{ij} (unnormalised)$ <br> and then again normalised by multiplying these with scaled spin pairs <br> e.g. $J_{ij} (unnormalised) \rightarrow J_{ij}\sqrt{S_i(S_i + 1)}\sqrt{S_j(S_j + 1)}$ <br> _(User must provide the SPIN tag along with spin values)_ <br> (logic, maxbond) | `.FALSE.` 0 |
-| Home | Restricting the extractions (_from TB2J output file: exchange.out_) of J and other interaction parameters for the ion pairs present only in the Home cell (R: [0, 0, 0])  <br> (logic) | `.FALSE.` |
-| WSS | Logic to write spin state files at each temperature. If .True. then _ether_ will start writing spin files and save into the _spins_ directory  <br> (logic) | `.FALSE.` |
-
+| Home | Restricting the extractions (_from TB2J output file: exchange.out_) of J and other interaction parameters for the ion pairs present only in the Home cell (R: [0, 0, 0])  <br> Type: logical | `.FALSE.` |
+| WSS | Logic to write spin state files at each temperature. If .True. then _ether_ will start writing spin files and save into the _spins_ directory  <br> Type: logical | `.FALSE.` |
+| AM | If `.TRUE.`, read the temperatures from `grid.out`, the output of the [Adaptive Mesh](utility/Adaptive_mesh/) tool. If `grid.out` is not found, the original uniform temperature list with the defined step is used instead. <br> If `.FALSE.`, the original uniform temperature list is always used. <br><br> **Adaptive Mesh** builds a non-uniform temperature grid from earlier data (e.g. Monte Carlo C<sub>v</sub> vs. T). Points are placed close together near peaks and steep regions, and far apart where the curve is flat. <br><br> Type: logical | `.FALSE.` |
 
 ## Monte Carlo with the TB2J Hamiltonian
 
@@ -98,5 +98,16 @@ $$
 E_{tot} = -\sum_i K_i \left(\vec{S}_i \cdot \vec{e}_i\right)^2 - \sum_i \sum_{j} \left[ J_{ij} \vec{S}_i \cdot \vec{S}_j + \vec{S}_i \mathbf{J}^{ani}_{ij} \vec{S}_j + \vec{D}_{ij} \cdot \left( \vec{S}_i \times \vec{S}_j \right) \right]
 $$
 
+## Newly added Utility
 
+Other utility program can be found within [_Ether's utiliy folder_](utility/)
+ 
+### Adaptive Mesh
 
+A uniform temperature grid wastes many Monte Carlo runs in regions where the curve such as specific heat barely changes, while the region around the transition, where the interesting physics is, gets too few points. The [Adaptive Mesh](utility/Adaptive_mesh/)
+tool solves this. It takes the result of a first (coarse) simulation, fits a smooth curve through it using the error bars, and places new temperature points close together where the curve changes quickly (near the peak) and far apart where it is flat. In the example below, the original run used 46 temperatures with a uniform step of 2 K. The adaptive grid needs only 20 temperatures, about 57% fewer simulations, yet it puts 7 points between 99 and 106 K, where the uniform grid had only 4. The same Monte Carlo simulation can therefore be run on fewer points, which saves computation time, while the finer spacing near the peak gives a clearer picture of the transition.
+<p align="center">
+  <img src="utility/Adaptive_mesh/fig_adapted.png" alt="Adaptive Mesh example" width="600">
+  <br>
+  <em>Figure 1. Specific heat from Monte Carlo on the original uniform grid (46 points, grey) and on the adaptive grid (20 points, blue). The adaptive points are concentrated near the peak and spread out in the flat regions.</em>
+</p>
