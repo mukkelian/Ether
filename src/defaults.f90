@@ -63,4 +63,5 @@
 	J_ani = .FALSE.
 	DMI = .FALSE.
 	wss = .FALSE.
+	am = .FALSE.
 	end subroutine defaults
