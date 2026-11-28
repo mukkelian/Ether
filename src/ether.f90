@@ -66,6 +66,7 @@
 	call read_structure(nspecies, total_ions_per_cell, lp, abc, &
 		x, y, z, ions, species, rank)
 	call generate_supercell
+	call get_temperature
 	deallocate (x, y, z)
 	if(ssp.and..not.ISING) call get_spiral_state(0.0_dp, 'ions_for_spiral')
 
@@ -84,14 +85,6 @@
 	if (root) call write_nbd
 
 	if(TB2J) call get_vector_direction
-
-	! Total temperature count
-	nscan = nint((ht - lt) / (tint)) + 1
-
-        allocate(temperature(nscan))
-        do ei = 1, nscan
-        	temperature(ei) =  ht - tint * (ei - 1)
-        end do
 
 	call allocate_observables
 

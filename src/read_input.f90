@@ -38,13 +38,13 @@
 		stop
 	end if
 
-        open(unit=0, file='in.ether', status='old', action='read')
+	open(unit=0, file='in.ether', status='old', action='read')
 
-        total_lines = 0
-        get_total_lines: do
-        	read(0, "(a)", end=1) text
-        	total_lines = total_lines + 1
-        end do get_total_lines
+	total_lines = 0
+	get_total_lines: do
+		read(0, "(a)", end=1) text
+		total_lines = total_lines + 1
+	end do get_total_lines
 1	close(0)
 
 	allocate(input_data(total_lines))
@@ -153,6 +153,8 @@
 			read(value, *) home
 		case("wss")	! To write spin state files at each K
 			read(value, *) wss
+		case("am")	! To strat from adapted mesh (requires grid.out file)
+			read(value, *) am
 
 		case default
 			call terminate("Found unknown/missing information: "//trim(adjustl(text)))
