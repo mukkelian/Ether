@@ -27,7 +27,8 @@
 
 	character(len=3) :: atom(2), atom1, atom2, ab, out
 	logical :: file_present
-		
+
+	if(root) write(6, *) "==> Readin J values'"
 	inquire(file='j_exchange', exist=file_present)
 	if(.not.file_present) then
 	if (root) then

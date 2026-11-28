@@ -53,7 +53,7 @@
 		if(SIA.and.XYZ) sia_vec = sia_vec/real(1000.0, dp)
 		! Bhor magneton
 		mb = 5.7883818060d-5
-		if(root) then
+		if(root.and..not.TB2J) then
 			write(6, *) ''
 			write(6, *) "REMEMBER! 	For 'J in meV' case."
 			write(6, *) '		All parameters should be provided in terms of milli orders (meV), '

@@ -50,7 +50,7 @@
 			temp_assigned(el) = temperature(ej)
 		end do
 		write(6, "(' At process ID', i3, ' are:')") ei
-		write(6, "(24X,5g11.4)") temp_assigned
+		write(6, "(24X,g11.4,1x,g11.4,1x,g11.4,1x,g11.4,1x,g11.4)") temp_assigned
 		write(6, *) ''
 		deallocate(temp_assigned)
 
