@@ -69,18 +69,18 @@
 	real(dp) :: cutoff
 	integer  :: ios, nmax
 
+	write(6, *) "==> Readin J and other prameters from 'exchange.out'"
 	inquire(file=infile, exist=exists)
 	if (.not. exists) then
-		write(6,'(a)') '	> ERROR: the file "'//infile//'" is absent in the current directory.'
-		stop 'extract_TB2J: exchange.out not found'
+		write(6,'(a)') '	ERROR: the file "'//infile//'" is absent in the current directory.'
+		stop '	extract_TB2J: exchange.out not found'
 	end if
 
 	if (bond_length <= 0.0_dp) then
-		write(6,'(a)') '	> ERROR: bond_length must be a positive number (Angstrom).'
-		stop 'extract_TB2J: wrong bond_length'
+		write(6,'(a)') '	ERROR: bond_length must be a positive number (Angstrom).'
+		stop '	extract_TB2J: wrong bond_length'
 	end if
 	cutoff = bond_length
-
 
 	! count the separator lines "-----"
 	open(unit=unit_in, file=infile, status='old', action='read')
@@ -100,7 +100,7 @@
 	call read_bonds()
 
 	if (nbond == 0) then
-	write(6,'(a,f10.4,a)') '	> No bond found with distance <= ', cutoff, ' A.'
+	write(6,'(a,f10.4,a)') '	No bond found with distance <= ', cutoff, ' A.'
 	end if
 
 
@@ -110,35 +110,35 @@
 
 	!Writing the output files
 	if (home) then
-		write(6,'(a)') '	> extract_TB2J: only ion pairs with R = (0, 0, 0)'
+		write(6,'(a)') '	extract_TB2J: only ion pairs with R = (0, 0, 0)'
 	else
-		write(6,'(a)') '	> extract_TB2J: ion pairs with all R'
+		write(6,'(a)') '	extract_TB2J: ion pairs with all R'
 	end if
-	write(6,'(a,i0,a,i0,a)') '	> extract_TB2J: ', nbond, ' bonds kept, ', nshell, &
+	write(6,'(a,i0,a,i0,a)') '	extract_TB2J: ', nbond, ' bonds kept, ', nshell, &
 		' distinct bond lengths.'
 
 	call write_file('J_iso', 1)
-	write(6,'(a)') '	> written : J_iso'
+	write(6,'(a)') '	written : J_iso'
 
 	if (found_jani) then
 		call write_file('J_ani', 2)
-		write(6,'(a)') '	> written : J_ani'
+		write(6,'(a)') '	written : J_ani'
 	else
-		write(6,'(a)') '	> J_ani not present in exchange.out -> J_ani not created'
+		write(6,'(a)') '	J_ani not present in exchange.out -> J_ani not created'
 	end if
 
 	if (found_dmi) then
 		call write_file('DMI', 3)
-		write(6,'(a)') '	> written : DMI'
+		write(6,'(a)') '	written : DMI'
 	else
-		write(6,'(a)') '	> DMI    not present in exchange.out -> DMI not created'
+		write(6,'(a)') '	DMI    not present in exchange.out -> DMI not created'
 	end if
 
 	if (found_jprime) then
 		call write_file('J_prime', 4)
-		write(6,'(a)') '	> written : J_prime'
+		write(6,'(a)') '	written : J_prime'
 	else
-		write(6,'(a)') '	> Jprime not present in exchange.out -> J_prime not created'
+		write(6,'(a)') '	Jprime not present in exchange.out -> J_prime not created'
 	end if
 
 	deallocate(lab1, lab2, vec, dist, bond_id, jiso, jprime, dmi, jani, shell)
