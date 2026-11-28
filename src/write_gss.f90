@@ -31,20 +31,20 @@
 
 	open(unit=gss_ID, file='gss.dat', status='replace', action='write')
 
-        if(para)then
-                lbl = ' KbT/J'
-        else
-                lbl = " K"
-        end if
+	if(para)then
+		lbl = ' KbT/J'
+	else
+		lbl = " K"
+	end if
 
 	! STORING crystal information in GSS (Ground Spin States)
-       	write(gss_ID, '(I5,1x, I5, 1x, I5, 1x, I5)') nscan, sc
-       	write(gss_ID, '(I5,1x, I5, 1x, I5, 1x, I5, 1x, I5, 1x, I5)') fromx, &
-       		fromy, fromz, tox, toy, toz
-       	write(gss_ID, '(I5,1x, I5, f11.5, 1x, f11.5, 1x, f11.5,1x, A6)') &
-       		lattice_per_unit_cell, nspecies, ht, lt, tint
-       	write(gss_ID, '(A20)') lbl
-       	write(gss_ID, '(I8,1x,I8,1x,I8,1x,I8,1x,I8)') tions(1:)
+	write(gss_ID, '(I5,1x, I5, 1x, I5, 1x, I5)') nscan, sc
+	write(gss_ID, '(I5,1x, I5, 1x, I5, 1x, I5, 1x, I5, 1x, I5)') fromx, &
+	fromy, fromz, tox, toy, toz
+	write(gss_ID, '(I5,1x, I5, f11.5, 1x, f11.5, 1x, f11.5,1x, A6)') &
+	lattice_per_unit_cell, nspecies, ht, lt
+	write(gss_ID, '(A20)') lbl
+	write(gss_ID, '(I8,1x,I8,1x,I8,1x,I8,1x,I8)') tions(1:)
 	do i = 1,3
 		write(gss_ID,'(f10.5,1x,f10.5,1x,f10.5)') (abc(i,j), j= 1,3)
 	end do
@@ -57,16 +57,16 @@
 
 	end if
 
-        !GSS.dat
+	!GSS.dat
 	write(gss_ID, '(f11.5)') temp_T(T)
 
 	if(allocated(ion)) deallocate(ion)
 	allocate(ion(0:total_info, total_ions))
 
-        ! Reading spin states from ETHER.spn
-        dim1 = (/0, total_info/)
-        dim2 = (/1, total_ions/)
-        call rw_file('r', 'ETHER.spn', 502, dim1, dim2, T, ion)
+	! Reading spin states from ETHER.spn
+	dim1 = (/0, total_info/)
+	dim2 = (/1, total_ions/)
+	call rw_file('r', 'ETHER.spn', 502, dim1, dim2, T, ion)
 
 	do i = 1, total_ions
 		write(gss_ID, '(f11.6, 1x, f11.6, 1x, f11.6, 1X, i8)') &
