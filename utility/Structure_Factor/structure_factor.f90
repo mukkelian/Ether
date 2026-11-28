@@ -15,30 +15,30 @@
 ! You should have received a copy of the GNU General Public License
 ! along with this program; if not, see https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
-        program structure_factor
+	program structure_factor
 
 	use omp_lib
 
 	implicit none
 
-        integer :: nscan, sc(3), lattice_per_unit_cell, &
+	integer :: nscan, sc(3), lattice_per_unit_cell, &
 		i, j, k, l, total_q, ithQ, &
 		p, p_, n_species, fromx, fromy, fromz, tox, toy, toz, total_ions
 
-        real :: qx, qy, qz, lp1(3), lp2(3), vector(3), deg, &
+	real :: qx, qy, qz, lp1(3), lp2(3), vector(3), deg, &
 		qvec, q_stop, q_start, dq, temp, dis(3), a(3, 3), &
-        	to_angle, pi = 4.0*atan(1.0), light(3), mod_light, mod_vector, &
+		to_angle, pi = 4.0*atan(1.0), light(3), mod_light, mod_vector, &
 		theta, q, r(3), k_vec(3), Sx, Sy, Sz, s_i(3,1), s_j(3,1), volume, &
-		b(3,3), scaling(3), h_t, l_t, t_int
+		b(3,3), scaling(3), h_t, l_t
 
-        real, allocatable :: ion(:, :)
+	real, allocatable :: ion(:, :)
 	integer, allocatable :: ionn(:)
 	complex :: img = (0,1), S_q_x, S_q_y, S_q_z, expo, Cq(3)
 	character (len=80) :: lbl
 	logical :: file_present = .FALSE.
-        DOUBLE PRECISION :: start, finish
+	DOUBLE PRECISION :: start, finish
 
-        start = omp_get_wtime()
+	start = omp_get_wtime()
 
 	print*, ''
 	inquire(file='in_SF.ether', exist=file_present)
@@ -50,87 +50,87 @@
 	end if
 
 	if(file_present) print*, "'in_SF.ether' file is found, now reading..."
-        open(unit=0, file='in_SF.ether', status='old', action='read')
-        read(0, *) qx, qy, qz   ! q_vec directions
-        read(0, *) deg
-        read(0, *) q_stop, q_start, dq ! q vector
-        read(0, *) scaling
-
-        print*, ''
-        print*, '::::::::::::::: STRUCTURE FACTOR (SF) :::::::::::::::'
-        print*, ''
-        print"(' SF along ',3f7.3 )",qx, qy,qz
-        print"(' with scaling factors (x, y, z) :',3f7.3 )",scaling
-
-	inquire(file='gss.dat', exist=file_present)        
-        if(.not.file_present) then
-        	print*, ''
-        	print*, 'STOPPING now'
-        	print*, "'gss.dat' file is not present"
-        	print*, ''
-        	stop
-        end if
+	open(unit=0, file='in_SF.ether', status='old', action='read')
+	read(0, *) qx, qy, qz   ! q_vec directions
+	read(0, *) deg
+	read(0, *) q_stop, q_start, dq ! q vector
+	read(0, *) scaling
 
 	print*, ''
-        print*, "Calculating SF using given 'gss.dat' file"
+	print*, '::::::::::::::: STRUCTURE FACTOR (SF) :::::::::::::::'
+	print*, ''
+	print"(' SF along ',3f7.3 )",qx, qy,qz
+	print"(' with scaling factors (x, y, z) :',3f7.3 )",scaling
+
+	inquire(file='gss.dat', exist=file_present)	
+	if(.not.file_present) then
+		print*, ''
+		print*, 'STOPPING now'
+		print*, "'gss.dat' file is not present"
+		print*, ''
+		stop
+	end if
+
+	print*, ''
+	print*, "Calculating SF using given 'gss.dat' file"
 
 	file_present = .FALSE.
-        open(unit=4, file='gss.dat', status='old', action='read')
+	open(unit=4, file='gss.dat', status='old', action='read')
 
-        read(4, *) nscan, sc
-        read(4, *) fromx, fromy, fromz, tox, toy, toz		
-	read(4, *) lattice_per_unit_cell, n_species, h_t, l_t, t_int
+	read(4, *) nscan, sc
+	read(4, *) fromx, fromy, fromz, tox, toy, toz		
+	read(4, *) lattice_per_unit_cell, n_species, h_t, l_t
 	read(4, *) lbl
 
-        allocate(ionn(n_species))
-        read(4, *) (ionn(i), i = 1, n_species)
-        structure : do i = 1,3
-        	read(4,*) (a(i,j), j = 1,3) !lattice vectors
-        end do structure
+	allocate(ionn(n_species))
+	read(4, *) (ionn(i), i = 1, n_species)
+	structure : do i = 1,3
+	read(4,*) (a(i,j), j = 1,3) !lattice vectors
+	end do structure
 
-        total_ions = product(sc)*lattice_per_unit_cell
+	total_ions = product(sc)*lattice_per_unit_cell
 
-        allocate(ion(0:6, total_ions))
+	allocate(ion(0:6, total_ions))
 
-        a(1, :) = a(1, :)*scaling(1)
-        a(2, :) = a(2, :)*scaling(2)
-        a(3, :) = a(3, :)*scaling(3)
+	a(1, :) = a(1, :)*scaling(1)
+	a(2, :) = a(2, :)*scaling(2)
+	a(3, :) = a(3, :)*scaling(3)
 
-        ! Evaluation of reciprocal vectors
-        s_i = 0.0; s_j = 0.0
-        s_i(:,1) = a(2,:); s_j(:,1) = a(3,:)
+	! Evaluation of reciprocal vectors
+	s_i = 0.0; s_j = 0.0
+	s_i(:,1) = a(2,:); s_j(:,1) = a(3,:)
 
-        volume = dot_product(a(1,:), cross_product(s_i(:,1),s_j(:,1)))
+	volume = dot_product(a(1,:), cross_product(s_i(:,1),s_j(:,1)))
 
-        s_i(:,1) = a(2,:); s_j(:,1) = a(3,:)
-        b(1,:) =  cross_product(s_i(:,1),s_j(:,1))
+	s_i(:,1) = a(2,:); s_j(:,1) = a(3,:)
+	b(1,:) =  cross_product(s_i(:,1),s_j(:,1))
 
-        s_i(:,1) = a(3,:); s_j(:,1) = a(1,:)
-        b(2,:) =  cross_product(s_i(:,1),s_j(:,1))
+	s_i(:,1) = a(3,:); s_j(:,1) = a(1,:)
+	b(2,:) =  cross_product(s_i(:,1),s_j(:,1))
 
-        s_i(:,1) = a(1,:); s_j(:,1) = a(2,:)
-        b(3,:) =  cross_product(s_i(:,1),s_j(:,1))
+	s_i(:,1) = a(1,:); s_j(:,1) = a(2,:)
+	b(3,:) =  cross_product(s_i(:,1),s_j(:,1))
 
-        b = b*2.*pi/dble(volume)
+	b = b*2.*pi/dble(volume)
 
-        k_vec(:) = b(1,:) + b(2,:) + b(3,:)
+	k_vec(:) = b(1,:) + b(2,:) + b(3,:)
 
-        ! READING LATTICES
-        read(4,*)
+	! READING LATTICES
+	read(4,*)
 	do i = 1, total_ions
-                read(4,*) ion(4:6, i), ion(0, i)
-        end do
+		read(4,*) ion(4:6, i), ion(0, i)
+	end do
 
-        !STRUCTURE FACTOR CORRELATION
-        !################################################################
+	!STRUCTURE FACTOR CORRELATION
+	!################################################################
 
-        total_q = abs(nint((q_stop - q_start)/(dq))) + 1
+	total_q = abs(nint((q_stop - q_start)/(dq))) + 1
 
-        open(unit=2,file='outputSF.dat', status='unknown', action='write')
-        
-        reading_files : do k = 1, nscan
+	open(unit=2,file='outputSF.dat', status='unknown', action='write')
+	
+	reading_files : do k = 1, nscan
 
-        read(4, *) temp
+	read(4, *) temp
 
 
 	do i = 1, total_ions
@@ -145,7 +145,7 @@
 	S_q_z = 0.0
 
 	! for lower to higher
-        q = q_start + (dq*(ithQ-1))
+	q = q_start + (dq*(ithQ-1))
 	
 	!$omp parallel do default(shared) private(i, r, Sx, Sy, Sz, expo) &
 	!$omp reduction(+:S_q_x, S_q_y, S_q_z)
@@ -172,19 +172,19 @@
 	
 	Cq = (/S_q_x, S_q_y, S_q_z/)
 
-        write(2,*)temp, q, real(dot_product(Cq, Cq))/total_ions**2, &
-        	real(abs(S_q_x))/total_ions, real(abs(S_q_y))/total_ions, &
-        	real(abs(S_q_z))/total_ions
+	write(2,*)temp, q, real(dot_product(Cq, Cq))/total_ions**2, &
+		real(abs(S_q_x))/total_ions, real(abs(S_q_y))/total_ions, &
+		real(abs(S_q_z))/total_ions
 
-        end do q_vector
+	end do q_vector
 
-        write(2,*) ''
+	write(2,*) ''
 
 	end do reading_files
 
 	close (2)
 
-        !################################################################
+	!################################################################
 
 	finish = omp_get_wtime()
 
@@ -192,16 +192,16 @@
 
 	print*, 'Done'
 	print*, ''
-        print*, 'Creating polt file'
+	print*, 'Creating polt file'
 	write(3, *) '#set parameters accordingly'
 	write(3, *) 'unset key'
 	write(3, *) 'set terminal png size 1100, 900 font "Times-New-Roman,22"'
 	write(3, *) "set output 'figSF.png'"
 	write(3, *) 'set tics font "Times-New-Roman,20"'
 	write(3, *) 'set format y "%g"'
-        write(3, 100)  l_t-t_int, abs(h_t-l_t+t_int)/5., h_t
+	write(3, 100)  l_t, abs(h_t-l_t)/5., h_t
 	write(3, *) 'set mxtics 10'
-        write(3, 101) q_stop
+	write(3, 101) q_stop
 	write(3, *) 'set mytics 5'
 	write(3, *) "set title 'Structure Factor Vs. Temperature'"
 	write(3, *) 'unset surface'
@@ -224,31 +224,31 @@
 	print*, ''
 	print*, 'command to plot Structure Factor ==> "gnuplot plot_sf.sh"'
 	print*, ''
-        print*, 'Completed!'
+	print*, 'Completed!'
 	print*, ''
-        print '(" Total calculation time = ",i4," Hr",i3," min.",i3,&
-        " sec.")'&
-        ,int((finish-start)/3600.0),int(mod((finish-start), &
-        3600.0)/60.0),&
-        int(mod(mod((finish-start), 3600.0),60.0))
-        print*,''
-        print*,''
+	print '(" Total calculation time = ",i4," Hr",i3," min.",i3,&
+	" sec.")'&
+	,int((finish-start)/3600.0),int(mod((finish-start), &
+	3600.0)/60.0),&
+	int(mod(mod((finish-start), 3600.0),60.0))
+	print*,''
+	print*,''
 100	format (" set xtics ", f11.5,",", f11.5,",", f11.5," scale &
-        2, 0.75 textcolor 'blue'")
+	2, 0.75 textcolor 'blue'")
 101	format (" set ytics 0,0.25,",f10.5," scale 1, 0 textcolor 'red'")
 102	format (" set xlabel 'Temperature (",A8, ")' tc 'blue'")
 103	format (" set xlabel 'Temperature (",A1, ")' tc 'blue'")
 	contains
 
-        FUNCTION cross_product(v1, v2)
- 
- 	       real, DIMENSION(3) :: cross_product
- 	       real, DIMENSION(3), INTENT(IN) :: v1, v2
+	FUNCTION cross_product(v1, v2)
 
- 	       cross_product(1) = (v1(2) * v2(3)) - v1(3) * v2(2)
- 	       cross_product(2) = (v1(3) * v2(1)) - v1(1) * v2(3)
- 	       cross_product(3) = (v1(1) * v2(2)) - v1(2) * v2(1)
+	real, DIMENSION(3) :: cross_product
+	real, DIMENSION(3), INTENT(IN) :: v1, v2
 
-        END FUNCTION cross_product
+	cross_product(1) = (v1(2) * v2(3)) - v1(3) * v2(2)
+	cross_product(2) = (v1(3) * v2(1)) - v1(1) * v2(3)
+	cross_product(3) = (v1(1) * v2(2)) - v1(2) * v2(1)
+
+	END FUNCTION cross_product
 
 	end program structure_factor
